@@ -24,7 +24,7 @@ const Footer = () => {
         <h1 className='footer__heading'>Contact us</h1>
         <p className='footer__link font-bold '>Head Office</p>
         <p className='footer__link'>Capital Office</p>
-        <p className='footer__link'>124 City Road, London</p>
+        <p className='footer__link'>124 City Road London</p>
         <p className='footer__link'>EC1V 2NX</p>
        
       </div>
@@ -33,7 +33,7 @@ const Footer = () => {
       <h1 className='footer__heading'>Lets Talk</h1>
         <p className='footer__link font-bold '>Call Centre</p>
         <p className='footer__link'>Level One, Basecamp Liverpool</p>
-        <p className='footer__link'>49 Jamaica Street, Liverpool</p>
+        <p className='footer__link'>49 Jamaica Street Liverpool</p>
         <p className='footer__link'>L1 0AH</p>
         
       </div>
