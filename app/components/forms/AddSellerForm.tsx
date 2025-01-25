@@ -1,64 +1,69 @@
-// pages/seller-form.js
-import { useState } from 'react';
-import axios from 'axios';
+import { useState } from "react";
+import axios from "axios";
 
 export default function SellerForm() {
   const [formData, setFormData] = useState({
-    landlordName: '',
-    landlordPhoneNumber: '',
-    landlordEmailAddress: '',
-    landlordPropertyType: '',
-    landlordPropertyAddress: '',
-    landlordRent: '',
-    propertyAvailableDate: '',
-    notes: '',
+    landlordName: "",
+    landlordPhoneNumber: "",
+    landlordEmailAddress: "",
+    landlordPropertyType: "",
+    landlordPropertyAddress: "",
+    landlordRent: "",
+    propertyAvailableDate: "",
+    notes: "",
   });
 
   const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleChange = async (e: { target: { name: any; value: any; }; }) => {
+  const propertyTypes = ["Commercial", "Industrial", "Land"]; // Property types based on schema
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setSuccessMessage('');
-    setErrorMessage('');
+    setSuccessMessage("");
+    setErrorMessage("");
 
     try {
-      const response = await axios.post('https://backend-est6d65jg-abdul-rehmans-projects-49109cf3.vercel.app/api/sellers', formData);
+      const response = await axios.post(
+        "https://requsest-response.vercel.app/api/sellers",
+        formData
+      );
       setLoading(false);
-      setSuccessMessage('Seller data submitted successfully!');
+      setSuccessMessage("Seller data submitted successfully!");
       setFormData({
-        landlordName: '',
-        landlordPhoneNumber: '',
-        landlordEmailAddress: '',
-        landlordPropertyType: '',
-        landlordPropertyAddress: '',
-        landlordRent: '',
-        propertyAvailableDate: '',
-        notes: '',
+        landlordName: "",
+        landlordPhoneNumber: "",
+        landlordEmailAddress: "",
+        landlordPropertyType: "",
+        landlordPropertyAddress: "",
+        landlordRent: "",
+        propertyAvailableDate: "",
+        notes: "",
       });
     } catch (error) {
       setLoading(false);
-      setErrorMessage('Failed to submit seller data.');
-      console.error('Error submitting seller data:', error);
+      setErrorMessage("Failed to submit seller data.");
+      console.error("Error submitting seller data:", error);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto p-4 border rounded-lg shadow-lg">
-      <h1 className="text-2xl font-bold mb-4">Add Seller</h1>
+    <div className="max-w-md mx-auto p-6 bg-white border rounded-lg shadow-lg mt-12">
+      <h1 className="text-2xl font-bold mb-4 text-center">Add Seller</h1>
       <form onSubmit={handleSubmit}>
+        {/* Landlord Name */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="landlordName">
-            Name
+             Name
           </label>
           <input
             type="text"
@@ -70,6 +75,8 @@ export default function SellerForm() {
             className="mt-1 p-2 border rounded-md w-full"
           />
         </div>
+
+        {/* Landlord Phone Number */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="landlordPhoneNumber">
             Phone Number
@@ -84,6 +91,8 @@ export default function SellerForm() {
             className="mt-1 p-2 border rounded-md w-full"
           />
         </div>
+
+        {/* Landlord Email Address */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="landlordEmailAddress">
             Email Address
@@ -98,36 +107,33 @@ export default function SellerForm() {
             className="mt-1 p-2 border rounded-md w-full"
           />
         </div>
-        {/* <div className="mb-4">
+
+        {/* Property Type */}
+        <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="landlordPropertyType">
             Property Type
           </label>
-          <input
-            type="text"
+          <select
             name="landlordPropertyType"
             id="landlordPropertyType"
             value={formData.landlordPropertyType}
             onChange={handleChange}
             required
             className="mt-1 p-2 border rounded-md w-full"
-          />
-           <select
-            name="budget"
-            id="budget"
-            value={formData.landlordPropertyType}
-            onChange={handleChange}
-            required
-            className="mt-1 p-2 border rounded-md w-full"
           >
-            <option value="">Select property type</option>
-            <option value="Commercial">Commercial</option>
-            <option value="Industrial">Industrial</option>
-            <option value="Land">Land</option>
+            <option value="">Select Property Type</option>
+            {propertyTypes.map((type, index) => (
+              <option key={index} value={type}>
+                {type}
+              </option>
+            ))}
           </select>
-        </div> */}
+        </div>
+
+        {/* Property Address */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="landlordPropertyAddress">
-            Property Area
+            Property Address
           </label>
           <input
             type="text"
@@ -139,9 +145,11 @@ export default function SellerForm() {
             className="mt-1 p-2 border rounded-md w-full"
           />
         </div>
+
+        {/* Rent */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="landlordRent">
-            Budget
+            Rent (£)
           </label>
           <input
             type="number"
@@ -153,7 +161,9 @@ export default function SellerForm() {
             className="mt-1 p-2 border rounded-md w-full"
           />
         </div>
-        {/* <div className="mb-4">
+
+        {/* Property Available Date */}
+        <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="propertyAvailableDate">
             Property Available Date
           </label>
@@ -166,7 +176,9 @@ export default function SellerForm() {
             required
             className="mt-1 p-2 border rounded-md w-full"
           />
-        </div> */}
+        </div>
+
+        {/* Notes */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="notes">
             Notes
@@ -179,17 +191,21 @@ export default function SellerForm() {
             className="mt-1 p-2 border rounded-md w-full"
           />
         </div>
+
+        {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded-md"
+          className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"
           disabled={loading}
         >
-          {loading ? 'Submitting...' : 'Submit'}
+          {loading ? "Submitting..." : "Submit"}
         </button>
       </form>
 
+      {/* Success and Error Messages */}
       {successMessage && <p className="text-green-500 mt-4">{successMessage}</p>}
       {errorMessage && <p className="text-red-500 mt-4">{errorMessage}</p>}
     </div>
   );
 }
+ 

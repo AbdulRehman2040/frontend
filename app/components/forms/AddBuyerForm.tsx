@@ -37,7 +37,10 @@ export default function BuyerForm() {
     setErrorMessage('');
 
     try {
-      const response = await axios.post("https://backend-est6d65jg-abdul-rehmans-projects-49109cf3.vercel.app/api/buyers", formData);
+      const response = await axios.post(
+        'https://requsest-response.vercel.app/api/buyers',
+        formData
+      );
       setLoading(false);
       setSuccessMessage('Buyer data submitted successfully!');
       setFormData({
@@ -57,13 +60,13 @@ export default function BuyerForm() {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-pink-100 border rounded-lg shadow-lg mt-24 ">
-      <h1 className="text-2xl font-bold text-center mb-6">Landlord Form</h1>
+    <div className="max-w-md mx-auto p-6 bg-pink-100 border rounded-lg shadow-lg mt-24">
+      <h1 className="text-2xl font-bold text-center mb-6">Buyer Form</h1>
       <form onSubmit={handleSubmit}>
         {/* Name */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="name">
-            Landlord Name
+            Name
           </label>
           <input
             type="text"
@@ -79,7 +82,7 @@ export default function BuyerForm() {
         {/* Phone Number */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="phoneNumber">
-            Landlord Phone Number
+            Phone Number
           </label>
           <input
             type="text"
@@ -95,7 +98,7 @@ export default function BuyerForm() {
         {/* Email Address */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="emailAddress">
-            Landlord Email Address
+            Email Address
           </label>
           <input
             type="email"
@@ -108,10 +111,10 @@ export default function BuyerForm() {
           />
         </div>
 
-        {/* Area Required (Dropdown for UK Cities) */}
+        {/* Area Required */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="areaRequired">
-            Landlord Property Address (City)
+            Area Required (City)
           </label>
           <select
             name="areaRequired"
@@ -133,7 +136,7 @@ export default function BuyerForm() {
         {/* Budget */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="budget">
-            Landlord Rent Budget
+            Budget
           </label>
           <select
             name="budget"
@@ -143,7 +146,7 @@ export default function BuyerForm() {
             required
             className="mt-1 p-2 border rounded-md w-full"
           >
-            <option value="">Select Budget Range</option>
+            <option value="">Select Budget</option>
             <option value="100-200">100-200</option>
             <option value="200-400">200-400</option>
             <option value="400-600">400-600</option>
@@ -151,7 +154,8 @@ export default function BuyerForm() {
             <option value="1000+">1000+</option>
           </select>
         </div>
-          
+
+        {/* Property Available Date */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="propertyAvailableDate">
             Property Available Date
@@ -181,10 +185,6 @@ export default function BuyerForm() {
           />
         </div>
 
-        {/* Property Available Date */}
-        
-
-        {/* Submit Button */}
         <button
           type="submit"
           className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"
@@ -194,7 +194,6 @@ export default function BuyerForm() {
         </button>
       </form>
 
-      {/* Success and Error Messages */}
       {successMessage && <p className="text-green-500 mt-4">{successMessage}</p>}
       {errorMessage && <p className="text-red-500 mt-4">{errorMessage}</p>}
     </div>
