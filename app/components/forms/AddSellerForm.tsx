@@ -78,7 +78,7 @@ export default function SellerForm() {
     "Wharfedale","Other",
   ];
 
-  const propertyTypes = ["Cafe", "Car Wash", "Factory","Healthcare","Hotel","Medical Center","Nursing Homes","Office","Pub","Restaurant","Retail","Shops","Shopping Center","Sports Facilities","Warehouse","Other"]; // Property types based on schema
+  const propertyTypes = ["Cafe",'Unit', "Car Wash", "Factory","Healthcare","Hotel","Medical Center","Nursing Homes","Office","Pub","Restaurant","Retail","Shops","Shopping Center","Sports Facilities","Warehouse","Other"]; // Property types based on schema
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -99,10 +99,12 @@ export default function SellerForm() {
     //   setLoading(false);
     //   return;
     // }
+
+    // https://requsest-response.vercel.app/api/sellers
   
     try {
       const response = await axios.post(
-        "https://requsest-response.vercel.app/api/sellers",
+        "http://localhost:5000/api/sellers",
         { ...formData,  }
       );
       setLoading(false);
@@ -126,7 +128,7 @@ export default function SellerForm() {
   
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white border rounded-lg shadow-lg mt-12">
+    <div className="max-w-md mx-auto p-6 bg-white border rounded-lg shadow-lg mt-">
       <h1 className="text-2xl font-bold mb-4 text-center">Customer Online Form</h1>
       <form onSubmit={handleSubmit}>
         {/* Landlord Name */}
@@ -293,7 +295,7 @@ export default function SellerForm() {
           className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"
           disabled={loading}
         >
-          {loading ? "Submitting..." : "Submit"}
+          {loading ? "Submitting" : "Submit"}
         </button>
       </form>
 

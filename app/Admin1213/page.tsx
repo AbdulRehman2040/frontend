@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import BuyerList from './buyerlist'; // Assuming you already have a BuyerList component
 import SellerList from './sellerlist';
+import Link from 'next/link';
 
 const AdminPanel = () => {
   const [password, setPassword] = useState('');
@@ -40,10 +41,31 @@ const AdminPanel = () => {
         </div>
       ) : (
         <div>
-          <h1 className="text-2xl font-bold mb-4">Admin Panel</h1>
-          <BuyerList />
-          <SellerList/>
-          {/* Add other admin components here */}
+           <div className="p-6 bg-gray-100 rounded-lg shadow-md max-w-md mx-auto">
+      <h1 className="text-xl font-bold mb-4">Admin Panel</h1>
+      
+      <ul className="space-y-4">
+        <li>
+          <Link href="/buyers" className="text-blue-500">List of Buyers</Link>
+        </li>
+        <li>
+          <Link href="/sellers" className="text-blue-500">List of Sellers</Link>
+         
+        </li>
+        <li>
+          <Link href="/update-buyer-status" className="text-blue-500">Update Status of Buyer</Link>
+        </li>
+        <li>
+          <Link href="/update-seller-status" className="text-blue-500">Update Status of Seller</Link>
+        </li>
+        <li>
+          <Link href="/delete-seller" className="text-red-500">Delete Seller</Link>
+        </li>
+        <li>
+          <Link href="/delete-buyer" className="text-red-500">Delete Buyer</Link>
+        </li>
+      </ul>
+    </div>
         </div>
       )}
     </div>

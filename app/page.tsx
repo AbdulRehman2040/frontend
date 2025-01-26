@@ -16,6 +16,9 @@ import FeaturesSection from './components/section2/section';
 import { BackgroundLines } from './components/ui/background-lines';
 import { BackgroundLinesDemo } from './components/section2/section2';
 import LogoSection from './components/logo/logosec';
+import PropertyStatus from './Admin1213/Propertystatus';
+import PropertyStatusManager from './Admin1213/statusMnanger';
+import PropertyStatusManagerseller from './Admin1213/sellerstatus';
 
 
 interface Seller {
@@ -41,6 +44,9 @@ export default function Home() {
      <div className="overflow-hidden relative bg-gradient-to-b from-gray-900 to-gray-800">
      
      <Hero/> 
+     {/* <PropertyStatus/>
+     <PropertyStatusManager/> */}
+     <PropertyStatusManagerseller/>
      <FeaturesSection/>
      <BackgroundLinesDemo/>
      {/* <LogoSection/> */}

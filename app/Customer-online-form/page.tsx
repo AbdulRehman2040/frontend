@@ -4,7 +4,9 @@ import SellerForm from '../components/forms/AddSellerForm'
 
 const page = () => {
   return (
-    <div><SellerForm/></div>
+    <div className=''>
+      
+      <SellerForm/></div>
   )
 }
 

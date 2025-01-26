@@ -12,12 +12,12 @@ export const navlinks = [
        {
         id: 4,
         url: '/Customer-online-form',
-        label: 'Submint your intrest'
+        label: 'Customer Online Form'
        },
        {
         id: 5,
         url: '/Landlord',
-        label: 'Advertise my property'
+        label: 'Landlord Online Form'
        },
        
 ]

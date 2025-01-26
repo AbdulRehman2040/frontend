@@ -27,7 +27,7 @@ const [navbg,setnavbg] = useState(false)
 
  })
   return (
-    <div className={`fixed ${navbg?'bg-red-700 backdrop-blur-md':'fixed'} w-full transition-all  duration-200 h-[12vh]   z-[1000]`}>
+    <div className={`fixed ${navbg?'bg-black/70 backdrop-blur-md':'fixed'} w-full transition-all  duration-200 h-[12vh]   z-[1000]`}>
       <div className='flex items-center h-full justify-between w-[90%] xl:w[80%] mx-auto'>
  {/* logo */}
      <Image src={logo} alt='logo' width={120} height={120}/>

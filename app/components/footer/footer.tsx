@@ -40,8 +40,8 @@ const Footer = () => {
       {/* 4 */}
       <div>
         <h1 className='footer__heading'>Subscribe our Newsletter</h1>
-        <input type="text" placeholder='Enter your email' className='px-3 py-2 rounded-lg outline-none bg-gray-600 w-full text-white'/>
-        <button className='px-3 py-2 mt-4 rounded-lg outline-none bg-rose-600 w-full text-white'>Subscribe</button>
+        <input type="text" placeholder='Enter email to unsubscribe' className='px-3 py-2 rounded-lg outline-none bg-gray-600 w-full text-white'/>
+        <button className='px-3 py-2 mt-4 rounded-lg outline-none bg-rose-600 w-full text-white'>UnSubscribe</button>
       </div>
         </div>
         <p className='text-center mt-4 text-white text-opacity-70 text-base'>©Copyright 2024 by webdev <span className='font-bold'>Abdul</span> </p>
