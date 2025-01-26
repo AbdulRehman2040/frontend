@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import ReCAPTCHA from "react-google-recaptcha";
 
 export default function SellerForm() {
   const [formData, setFormData] = useState({
@@ -8,16 +9,75 @@ export default function SellerForm() {
     landlordEmailAddress: "",
     landlordPropertyType: "",
     landlordPropertyAddress: "",
+    Size: "",
     landlordRent: "",
-    propertyAvailableDate: "",
     notes: "",
   });
-
+  const [Captcha, setCaptcha] = useState<string | null>();
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+ const budget = [
+  "£0-£1000",
+  "£1001-£2000",
+  "£2001-£3000",
+  "£5001-£10,000",
+  "£10,000+",
+];
 
-  const propertyTypes = ["Commercial", "Industrial", "Land"]; // Property types based on schema
+ const size = [ "0-1000 sq. ft.",
+  "1000-2000 sq. ft.",
+  "2000-3000 sq. ft.",
+  "5000-10000 sq. ft.",
+  "10000-20000 sq. ft.",
+  "20000 sq. ft. +",]
+  const AreaRequired =  [
+    "Aireborough",
+    "Baildon",
+    "Bingley",
+    "Bradford",
+    "Brighouse",
+    "Castleford",
+    "Colne Valley",
+    "Denby Dale",
+    "Denholme",
+    "Dewsbury",
+    "Elland",
+    "Featherstone",
+    "Halifax",
+    "Hebden Royd",
+    "Heckmondwike",
+    "Hemsworth",
+    "Holmfirth",
+    "Huddersfield",
+    "Ilkley",
+    "Keighley",
+    "Knottingley",
+    "Leeds",
+    "Meltham",
+    "Mirfield",
+    "Morley",
+    "Normanton",
+    "Ossett",
+    "Otley",
+    "Pontefract",
+    "Pudsey",
+    "Queensbury and Shelf",
+    "Ripponden",
+    "Rothwell",
+    "Shipley",
+    "Silsden",
+    "Skipton",
+    "Spenborough",
+    "Stanley",
+    "Tadcaster",
+    "Todmorden",
+    "Wakefield",
+    "Wetherby",
+    "Wharfedale","Other",
+  ];
+
+  const propertyTypes = ["Cafe", "Car Wash", "Factory","Healthcare","Hotel","Medical Center","Nursing Homes","Office","Pub","Restaurant","Retail","Shops","Shopping Center","Sports Facilities","Warehouse","Other"]; // Property types based on schema
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -31,11 +91,18 @@ export default function SellerForm() {
     setLoading(true);
     setSuccessMessage("");
     setErrorMessage("");
-
+  
+    // Check if CAPTCHA is completed
+    if (!Captcha) {
+      setErrorMessage("Please complete the CAPTCHA to proceed.");
+      setLoading(false);
+      return;
+    }
+  
     try {
       const response = await axios.post(
         "https://requsest-response.vercel.app/api/sellers",
-        formData
+        { ...formData, captchaResponse: Captcha }
       );
       setLoading(false);
       setSuccessMessage("Seller data submitted successfully!");
@@ -45,8 +112,8 @@ export default function SellerForm() {
         landlordEmailAddress: "",
         landlordPropertyType: "",
         landlordPropertyAddress: "",
+        Size: "",
         landlordRent: "",
-        propertyAvailableDate: "",
         notes: "",
       });
     } catch (error) {
@@ -55,15 +122,16 @@ export default function SellerForm() {
       console.error("Error submitting seller data:", error);
     }
   };
+  
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white border rounded-lg shadow-lg mt-12">
-      <h1 className="text-2xl font-bold mb-4 text-center">Add Seller</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">Customer Online Form</h1>
       <form onSubmit={handleSubmit}>
         {/* Landlord Name */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="landlordName">
-             Name
+          Full Name
           </label>
           <input
             type="text"
@@ -133,51 +201,71 @@ export default function SellerForm() {
         {/* Property Address */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="landlordPropertyAddress">
-            Property Address
+            Area Required
           </label>
-          <input
-            type="text"
+          <select
             name="landlordPropertyAddress"
             id="landlordPropertyAddress"
             value={formData.landlordPropertyAddress}
             onChange={handleChange}
             required
             className="mt-1 p-2 border rounded-md w-full"
-          />
+            >
+          <option value="">Select Area</option>
+          {AreaRequired.map((area, index) => (
+            <option key={index} value={area}>
+              {area}
+            </option>
+          ))}
+          </select>
         </div>
+
+        {/* SIZE */}
+        <div className="mb-4">
+  <label className="block text-sm font-medium text-gray-700" htmlFor="Size">
+    Size Required
+  </label>
+  <select
+    name="Size" // Matches the state key
+    id="size"
+    value={formData.Size}
+    onChange={handleChange}
+    required
+    className="mt-1 p-2 border rounded-md w-full"
+  >
+    <option value="">Select Size</option>
+    {size.map((size, index) => (
+      <option key={index} value={size}>
+        {size}
+      </option>
+    ))}
+  </select>
+</div>
 
         {/* Rent */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="landlordRent">
-            Rent (£)
+            My Budget
           </label>
-          <input
-            type="number"
+          <select
             name="landlordRent"
             id="landlordRent"
             value={formData.landlordRent}
             onChange={handleChange}
             required
             className="mt-1 p-2 border rounded-md w-full"
-          />
+            >
+          <option value="">Select Budget</option>
+          {budget.map((size, index) => (
+      <option key={index} value={size}>
+        {size}
+      </option>
+    ))}
+            </select>
         </div>
 
-        {/* Property Available Date */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700" htmlFor="propertyAvailableDate">
-            Property Available Date
-          </label>
-          <input
-            type="date"
-            name="propertyAvailableDate"
-            id="propertyAvailableDate"
-            value={formData.propertyAvailableDate}
-            onChange={handleChange}
-            required
-            className="mt-1 p-2 border rounded-md w-full"
-          />
-        </div>
-
+       
+        
         {/* Notes */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="notes">
@@ -190,6 +278,12 @@ export default function SellerForm() {
             onChange={handleChange}
             className="mt-1 p-2 border rounded-md w-full"
           />
+        </div>
+
+        {/* GOOGLE RECH */}
+        <div className="mb-4 ">
+
+        <ReCAPTCHA sitekey={process.env.NEXT_PUBLIC_SITE as string} onChange={setCaptcha}  className="mx-auto"/>
         </div>
 
         {/* Submit Button */}

@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import axios from 'axios';
+import ReCAPTCHA from "react-google-recaptcha";
 
 interface FormData {
   name: string;
   phoneNumber: string;
   emailAddress: string;
+  propertyTypeSelect: string;
   areaRequired: string;
+  FirstLineofAddress: string;
+  postcode: string;
   budget: string;
   notes: string;
   propertyAvailableDate: string;
@@ -16,21 +20,66 @@ const BuyerForm = () => {
     name: '',
     phoneNumber: '',
     emailAddress: '',
+    propertyTypeSelect: '',
     areaRequired: '',
+    FirstLineofAddress: '',
+    postcode: '',
     budget: '',
     notes: '',
     propertyAvailableDate: '',
   });
-
+  const [Captcha, setCaptcha] = useState<string | null>();
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+
+
+  const propertyTypes = ["Cafe", "Car Wash", "Factory","Healthcare","Hotel","Medical Center","Nursing Homes","Office","Pub","Restaurant","Retail","Shops","Shopping Center","Sports Facilities","Warehouse","Other"]; // Property types based on schema
   const ukCities = [
-    'London', 'Manchester', 'Birmingham', 'Leeds', 'Glasgow', 'Sheffield', 'Bradford',
-    'Liverpool', 'Edinburgh', 'Bristol', 'Wakefield', 'Cardiff', 'Coventry', 'Nottingham',
-    'Leicester', 'Sunderland', 'Newcastle', 'Kingston upon Hull', 'Stoke-on-Trent', 'Wolverhampton',
-    'Derby', 'Dundee', 'Derry', 'Plymouth', 'Aberdeen', 'Oxford', 'Cambridge'
+    "Aireborough",
+    "Baildon",
+    "Bingley",
+    "Bradford",
+    "Brighouse",
+    "Castleford",
+    "Colne Valley",
+    "Denby Dale",
+    "Denholme",
+    "Dewsbury",
+    "Elland",
+    "Featherstone",
+    "Halifax",
+    "Hebden Royd",
+    "Heckmondwike",
+    "Hemsworth",
+    "Holmfirth",
+    "Huddersfield",
+    "Ilkley",
+    "Keighley",
+    "Knottingley",
+    "Leeds",
+    "Meltham",
+    "Mirfield",
+    "Morley",
+    "Normanton",
+    "Ossett",
+    "Otley",
+    "Pontefract",
+    "Pudsey",
+    "Queensbury and Shelf",
+    "Ripponden",
+    "Rothwell",
+    "Shipley",
+    "Silsden",
+    "Skipton",
+    "Spenborough",
+    "Stanley",
+    "Tadcaster",
+    "Todmorden",
+    "Wakefield",
+    "Wetherby",
+    "Wharfedale","Other",
     // Add more cities as needed
   ];
 
@@ -41,21 +90,36 @@ const BuyerForm = () => {
     });
   };
 
+  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!Captcha) {
+      setErrorMessage("Please complete the CAPTCHA to proceed.");
+      setLoading(false);
+      return;
+    }
+
+   
+    
+
+    
     setLoading(true);
     setSuccessMessage('');
     setErrorMessage('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/buyers', formData);
+      const response = await axios.post('https://requsest-response.vercel.app/api/buyers', formData);
       setLoading(false);
       setSuccessMessage('Buyer data submitted successfully!');
       setFormData({
         name: '',
         phoneNumber: '',
         emailAddress: '',
+        propertyTypeSelect: '',
         areaRequired: '',
+        FirstLineofAddress: '',
+        postcode: '',
         budget: '',
         notes: '',
         propertyAvailableDate: '',
@@ -69,12 +133,12 @@ const BuyerForm = () => {
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white border rounded-lg shadow-lg mt-8">
-      <h1 className="text-2xl font-bold text-center mb-6">Landlord Form</h1>
+      <h1 className="text-2xl font-bold text-center mb-6">Landlord Online Form</h1>
       <form onSubmit={handleSubmit}>
         {/* Name */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="name">
-            Landlord Name
+            Full Name
           </label>
           <input
             type="text"
@@ -90,7 +154,7 @@ const BuyerForm = () => {
         {/* Phone Number */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="phoneNumber">
-            Landlord Phone Number
+            Phone Number
           </label>
           <input
             type="text"
@@ -106,7 +170,7 @@ const BuyerForm = () => {
         {/* Email Address */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="emailAddress">
-            Landlord Email Address
+            Email Address
           </label>
           <input
             type="email"
@@ -118,11 +182,33 @@ const BuyerForm = () => {
             className="mt-1 p-2 border rounded-md w-full"
           />
         </div>
+        {/* property types */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="propertyTypeSelect">
+            Property Type
+          </label>
+          <select
+            name="propertyTypeSelect"
+            id="propertyTypeSelect"
+            value={formData.propertyTypeSelect}
+            onChange={handleChange}
+            required
+            className="mt-1 p-2 border rounded-md w-full"
+          >
+            <option value="">Select Property Type</option>
+            {propertyTypes.map((type, index) => (
+              <option key={index} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+        </div>
 
+       
         {/* Area Required (Dropdown for UK Cities) */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="areaRequired">
-            Landlord Property Address (City)
+            Property Address (City)
           </label>
           <select
             name="areaRequired"
@@ -140,42 +226,55 @@ const BuyerForm = () => {
             ))}
           </select>
         </div>
+        {/* FirstLineofAddress */}
+        <div className='mb-4'>
+          <label className="block text-sm font-medium text-gray-700" htmlFor="FirstLineofAddress">
+            First Line of Address
+          </label>
+          <input
+            name="FirstLineofAddress"
+            id="FirstLineofAddress"
+            value={formData.FirstLineofAddress}
+            onChange={handleChange}
+            required
+            className="mt-1 p-2 border rounded-md w-full"
+            />
+        </div>
+
+        {/* Postcode */}
+        <div className='mb-4'>
+          <label className="block text-sm font-medium text-gray-700" htmlFor="postcode">
+            Postcode
+          </label>
+          <input
+            name="postcode"
+            id="postcode"
+            value={formData.postcode}
+            onChange={handleChange}
+            required
+            className="mt-1 p-2 border rounded-md w-full"
+          />
+        </div>
 
         {/* Budget */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="budget">
-            Landlord Rent Budget
+            Rent 
           </label>
-          <select
+          <input
             name="budget"
             id="budget"
             value={formData.budget}
             onChange={handleChange}
             required
             className="mt-1 p-2 border rounded-md w-full"
-          >
-            <option value="">Select Budget Range</option>
-            <option value="100-200">100-200</option>
-            <option value="200-400">200-400</option>
-            <option value="400-600">400-600</option>
-            <option value="600-1000">600-1000</option>
-            <option value="1000+">1000+</option>
-          </select>
+          />
+           
+          
         </div>
 
-        {/* Notes */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700" htmlFor="notes">
-            Notes
-          </label>
-          <textarea
-            name="notes"
-            id="notes"
-            value={formData.notes}
-            onChange={handleChange}
-            className="mt-1 p-2 border rounded-md w-full"
-          />
-        </div>
+      
+        
 
         {/* Property Available Date */}
         <div className="mb-4">
@@ -192,6 +291,25 @@ const BuyerForm = () => {
             className="mt-1 p-2 border rounded-md w-full"
           />
         </div>
+               {/* Notes */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="notes">
+            Notes
+          </label>
+          <textarea
+            name="notes"
+            id="notes"
+            value={formData.notes}
+            onChange={handleChange}
+            className="mt-1 p-2 border rounded-md w-full"
+          />
+        </div>
+
+        <div className="mb-4 ">
+
+<ReCAPTCHA sitekey={process.env.NEXT_PUBLIC_SITE as string} onChange={setCaptcha}  className="mx-auto"/>
+</div>
+
 
         {/* Submit Button */}
         <button
@@ -202,6 +320,10 @@ const BuyerForm = () => {
           {loading ? 'Submitting...' : 'Add Buyer'}
         </button>
       </form>
+       {/* Success and Error Messages */}
+       {successMessage && <p className="text-green-500 mt-4">{successMessage}</p>}
+      {errorMessage && <p className="text-red-500 mt-4">{errorMessage}</p>}
+
     </div>
   );
 };
