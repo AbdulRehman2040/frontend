@@ -1,15 +1,25 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-export default function BuyerForm() {
-  const [formData, setFormData] = useState({
+interface FormData {
+  name: string;
+  phoneNumber: string;
+  emailAddress: string;
+  areaRequired: string;
+  budget: string;
+  notes: string;
+  propertyAvailableDate: string;
+}
+
+const BuyerForm = () => {
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     phoneNumber: '',
     emailAddress: '',
     areaRequired: '',
     budget: '',
     notes: '',
-    propertyAvailableDate: '', // Added this field
+    propertyAvailableDate: '',
   });
 
   const [loading, setLoading] = useState(false);
@@ -20,27 +30,25 @@ export default function BuyerForm() {
     'London', 'Manchester', 'Birmingham', 'Leeds', 'Glasgow', 'Sheffield', 'Bradford',
     'Liverpool', 'Edinburgh', 'Bristol', 'Wakefield', 'Cardiff', 'Coventry', 'Nottingham',
     'Leicester', 'Sunderland', 'Newcastle', 'Kingston upon Hull', 'Stoke-on-Trent', 'Wolverhampton',
-    'Derby', 'Dundee', 'Derry', 'Plymouth', 'Aberdeen', 'Oxford', 'Cambridge',
+    'Derby', 'Dundee', 'Derry', 'Plymouth', 'Aberdeen', 'Oxford', 'Cambridge'
+    // Add more cities as needed
   ];
 
-  const handleChange = (e: { target: { name: string; value: string } }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setSuccessMessage('');
     setErrorMessage('');
 
     try {
-      const response = await axios.post(
-        'https://requsest-response.vercel.app/api/buyers',
-        formData
-      );
+      const response = await axios.post('http://localhost:5000/api/buyers', formData);
       setLoading(false);
       setSuccessMessage('Buyer data submitted successfully!');
       setFormData({
@@ -50,7 +58,7 @@ export default function BuyerForm() {
         areaRequired: '',
         budget: '',
         notes: '',
-        propertyAvailableDate: '', // Reset the date field
+        propertyAvailableDate: '',
       });
     } catch (error) {
       setLoading(false);
@@ -60,13 +68,13 @@ export default function BuyerForm() {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-pink-100 border rounded-lg shadow-lg mt-24">
-      <h1 className="text-2xl font-bold text-center mb-6">Buyer Form</h1>
+    <div className="max-w-md mx-auto p-6 bg-white border rounded-lg shadow-lg mt-8">
+      <h1 className="text-2xl font-bold text-center mb-6">Landlord Form</h1>
       <form onSubmit={handleSubmit}>
         {/* Name */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="name">
-            Name
+            Landlord Name
           </label>
           <input
             type="text"
@@ -82,7 +90,7 @@ export default function BuyerForm() {
         {/* Phone Number */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="phoneNumber">
-            Phone Number
+            Landlord Phone Number
           </label>
           <input
             type="text"
@@ -98,7 +106,7 @@ export default function BuyerForm() {
         {/* Email Address */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="emailAddress">
-            Email Address
+            Landlord Email Address
           </label>
           <input
             type="email"
@@ -111,10 +119,10 @@ export default function BuyerForm() {
           />
         </div>
 
-        {/* Area Required */}
+        {/* Area Required (Dropdown for UK Cities) */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="areaRequired">
-            Area Required (City)
+            Landlord Property Address (City)
           </label>
           <select
             name="areaRequired"
@@ -136,7 +144,7 @@ export default function BuyerForm() {
         {/* Budget */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="budget">
-            Budget
+            Landlord Rent Budget
           </label>
           <select
             name="budget"
@@ -146,13 +154,27 @@ export default function BuyerForm() {
             required
             className="mt-1 p-2 border rounded-md w-full"
           >
-            <option value="">Select Budget</option>
+            <option value="">Select Budget Range</option>
             <option value="100-200">100-200</option>
             <option value="200-400">200-400</option>
             <option value="400-600">400-600</option>
             <option value="600-1000">600-1000</option>
             <option value="1000+">1000+</option>
           </select>
+        </div>
+
+        {/* Notes */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="notes">
+            Notes
+          </label>
+          <textarea
+            name="notes"
+            id="notes"
+            value={formData.notes}
+            onChange={handleChange}
+            className="mt-1 p-2 border rounded-md w-full"
+          />
         </div>
 
         {/* Property Available Date */}
@@ -171,31 +193,17 @@ export default function BuyerForm() {
           />
         </div>
 
-        {/* Notes */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700" htmlFor="notes">
-            Notes
-          </label>
-          <textarea
-            name="notes"
-            id="notes"
-            value={formData.notes}
-            onChange={handleChange}
-            className="mt-1 p-2 border rounded-md w-full"
-          />
-        </div>
-
+        {/* Submit Button */}
         <button
           type="submit"
           className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"
           disabled={loading}
         >
-          {loading ? 'Submitting...' : 'Submit'}
+          {loading ? 'Submitting...' : 'Add Buyer'}
         </button>
       </form>
-
-      {successMessage && <p className="text-green-500 mt-4">{successMessage}</p>}
-      {errorMessage && <p className="text-red-500 mt-4">{errorMessage}</p>}
     </div>
   );
-}
+};
+
+export default BuyerForm;

@@ -27,7 +27,7 @@ const [navbg,setnavbg] = useState(false)
 
  })
   return (
-    <div className={`fixed ${navbg?'bg-black/70 backdrop-blur-md':'fixed'} w-full transition-all duration-200 h-[12vh]   z-[1000]`}>
+    <div className={`fixed ${navbg?'bg-red-700 backdrop-blur-md':'fixed'} w-full transition-all  duration-200 h-[12vh]   z-[1000]`}>
       <div className='flex items-center h-full justify-between w-[90%] xl:w[80%] mx-auto'>
  {/* logo */}
      <Image src={logo} alt='logo' width={120} height={120}/>
@@ -41,9 +41,11 @@ const [navbg,setnavbg] = useState(false)
      </div>
      {/* button */}
      <div className='flex items-center space-x-4'>
+      <Link href={'/contact'}>
       <button className='md:px-10 md:py-2 px-8 py-1.5 text-white font-semibold text-base bg-pink-700 hover:bg-pink-900 transition-all duration-200 rounded-lg'>
         contact us
       </button>
+      </Link>
       {/* burder */}
       <HiBars3BottomRight onClick={openNav} className='w-8 h-8 cursor-pointer text-white lg:hidden '/>
      </div>
