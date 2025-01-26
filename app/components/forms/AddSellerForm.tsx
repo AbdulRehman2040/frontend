@@ -104,7 +104,7 @@ export default function SellerForm() {
   
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/sellers",
+        "https://requsest-response.vercel.app/api/sellers",
         { ...formData,  }
       );
       setLoading(false);
