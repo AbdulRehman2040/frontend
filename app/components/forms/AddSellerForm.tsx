@@ -14,7 +14,7 @@ export default function SellerForm() {
     landlordRent: "",
     notes: "",
   });
-  const [Captcha, setCaptcha] = useState<string | null>();
+  // const [Captcha, setCaptcha] = useState<string | null>();
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -94,16 +94,16 @@ export default function SellerForm() {
     setErrorMessage("");
   
     // Check if CAPTCHA is completed
-    if (!Captcha) {
-      setErrorMessage("Please complete the CAPTCHA to proceed.");
-      setLoading(false);
-      return;
-    }
+    // if (!Captcha) {
+    //   setErrorMessage("Please complete the CAPTCHA to proceed.");
+    //   setLoading(false);
+    //   return;
+    // }
   
     try {
       const response = await axios.post(
         "https://requsest-response.vercel.app/api/sellers",
-        { ...formData, captchaResponse: Captcha }
+        { ...formData,  }
       );
       setLoading(false);
       setSuccessMessage("Seller data submitted successfully!");
@@ -282,10 +282,10 @@ export default function SellerForm() {
         </div>
 
         {/* GOOGLE RECH */}
-        <div className="mb-4 ">
+        {/* <div className="mb-4 ">
 
         <ReCAPTCHA sitekey={process.env.NEXT_PUBLIC_SITE as string} onChange={setCaptcha}  className="mx-auto"/>
-        </div>
+        </div> */}
 
         {/* Submit Button */}
         <button

@@ -29,7 +29,7 @@ const BuyerForm = () => {
     notes: '',
     propertyAvailableDate: '',
   });
-  const [Captcha, setCaptcha] = useState<string | null>();
+  // const [Captcha, setCaptcha] = useState<string | null>();
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -95,11 +95,11 @@ const BuyerForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!Captcha) {
-      setErrorMessage("Please complete the CAPTCHA to proceed.");
-      setLoading(false);
-      return;
-    }
+    // if (!Captcha) {
+    //   setErrorMessage("Please complete the CAPTCHA to proceed.");
+    //   setLoading(false);
+    //   return;
+    // }
 
    
     
@@ -305,11 +305,11 @@ const BuyerForm = () => {
             className="mt-1 p-2 border rounded-md w-full"
           />
         </div>
-
+{/* 
         <div className="mb-4 ">
 
 <ReCAPTCHA sitekey={process.env.NEXT_PUBLIC_SITE as string} onChange={setCaptcha}  className="mx-auto"/>
-</div>
+</div> */}
 
 
         {/* Submit Button */}
