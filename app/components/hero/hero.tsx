@@ -6,6 +6,7 @@ import logo from "../../../public/hero-image.png";
 import Image from "next/image";
 const Hero = () => {
   return (
+    
     <section className="relative bg-gradient-to-b from-gray-900 to-gray-800 text-white py-12 px-6 mt-20 ">
       <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between ">
         {/* Left Side */}

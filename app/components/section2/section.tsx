@@ -1,5 +1,6 @@
 import React from "react";
 import { FaBuilding, FaKey, FaBullhorn } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const FeaturesSection: React.FC = () => {
   const features = [
@@ -31,7 +32,17 @@ const FeaturesSection: React.FC = () => {
 
   return (
     <section className="py-16 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-6 text-center">
+      <motion.div
+        className="max-w-7xl mx-auto px-6 text-center"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }} // Trigger animations on scroll
+        variants={{
+          hidden: { opacity: 0, y: 50 },
+          visible: { opacity: 1, y: 0 },
+        }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-8">
           Why Choose Us?
         </h2>
@@ -40,10 +51,22 @@ const FeaturesSection: React.FC = () => {
           efficiency and success every step of the way.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {features.map((feature) => (
-            <div
+          {features.map((feature, index) => (
+            <motion.div
               key={feature.id}
               className="flex flex-col items-center bg-white shadow-lg rounded-lg p-8 transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={{
+                hidden: { opacity: 0, y: 50 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              transition={{
+                delay: index * 0.2, // Stagger effect for each card
+                duration: 0.8,
+                ease: "easeOut",
+              }}
             >
               <div
                 className={`p-4 rounded-full ${feature.bgColor} mb-6 flex items-center justify-center`}
@@ -54,10 +77,10 @@ const FeaturesSection: React.FC = () => {
                 {feature.title}
               </h3>
               <p className="mt-4 text-gray-600">{feature.description}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

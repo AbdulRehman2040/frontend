@@ -139,7 +139,7 @@ const BuyerForm = () => {
         {/* Name */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="name">
-            Full Name
+            Full Name*
           </label>
           <input
             type="text"
@@ -155,7 +155,7 @@ const BuyerForm = () => {
         {/* Phone Number */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="phoneNumber">
-            Phone Number
+            Phone Number*
           </label>
           <input
             type="text"
@@ -171,7 +171,7 @@ const BuyerForm = () => {
         {/* Email Address */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="emailAddress">
-            Email Address
+            Email Address*
           </label>
           <input
             type="email"
@@ -186,7 +186,7 @@ const BuyerForm = () => {
         {/* property types */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="propertyTypeSelect">
-            Property Type
+            Property Type*
           </label>
           <select
             name="propertyTypeSelect"
@@ -204,12 +204,25 @@ const BuyerForm = () => {
             ))}
           </select>
         </div>
+        <div className='mb-4'>
+          <label className="block text-sm font-medium text-gray-700" htmlFor="FirstLineofAddress">
+            First Line of Address*
+          </label>
+          <input
+            name="FirstLineofAddress"
+            id="FirstLineofAddress"
+            value={formData.FirstLineofAddress}
+            onChange={handleChange}
+            required
+            className="mt-1 p-2 border rounded-md w-full"
+            />
+        </div>
 
        
         {/* Area Required (Dropdown for UK Cities) */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="areaRequired">
-            Property Address (City)
+            City*
           </label>
           <select
             name="areaRequired"
@@ -228,24 +241,11 @@ const BuyerForm = () => {
           </select>
         </div>
         {/* FirstLineofAddress */}
-        <div className='mb-4'>
-          <label className="block text-sm font-medium text-gray-700" htmlFor="FirstLineofAddress">
-            First Line of Address
-          </label>
-          <input
-            name="FirstLineofAddress"
-            id="FirstLineofAddress"
-            value={formData.FirstLineofAddress}
-            onChange={handleChange}
-            required
-            className="mt-1 p-2 border rounded-md w-full"
-            />
-        </div>
-
+       
         {/* Postcode */}
         <div className='mb-4'>
           <label className="block text-sm font-medium text-gray-700" htmlFor="postcode">
-            Postcode
+            Postcode*
           </label>
           <input
             name="postcode"
@@ -260,7 +260,7 @@ const BuyerForm = () => {
         {/* Budget */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="budget">
-            Rent 
+            Rent*
           </label>
           <input
             name="budget"
@@ -280,7 +280,7 @@ const BuyerForm = () => {
         {/* Property Available Date */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="propertyAvailableDate">
-            Property Available Date
+            Property Available Date*
           </label>
           <input
             type="date"
@@ -318,7 +318,7 @@ const BuyerForm = () => {
           className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"
           disabled={loading}
         >
-          {loading ? 'Submitting...' : 'Add Buyer'}
+          {loading ? 'Submitting...' : 'Submit'}
         </button>
       </form>
        {/* Success and Error Messages */}

@@ -16,7 +16,7 @@ export const navlinks = [
        },
        {
         id: 5,
-        url: '/Landlord',
+        url: '/Landlord-Online-form',
         label: 'Landlord Online Form'
        },
        

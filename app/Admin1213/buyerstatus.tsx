@@ -2,65 +2,69 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 
-interface Seller {
+interface Buyer {
   _id: string;
-  landlordName: string;
-  landlordPhoneNumber: string;
-  landlordEmailAddress: string;
-  landlordPropertyType: string;
-  landlordPropertyAddress: string;
-  landlordRent: number;
-  propertyAvailableDate: string;
+  name: string;
+  phoneNumber: string;
+  emailAddress: string;
+  areaRequired: string;
+  budget: string;
   notes: string;
+  propertyAvailableDate: string;
+  FirstLineofAddress: string;
+  postcode: string;
   propertyStatus: string;
+  formCreatedDate: string;
 }
 
-const PropertyStatusManagerseller = () => {
-  const [sellers, setSellers] = useState<Seller[]>([]); // List of sellers
+const PropertyStatusManagerBuyer = () => {
+  const [buyers, setBuyers] = useState<Buyer[]>([]); // List of buyers
   const [isLoading, setIsLoading] = useState<boolean>(false); // Loading state
-  const [message, setMessage] = useState<string>("");
+  const [message, setMessage] = useState<string>(""); // Success or error message
   const [currentPage, setCurrentPage] = useState<number>(1); // Current page number
-  const [sellersPerPage] = useState<number>(10); // Set 10 sellers per page
+  const [buyersPerPage] = useState<number>(10); // Set 10 buyers per page
 
-  // Fetch sellers list when component mounts
+  // Fetch buyers list when component mounts
   useEffect(() => {
-    const fetchSellers = async () => {
+    const fetchBuyers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/sellers");
-        setSellers(response.data);
+        const response = await axios.get("http://localhost:5000/api/buyers");
+        setBuyers(response.data);
       } catch (error) {
-        setMessage("Error fetching sellers.");
-        console.error("Error fetching sellers:", error);
+        setMessage("Error fetching buyers.");
+        console.error("Error fetching buyers:", error);
       }
     };
-    fetchSellers();
+    fetchBuyers();
   }, []);
 
-  // Function to update property status for a specific seller
-  const updateStatus = async (sellerId: string, status: string) => {
+  // Function to update property status for a specific buyer
+  const updateStatus = async (buyerId: string, status: string) => {
     setIsLoading(true); // Start loading
 
     try {
       const payload = { propertyStatus: status }; // Payload with the new status
 
       const response = await axios.put(
-        `http://localhost:5000/api/sellers/${sellerId}`,
+        `http://localhost:5000/api/buyers/${buyerId}`,
         payload
       );
-      if (response.data.updatedSeller.propertyStatus) {
-              toast.success("Status updated successfully: " + response.data.updatedSeller.propertyStatus);
+ 
+      // Show success notification if emails are sent successfully
+            if (response.data.updatedBuyer.propertyStatus) {
+              toast.success("Status updated successfully: " + response.data.updatedBuyer.propertyStatus);
             } else {
               toast.info("error updating status");
             }
-
-      // Access updatedSeller to show the updated status
-      const updatedStatus = response.data.updatedSeller.propertyStatus;
+ 
+      // Access updatedBuyer to show the updated status
+      const updatedStatus = response.data.updatedBuyer.propertyStatus;
       setMessage(`Status updated successfully: ${updatedStatus}`);
 
-      // Update the local seller list with the new status
-      setSellers((prevSellers) =>
-        prevSellers.map((seller) =>
-          seller._id === sellerId ? { ...seller, propertyStatus: updatedStatus } : seller
+      // Update the local buyers list with the new status
+      setBuyers((prevBuyers) =>
+        prevBuyers.map((buyer) =>
+          buyer._id === buyerId ? { ...buyer, propertyStatus: updatedStatus } : buyer
         )
       );
     } catch (error) {
@@ -71,17 +75,17 @@ const PropertyStatusManagerseller = () => {
     }
   };
 
-  // Get the current page's sellers
-  const indexOfLastSeller = currentPage * sellersPerPage;
-  const indexOfFirstSeller = indexOfLastSeller - sellersPerPage;
-  const currentSellers = sellers.slice(indexOfFirstSeller, indexOfLastSeller);
+  // Get the current page's buyers
+  const indexOfLastBuyer = currentPage * buyersPerPage;
+  const indexOfFirstBuyer = indexOfLastBuyer - buyersPerPage;
+  const currentBuyers = buyers.slice(indexOfFirstBuyer, indexOfLastBuyer);
 
   // Calculate total pages
-  const totalPages = Math.ceil(sellers.length / sellersPerPage);
+  const totalPages = Math.ceil(buyers.length / buyersPerPage);
 
   return (
     <div className="p-6 bg-gray-100 rounded-lg shadow-md max-w-7xl mx-auto">
-      <h1 className="text-xl font-bold mb-4">Update Seller Property Status</h1>
+      <h1 className="text-xl font-bold mb-4">Update Buyer Property Status</h1>
 
       {message && (
         <div
@@ -93,40 +97,44 @@ const PropertyStatusManagerseller = () => {
         </div>
       )}
 
-      {/* Sellers Table */}
-      <div className="overflow-x-auto ">
-        <table className="min-w-full bg-white shadow-md rounded-md overflow-hidden border-collapse ">
+      {/* Buyers Table */}
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white shadow-md rounded-md overflow-hidden border-collapse">
           <thead className="bg-gray-200">
             <tr className="border-b">
               <th className="py-2 px-4 text-left border-r">Name</th>
               <th className="py-2 px-4 text-left border-r">Phone</th>
-              <th className="py-2 px-4 text-left border-r">Property Address</th>
+              <th className="py-2 px-4 text-left border-r">Email</th>
+              <th className="py-2 px-4 text-left border-r">Area</th>
+              <th className="py-2 px-4 text-left border-r">Budget</th>
               <th className="py-2 px-4 text-left border-r">Available Date</th>
               <th className="py-2 px-4 text-left border-r">Status</th>
               <th className="py-2 px-4 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {currentSellers.map((seller) => (
-              <tr key={seller._id} className="border-b hover:bg-gray-50">
-                <td className="py-2 px-4 border-r">{seller.landlordName}</td>
-                <td className="py-2 px-4 border-r">{seller.landlordPhoneNumber}</td>
-                <td className="py-2 px-4 border-r">{seller.landlordPropertyAddress}</td>
+            {currentBuyers.map((buyer) => (
+              <tr key={buyer._id} className="border-b hover:bg-gray-50">
+                <td className="py-2 px-4 border-r">{buyer.name}</td>
+                <td className="py-2 px-4 border-r">{buyer.phoneNumber}</td>
+                <td className="py-2 px-4 border-r">{buyer.emailAddress}</td>
+                <td className="py-2 px-4 border-r">{buyer.areaRequired}</td>
+                <td className="py-2 px-4 border-r">{buyer.budget}</td>
                 <td className="py-2 px-4 border-r">
-                  {new Date(seller.propertyAvailableDate).toLocaleDateString()}
+                  {new Date(buyer.propertyAvailableDate).toLocaleDateString()}
                 </td>
-                <td className="py-2 px-4 border-r">{seller.propertyStatus}</td>
+                <td className="py-2 px-4 border-r">{buyer.propertyStatus}</td>
                 <td className="py-2 px-4">
                   <div className="flex space-x-2">
                     <button
-                      onClick={() => updateStatus(seller._id, "active")}
+                      onClick={() => updateStatus(buyer._id, "active")}
                       className="w-full bg-blue-500 text-white py-1 px-3 rounded-md hover:bg-blue-600"
                       disabled={isLoading}
                     >
                       {isLoading ? "Updating..." : "Set Active"}
                     </button>
                     <button
-                      onClick={() => updateStatus(seller._id, "non-active")}
+                      onClick={() => updateStatus(buyer._id, "non-active")}
                       className="w-full bg-gray-500 text-white py-1 px-3 rounded-md hover:bg-gray-600"
                       disabled={isLoading}
                     >
@@ -161,7 +169,9 @@ const PropertyStatusManagerseller = () => {
             {index + 1}
           </button>
         ))}
-         <ToastContainer />
+
+   <ToastContainer />
+
         <button
           onClick={() =>
             setCurrentPage(currentPage < totalPages ? currentPage + 1 : totalPages)
@@ -175,4 +185,4 @@ const PropertyStatusManagerseller = () => {
   );
 };
 
-export default PropertyStatusManagerseller;
+export default PropertyStatusManagerBuyer;

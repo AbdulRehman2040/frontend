@@ -3,6 +3,9 @@ import { useState } from 'react';
 import BuyerList from './buyerlist'; // Assuming you already have a BuyerList component
 import SellerList from './sellerlist';
 import PropertyStatusManagerseller from './sellerstatus';
+import Link from 'next/link';
+import AdminDashboard from './adminpanelwrrpaer';
+
 
 const AdminPanel = () => {
   const [password, setPassword] = useState('');
@@ -41,7 +44,8 @@ const AdminPanel = () => {
         </div>
       ) : (
         <div>
-          <PropertyStatusManagerseller />
+         {/* <Link href={'/seller-manage-status'}>Buyer List</Link> */}
+         <AdminDashboard/>
         </div>
       )}
     </div>

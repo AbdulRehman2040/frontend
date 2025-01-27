@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import MatchButtontime from "./timerbutton";
 
 const MatchButton: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -30,6 +31,9 @@ const MatchButton: React.FC = () => {
   };
 
   return (
+    <div>
+
+    
     <div className="container mx-auto p-6 text-center">
       <button
         onClick={handleMatchClick}
@@ -39,6 +43,9 @@ const MatchButton: React.FC = () => {
         {loading ? "Processing..." : "Send Match Emails"}
       </button>
       <ToastContainer />
+    </div>
+    <h1 className="font-bold text-center">set timer email of 24 hours</h1>
+    <MatchButtontime />
     </div>
   );
 };

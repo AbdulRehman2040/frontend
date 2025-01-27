@@ -19,6 +19,8 @@ import LogoSection from './components/logo/logosec';
 import PropertyStatus from './Admin1213/Propertystatus';
 import PropertyStatusManager from './Admin1213/statusMnanger';
 import PropertyStatusManagerseller from './Admin1213/sellerstatus';
+import BuyerStatus from './Admin1213/buyerstatus';
+
 
 
 interface Seller {
@@ -44,15 +46,14 @@ export default function Home() {
      <div className="overflow-hidden relative bg-gradient-to-b from-gray-900 to-gray-800">
      
      <Hero/> 
-     {/* <PropertyStatus/>
-     <PropertyStatusManager/> */}
-     <PropertyStatusManagerseller/>
+    
+    
      <FeaturesSection/>
      <BackgroundLinesDemo/>
      {/* <LogoSection/> */}
      {/* <AddBuyerForm/> 
      <AddSellerForm/>    */}
-     <MatchButton/>
+     
           {/* <MatchesPage/> */}
           
      </div>

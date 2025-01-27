@@ -134,7 +134,7 @@ export default function SellerForm() {
         {/* Landlord Name */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="landlordName">
-          Full Name
+          Full Name*
           </label>
           <input
             type="text"
@@ -150,7 +150,7 @@ export default function SellerForm() {
         {/* Landlord Phone Number */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="landlordPhoneNumber">
-            Phone Number
+            Phone Number*
           </label>
           <input
             type="text"

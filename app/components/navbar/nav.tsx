@@ -27,27 +27,27 @@ const [navbg,setnavbg] = useState(false)
 
  })
   return (
-    <div className={`fixed ${navbg?'bg-black/70 backdrop-blur-md':'fixed'} w-full transition-all  duration-200 h-[12vh]   z-[1000]`}>
+    <div className={`fixed text-black bg-white ${navbg?' sticky':'fixed'} w-full transition-all text-black  duration-200 h-[12vh]   z-[1000]`}>
       <div className='flex items-center h-full justify-between w-[90%] xl:w[80%] mx-auto'>
  {/* logo */}
      <Image src={logo} alt='logo' width={120} height={120}/>
      {/* nav links */}
-     <div className='hidden lg:flex items-center space-x-10'>
+     <div className='hidden lg:flex items-center space-x-10 text-black'>
       {navlinks.map((link)=>{
         return <Link key={link.id} href={link.url}>
-           <p className='nav__link'>{link.label}</p>
+           <p className='nav__link text-black'>{link.label}</p>
         </Link>
       })}
      </div>
      {/* button */}
      <div className='flex items-center space-x-4'>
       <Link href={'/contact'}>
-      <button className='md:px-10 md:py-2 px-8 py-1.5 text-white font-semibold text-base bg-pink-700 hover:bg-pink-900 transition-all duration-200 rounded-lg'>
-        contact us
+      <button className='md:px-10 md:py-2 px-8 py-1.5 text-black font-semibold text-base bg-pink-700 hover:bg-pink-900 transition-all duration-200 rounded-lg'>
+        Contact Us
       </button>
       </Link>
       {/* burder */}
-      <HiBars3BottomRight onClick={openNav} className='w-8 h-8 cursor-pointer text-white lg:hidden '/>
+      <HiBars3BottomRight onClick={openNav} className='w-8 h-8 cursor-pointer text-black lg:hidden '/>
      </div>
       </div>
       </div>
