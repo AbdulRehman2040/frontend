@@ -10,7 +10,7 @@ const page = () => {
         <Responsivenav />
       </div>
        {/* Scrollable Content */}
-            <div className="flex-grow p-4 bg-gray-300 mt-14">
+            <div className="flex-grow p-4 bg-white mt-14">
               <div className="max-w-4xl mx-auto">
                 <BuyerForm />
               </div>
