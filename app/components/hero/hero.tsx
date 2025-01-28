@@ -7,7 +7,7 @@ import Image from "next/image";
 const Hero = () => {
   return (
     
-    <section className="relative bg-gradient-to-b from-gray-900 to-gray-800 text-white py-12 px-6 mt-20 ">
+    <section className="relative bg-gradient-to-b from-gray-900 to-gray-800 text-white py-12 px-6 mt-20 min-h-[80vh] ">
       <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between ">
         {/* Left Side */}
         <div className="flex flex-col items-start space-y-8 lg:w-1/2">

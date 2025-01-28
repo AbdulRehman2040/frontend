@@ -27,10 +27,12 @@ const [navbg,setnavbg] = useState(false)
 
  })
   return (
-    <div className={`fixed text-black bg-white  ${navbg?' ':'fixed'} w-full transition-all text-black  duration-200 h-[12vh]   z-[1000]`}>
+    <div className={`fixed text-black bg-white shadow-xl  ${navbg?' ':'fixed'} w-full transition-all text-black  duration-200 h-[12vh]   z-[1000]`}>
       <div className='flex items-center h-full justify-between w-[90%] xl:w[80%] mx-auto'>
  {/* logo */}
+ <Link href={'/'} >
      <Image src={logo} alt='logo' width={120} height={120}/>
+  </Link>
      {/* nav links */}
      <div className='hidden lg:flex items-center space-x-10 text-black'>
       {navlinks.map((link)=>{

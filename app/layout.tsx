@@ -21,7 +21,7 @@ export default function RootLayout({
       <body
         
       >
-      <Responsivenav/>
+      <Responsivenav />
         {children}
         <Footer/>
       </body>

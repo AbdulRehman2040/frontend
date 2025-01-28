@@ -15,11 +15,12 @@ import Hero from './components/hero/hero';
 import FeaturesSection from './components/section2/section';
 import { BackgroundLines } from './components/ui/background-lines';
 import { BackgroundLinesDemo } from './components/section2/section2';
-import LogoSection from './components/logo/logosec';
+
 import PropertyStatus from './Admin1213/Propertystatus';
 import PropertyStatusManager from './Admin1213/statusMnanger';
 import PropertyStatusManagerseller from './Admin1213/sellerstatus';
 import BuyerStatus from './Admin1213/buyerstatus';
+import LogoSection from './components/logo/logo';
 
 
 
@@ -50,6 +51,7 @@ export default function Home() {
     
      <FeaturesSection/>
      <BackgroundLinesDemo/>
+     <LogoSection/>
      {/* <LogoSection/> */}
      {/* <AddBuyerForm/> 
      <AddSellerForm/>    */}
