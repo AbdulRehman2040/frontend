@@ -2,7 +2,7 @@
 import { HiLocationMarker } from "react-icons/hi";
 import CountUp from "react-countup";
 import { motion } from "framer-motion";
-import logo from "../../../public/hero-image.png";
+import logo from "../../../public/2147702077.jpg";
 import Image from "next/image";
 const Hero = () => {
   return (
@@ -28,8 +28,7 @@ const Hero = () => {
 
           {/* Description */}
           <p className="text-gray-300 text-lg leading-relaxed">
-            Find a variety of properties that suit you very easily. Forget all
-            the difficulties in finding a residence for you.
+          Looking for the perfect commercial space for your business? Our Tenant Referral Service is here to simplify your search and connect you with prime properties that meet your specific needs
           </p>
 
           {/* Search Bar */}
@@ -49,21 +48,22 @@ const Hero = () => {
           <div className="grid grid-cols-3 gap-6 mt-6 w-full">
             <div className="flex flex-col items-center">
               <span className="text-2xl font-bold">
-                <CountUp start={8800} end={9000} duration={4} />+
+                <CountUp start={0} end={15} duration={4} />+
               </span>
-              <span className="text-gray-300 text-sm">Premium Products</span>
+              <span className="text-gray-300 text-sm">Years Experience</span>
             </div>
             <div className="flex flex-col items-center">
               <span className="text-2xl font-bold">
-                <CountUp start={1950} end={2000} duration={4} />+
+                <CountUp start={1600} end={1709} duration={4} />+
+              </span>
+              <span className="text-gray-300 text-sm">Successful Referrals
+              </span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-2xl font-bold">
+                <CountUp start={2455} end={2471} duration={4} />+
               </span>
               <span className="text-gray-300 text-sm">Happy Customers</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-2xl font-bold">
-                <CountUp end={28} />+
-              </span>
-              <span className="text-gray-300 text-sm">Awards Won</span>
             </div>
           </div>
         </div>

@@ -11,7 +11,7 @@ interface FormData {
   areaRequired: string;
   FirstLineofAddress: string;
   postcode: string;
-  budget: string;
+  budget: Number;
   notes: string;
   propertyAvailableDate: string;
 }
@@ -25,7 +25,7 @@ const BuyerForm = () => {
     areaRequired: '',
     FirstLineofAddress: '',
     postcode: '',
-    budget: '',
+    budget: 0,
     notes: '',
     propertyAvailableDate: '',
   });
@@ -88,6 +88,7 @@ const BuyerForm = () => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
+      
     });
   };
 
@@ -121,7 +122,7 @@ const BuyerForm = () => {
         areaRequired: '',
         FirstLineofAddress: '',
         postcode: '',
-        budget: '',
+        budget: 0,
         notes: '',
         propertyAvailableDate: '',
       });
@@ -134,7 +135,11 @@ const BuyerForm = () => {
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white border rounded-lg shadow-lg mt-8">
-      <h1 className="text-2xl font-bold text-center mb-6">Landlord Online Form</h1>
+    <h1 className="text-3xl font-bold text-center text-gray-900 relative mb-6">
+  Landlord Online Form
+  <span className=""></span>
+</h1>
+
       <form onSubmit={handleSubmit}>
         {/* Name */}
         <div className="mb-4">
@@ -265,7 +270,7 @@ const BuyerForm = () => {
           <input
             name="budget"
             id="budget"
-            value={formData.budget}
+            value={Number(formData.budget) || ""}
             onChange={handleChange}
             required
             className="mt-1 p-2 border rounded-md w-full"
@@ -279,19 +284,20 @@ const BuyerForm = () => {
 
         {/* Property Available Date */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700" htmlFor="propertyAvailableDate">
-            Property Available Date*
-          </label>
-          <input
-            type="date"
-            name="propertyAvailableDate"
-            id="propertyAvailableDate"
-            value={formData.propertyAvailableDate}
-            onChange={handleChange}
-            required
-            className="mt-1 p-2 border rounded-md w-full"
-          />
-        </div>
+  <label className="block text-sm font-medium text-gray-700" htmlFor="propertyAvailableDate">
+    Property Available Date*
+  </label>
+  <input
+    type="date"
+    name="propertyAvailableDate"
+    id="propertyAvailableDate"
+    value={formData.propertyAvailableDate}
+    onChange={handleChange}
+    min={new Date().toISOString().split("T")[0]} // Restricts past dates
+    required
+    className="mt-1 p-2 border rounded-md w-full"
+  />
+</div>
                {/* Notes */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="notes">

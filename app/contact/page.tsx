@@ -13,7 +13,7 @@ const page = () => {
     </div>
 
     {/* Scrollable Content */}
-    <div className="flex-grow p-4 bg-gray-300 mt-14">
+    <div className="flex-grow p-4 bg-gray-300 mt-[6rem]">
       <div className="max-w-4xl mx-auto">
         <ContactForm />
       </div>

@@ -6,19 +6,32 @@ export function BackgroundLinesDemo() {
   return (
     <div className="flex items-center justify-center w-full flex-col px-4 mt-12 min-h-[50vh] sm:min-h-[40vh] lg:min-h-[75vh] md:min-h-[10vh]"> 
       <h2 className="bg-clip-text text-transparent text-center bg-gradient-to-b from-neutral-900  dark:from-neutral-600 to-white text-2xl md:text-4xl lg:text-7xl font-sans py-2 md:py-10 relative z-20 font-bold tracking-tight">
-      Buying or Selling?  <br /> We’re here to help.
+      Looking for Tenants  <br /> or <br/> Needing a Property? .
 
       </h2>
       <p className="max-w-xl mx-auto text-sm md:text-lg  text-neutral-400 text-center">
-      Our friendly customer service team will help you along with your property buying or selling journey with relevant, expert advice and locally tailored information.
+     We’re here to assist. Our friendly customer service team is dedicated
+to helping landlords find reliable tenants with expert advice and locally tailored solutions to suit your property needs.
       </p>
 
+    <div className="flex items-center gap-4">
+
+    
       <Link href={"/Customer-online-form"}>
       
-       <button className=" mt-10 px-8 py-2 rounded-lg hover:rounded-none bg-white text-black font-bold ">
+       <button className=" mt-10 px-8 py-2 rounded-lg  border-white hover:bg-white border-2 text-white hover:text-black font-bold ">
   Get started
 </button> 
 </Link>
+
+<Link href={"/Customer-online-form"}>
+      
+      <button className=" mt-10 px-8 py-2 border-2 border-white rounded-lg  bg-white text-black font-bold ">
+ Get started
+</button> 
+</Link>
+</div>
     </div>
   );
 }
+
