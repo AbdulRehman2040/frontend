@@ -8,11 +8,11 @@ import logo5 from '../../../public/l2.png';
 
 function LogoSection() {
   return (
-    <div className="mx-auto bg-white items-center mt-32 px-6">
+    <div className="mx-auto bg-white items-center mt-14 px-6">
       <h1 className="text-3xl font-bold text-center text-gray-800 m mb-10">Our Trusted Partners</h1>
 
       {/* Mobile - Logos displayed in rows */}
-      <div className="sm:hidden mt-10 flex flex-wrap justify-between">
+      {/* <div className="sm:hidden mt-10 flex flex-wrap justify-between">
         <div className="w-1/2 px-2 mb-6">
           <Image
             src={logo1}
@@ -58,10 +58,10 @@ function LogoSection() {
             className="hover:scale-105 transition-transform duration-300 ease-in-out rounded-lg "
           />
         </div>
-      </div>
+      </div> */}
 
       {/* Desktop - Logos in a grid layout */}
-      <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mt-10">
+      <div className=" sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mt-10">
         <div className="flex justify-center items-center">
           <Image
             src={logo1}

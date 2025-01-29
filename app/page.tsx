@@ -44,7 +44,7 @@ interface Buyer {
 
 export default function Home() {
   return(
-     <div className="overflow-hidden relative bg-gradient-to-b from-gray-900 to-gray-800">
+     <div className="overflow-hidden relative ">
      
      <Hero/> 
     
