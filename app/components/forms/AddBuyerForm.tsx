@@ -135,7 +135,7 @@ const BuyerForm = () => {
 
   return (
     <div className="max-w-md mx-auto p-6   border-2 rounded-lg shadow-2xl mt-8">
-    <h1 className="text-3xl font-bold text-center text-gray-900 relative mb-6">
+    <h1 className="text-2xl font-bold mb-4 text-center">
   Landlord Online Form
   <span className=""></span>
 </h1>
