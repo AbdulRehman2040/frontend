@@ -84,9 +84,11 @@ const SellerList = () => {
               <td className="border px-4 py-2">${seller.landlordRent}</td>
               <td className="border px-4 py-2">
                 <button
+                
                   className="bg-red-500 text-white px-4 py-2 rounded"
                   onClick={() => handleDelete(seller._id)}
                 >
+                  .
                  <MdDeleteForever />
                 </button>
               </td>
