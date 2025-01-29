@@ -9,6 +9,7 @@ export default function SellerForm() {
     landlordPhoneNumber: "",
     landlordEmailAddress: "",
     landlordPropertyType: "",
+    propertyCategory:'',
     landlordPropertyAddress: "",
     Size: "",
     landlordRent: "",
@@ -114,6 +115,7 @@ export default function SellerForm() {
         landlordPhoneNumber: "",
         landlordEmailAddress: "",
         landlordPropertyType: "",
+        propertyCategory: "",
         landlordPropertyAddress: "",
         Size: "",
         landlordRent: "",
@@ -200,7 +202,25 @@ export default function SellerForm() {
             ))}
           </select>
         </div>
-
+           
+           {/*  */}
+           <div className='mb-4'>
+              <label className='block text-sm font-medium text-gray-700' htmlFor="propertyCategory">
+                Property Category*</label>
+               <select
+               name='propertyCategory'
+               id='propertyCategory'
+               value={formData.propertyCategory}
+               onChange={handleChange}
+               required
+               className="mt-1 p-2 border rounded-md w-full">
+                <option value=''>Select Property Category</option>
+                <option value={'Commercial'} >Commercial</option>
+                <option value={'Industrial'}>Industrial</option>
+                <option value={'Land'}>Land</option>
+               </select>
+            </div>
+            
         {/* Property Address */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="landlordPropertyAddress">
