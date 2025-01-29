@@ -11,8 +11,8 @@ export const navlinks = [
        },
        {
         id: 4,
-        url: '/Customer-online-form',
-        label: 'Customer Online Form'
+        url: '/Tenant-online-form',
+        label: 'Tenant Online Form'
        },
        {
         id: 5,
