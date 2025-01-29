@@ -22,6 +22,7 @@ interface Buyer {
   postcode: string;
   propertyStatus: string;
   formCreatedDate: string;
+  
   subscribe: boolean;
   
 }
@@ -167,6 +168,7 @@ const BuyerList = () => {
       'Available Date': new Date(buyer.propertyAvailableDate).toLocaleDateString(),
       Address: buyer.FirstLineofAddress,
       Postcode: buyer.postcode,
+      formCreatedDate:buyer.formCreatedDate,
       Status: buyer.propertyStatus,
       subscribe: buyer.subscribe,
     }));
@@ -379,6 +381,7 @@ const BuyerList = () => {
             <th className="border px-2 py-1">Property Category</th>
             <th className="border px-2 py-1">Budget</th>
             <th className="border px-2 py-1">Notes</th>
+            <th className='border px-2 py-1' >Created Date</th>
             <th className="border px-2 py-1">Available Date</th>
             <th className="border px-2 py-1">Address</th>
             <th className="border px-2 py-1">Postcode</th>
@@ -399,6 +402,7 @@ const BuyerList = () => {
               <td className="border px-2 py-1">{buyer.propertyCategory}</td>
               <td className="border px-2 py-1">£{buyer.budget}</td>
               <td className="border px-2 py-1">{buyer.notes}</td>
+              <td className='border px-2 py-1'>{new Date(buyer.formCreatedDate).toLocaleDateString()}</td>
               <td className="border px-2 py-1">{new Date(buyer.propertyAvailableDate).toLocaleDateString()}</td>
               <td className="border px-2 py-1">{buyer.FirstLineofAddress}</td>
               <td className="border px-2 py-1">{buyer.postcode}</td>

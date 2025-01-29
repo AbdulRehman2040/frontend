@@ -94,8 +94,8 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
   };
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">Overview</h2>
+    <div className="">
+      <h2 className="text-xl font-semibold mb-4  ">Overview</h2>
 
       {/* Summary Boxes */}
       <div className="grid grid-cols-3 gap-4">
@@ -114,7 +114,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
       </div>
 
       {/* Buyers vs. Sellers Chart */}
-      <div className="mt-6 bg-white p-4 rounded-lg shadow">
+      <div className="mt-6  bg-white p-4 rounded-lg shadow">
         <h3 className="text-lg font-bold mb-4">Buyers vs. Sellers</h3>
         <Bar data={totalData} options={options} />
       </div>

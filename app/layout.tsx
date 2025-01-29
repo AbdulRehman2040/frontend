@@ -23,7 +23,7 @@ export default function RootLayout({
       >
      
       <div className="">
-
+           <Responsivenav/>
         {children}
       </div>
       
