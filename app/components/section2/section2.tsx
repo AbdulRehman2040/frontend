@@ -24,7 +24,7 @@ to helping landlords find reliable tenants with expert advice and locally tailor
 </button> 
 </Link>
 
-<Link href={"/Customer-online-form"}>
+<Link href={"/Tenant-online-form"}>
       
       <button className=" mt-10 px-8 py-2 border-2 border-white rounded-lg hover:bg-transparent hover:text-white  bg-white text-black font-bold ">
       Tenants

@@ -2,10 +2,11 @@
 import React from 'react'
 import BuyerForm from '../components/forms/AddBuyerForm'
 import Responsivenav from '../components/navbar/responsivenav'
+import LogoSection from '../components/logo/logo'
 
 const page = () => {
   return (
-    <div className='min-h-screen flex flex-col bg-gray-300'>
+    <div className='min-h-screen flex flex-col bg-white'>
      <div className="sticky top-0 z-50 bg-gray-100 shadow-md">
         <Responsivenav />
       </div>
@@ -15,6 +16,8 @@ const page = () => {
                 <BuyerForm />
               </div>
             </div>
+            <div className="border-b border-gray-400 mt-10"></div>
+      <LogoSection/>
       </div>
   )
 }

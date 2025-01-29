@@ -1,4 +1,5 @@
 "use client"
+import LogoSection from "../components/logo/logo";
 import Responsivenav from "../components/navbar/responsivenav";
 import ContactForm from "./contact";
 
@@ -32,10 +33,12 @@ const page = () => {
       <div className="max-w-4xl mx-auto">
         <ContactForm />
       </div>
-      <div className="border-b border-gray-400 mt-10"></div>
+    
 
     </div>
   </div>
+  <div className="border-b border-gray-400 mt-10"></div>
+      <LogoSection/>
   </div>
   )
 }
