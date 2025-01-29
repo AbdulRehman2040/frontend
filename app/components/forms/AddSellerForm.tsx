@@ -128,7 +128,7 @@ export default function SellerForm() {
   
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white border rounded-lg shadow-lg mt-">
+    <div className="max-w-md mx-auto p-6 bg-white border-2 rounded-lg shadow-2xl mt-">
       <h1 className="text-2xl font-bold mb-4 text-center">Customer Online Form</h1>
       <form onSubmit={handleSubmit}>
         {/* Landlord Name */}

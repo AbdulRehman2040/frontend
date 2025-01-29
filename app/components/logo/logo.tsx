@@ -8,8 +8,8 @@ import logo5 from '../../../public/l2.png';
 
 function LogoSection() {
   return (
-    <div className="mx-auto bg-white items-center mt-10 px-6">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mt-8 mb-10">Our Trusted Partners</h1>
+    <div className="mx-auto bg-white items-center mt-32 px-6">
+      <h1 className="text-3xl font-bold text-center text-gray-800 m mb-10">Our Trusted Partners</h1>
 
       {/* Mobile - Logos displayed in rows */}
       <div className="sm:hidden mt-10 flex flex-wrap justify-between">
