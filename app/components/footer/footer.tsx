@@ -15,16 +15,16 @@ const Footer = () => {
           <Image
             src={require('../../../public/Logo-PNG.png')}
             alt="Logo"
-            height={100}
-            width={100}
+            height={120}
+            width={120}
             className="mb-4 mx-auto sm:mx-0"
           />
-          <p className="text-lg text-center md:text-left max-w-[250px] ">
+          <p className="text-lg  max-w-[250px] ">
             Let us connect you with the perfect tenants, making your property journey effortless and rewarding!
           </p>
 
           {/* Contact info */}
-          <div className="flex flex-col space-y-2">
+          {/* <div className="flex flex-col space-y-2">
             <div className="flex items-center space-x-2">
               <MdEmail className="w-5 h-5" />
               <p className="text-sm">Email: info@lbre.co.uk</p>
@@ -33,7 +33,7 @@ const Footer = () => {
               <MdPhone className="w-5 h-5" />
               <p className="text-sm">Phone: 0800 788 0542</p>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* 2nd Column: Contact Us */}
@@ -43,6 +43,7 @@ const Footer = () => {
           <p>Capital Office</p>
           <p>124 City Road London</p>
           <p>EC1V 2NX</p>
+          <p className="">Email: info@lbre.co.uk</p>
         </div>
 
         {/* 3rd Column: Let's Talk */}
@@ -52,6 +53,7 @@ const Footer = () => {
           <p>Level One, Basecamp Liverpool</p>
           <p>49 Jamaica Street Liverpool</p>
           <p>L1 0AH</p>
+          <p className="">Phone: 0800 788 0542</p>
         </div>
 
         {/* 4th Column: Newsletter Subscription */}

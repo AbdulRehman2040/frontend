@@ -4,8 +4,8 @@ import Link from "next/link";
 
 export function BackgroundLinesDemo() {
   return (
-    <div className="flex items-center justify-center w-full flex-col px-4  bg-gradient-to-b from-gray-900 to-gray-800 min-h-58   mx-auto"> 
-      <h2 className="bg-clip-text text-transparent text-center bg-gradient-to-b from-neutral-900  dark:from-neutral-600 to-white text-2xl md:text-4xl lg:text-7xl font-sans py-2 md:py-10 relative z-20 font-bold tracking-tight ">
+    <div className="flex items-center justify-center w-full flex-col px-4  bg-gradient-to-b from-gray-900 to-gray-800 min-h-48   mx-auto"> 
+      <h2 className=" text-center text-white text-2xl md:text-4xl lg:text-7xl font-sans py-2 md:py-10 relative z-20 font-bold tracking-tight ">
       Looking for Tenants  <br /> or <br/> Needing a Property? 
 
       </h2>
@@ -14,7 +14,7 @@ export function BackgroundLinesDemo() {
 to helping landlords find reliable tenants with expert advice and locally tailored solutions to suit your property needs.
       </p>
 
-    <div className="flex items-center gap-4 min-h-32">
+    <div className="flex items-center gap-4 min-h-14">
 
     
       <Link href={"/Landlord-Online-form"}>
