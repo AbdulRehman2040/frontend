@@ -20,7 +20,7 @@ const About = () => {
           <h1 className="text-3xl lg:text-4xl font-bold mb-4 text-gray-800">
             About Us
           </h1>
-          <p className="text-gray-600 text-lg text-justify leading-relaxed">
+          <p className="text-gray-600 text-lg ">
             <span className="font-bold">At L.B.</span> Real Estate, we are passionate about simplifying the property journey for both landlords and tenants. With over 15 years of experience in the property market, we have built a reputation for delivering exceptional referral services that connect landlords with reliable tenants and businesses with the perfect commercial spaces.
             <br />
             <br />
@@ -48,7 +48,7 @@ const About = () => {
             Our Values
 Professionalism: We deliver expert advice and reliable service with integrity.
 Personalisation: Tailored solutions to meet your specific property needs.
-Customer Success: We focus on delivering successful outcomes, building long-lasting relationships with our clients
+Customer Success: We focus on delivering successful outcomes, building long-lasting relationships with our clients.
           </p>
         </motion.div>
 
