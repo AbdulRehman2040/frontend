@@ -52,12 +52,12 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveTab }) => {
         {/* Sellers Section */}
         <button className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-800 transition-all" onClick={() => setSellerOpen(!sellerOpen)}>
           <FaUserTie />
-          {isOpen && <span>Sellers</span>}
+          {isOpen && <span>Tenant</span>}
           {isOpen && (sellerOpen ? <FaChevronDown /> : <FaChevronRight />)}
         </button>
         {sellerOpen && (
           <div className="ml-6 flex flex-col gap-2">
-            <SidebarItem icon={<FaUserTie />} label="Manage Sellers" onClick={() => setActiveTab("sellers")} isOpen={isOpen} />
+            <SidebarItem icon={<FaUserTie />} label="Manage Tenant" onClick={() => setActiveTab("sellers")} isOpen={isOpen} />
             <SidebarItem icon={<FaBuilding />} label="Status of Sellers" onClick={() => setActiveTab("propertyStatusSeller")} isOpen={isOpen} />
           </div>
         )}
