@@ -64,6 +64,32 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveTab }) => {
           isOpen={isOpen}
           className="sidebar-link"
         />
+         <button
+          className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-800 transition-all"
+          onClick={() => setSellerOpen(!sellerOpen)}
+        >
+          <FaUserTie />
+          {isOpen && <span>Tenant</span>}
+          {isOpen && (sellerOpen ? <FaChevronDown /> : <FaChevronRight />)}
+        </button>
+        {sellerOpen && (
+          <div className="ml-6 flex flex-col gap-2">
+            <SidebarItem
+              icon={<FaUserTie />}
+              label="Manage Tenants"
+              onClick={() => { setActiveTab("sellers"); setIsOpen(false); }}
+              isOpen={isOpen}
+              className="sidebar-link"
+            />
+            <SidebarItem
+              icon={<FaBuilding />}
+              label="In-Active Tenants"
+              onClick={() => { setActiveTab("propertyStatusSeller"); setIsOpen(false); }}
+              isOpen={isOpen}
+              className="sidebar-link"
+            />
+          </div>
+        )}
 
         <button
           className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-800 transition-all"
@@ -92,32 +118,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveTab }) => {
           </div>
         )}
 
-        <button
-          className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-800 transition-all"
-          onClick={() => setSellerOpen(!sellerOpen)}
-        >
-          <FaUserTie />
-          {isOpen && <span>Tenant</span>}
-          {isOpen && (sellerOpen ? <FaChevronDown /> : <FaChevronRight />)}
-        </button>
-        {sellerOpen && (
-          <div className="ml-6 flex flex-col gap-2">
-            <SidebarItem
-              icon={<FaUserTie />}
-              label="Manage Tenants"
-              onClick={() => { setActiveTab("sellers"); setIsOpen(false); }}
-              isOpen={isOpen}
-              className="sidebar-link"
-            />
-            <SidebarItem
-              icon={<FaBuilding />}
-              label="In-Active Tenants"
-              onClick={() => { setActiveTab("propertyStatusSeller"); setIsOpen(false); }}
-              isOpen={isOpen}
-              className="sidebar-link"
-            />
-          </div>
-        )}
+       
       </nav>
     </div>
   );

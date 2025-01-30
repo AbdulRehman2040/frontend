@@ -6,6 +6,7 @@ import * as XLSX from 'xlsx'
 import { CgSearch } from 'react-icons/cg';
 import { AiOutlineDownload } from 'react-icons/ai';
 import { HiDownload } from 'react-icons/hi';
+import { FaPrint } from 'react-icons/fa';
 
 interface Buyer {
   _id: string;
@@ -108,7 +109,25 @@ const BuyerList = () => {
   const cancelDelete = () => {
     setShowModal(false);
   };
+
+
+
+  
     // 
+    const handlePrint = () => {
+      const printContents = document.querySelector('.table-container')?.innerHTML; // Select the table container
+      if (printContents) {
+      const originalContents = document.body.innerHTML; // Store original content
+        document.body.innerHTML = printContents; // Replace body content with the table
+        window.print(); // Trigger print
+        document.body.innerHTML = originalContents; // Restore original content
+      } else {
+        console.error("No element with class 'table-container' found for printing.");
+      }}
+
+
+
+
     const handleStatusChange = async (buyerId: string, newStatus: string) => {
       try {
         await axios.put(`https://requsest-response.vercel.app/api/buyers/${buyerId}`, {
@@ -300,7 +319,7 @@ const BuyerList = () => {
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
-    <div className="container  w-full overflow-hidden  p-4">
+    <div className="container  w-full overflow-hidden  p-4 overflow-x-auto table-container">
       <h2 className="text-xl font-bold mb-4">Landlord List</h2>
       {error && <p className="text-red-500">{error}</p>}
 
@@ -325,6 +344,11 @@ const BuyerList = () => {
   <HiDownload /> {/* Add the download icon */}
   <span>Export to Excel</span>
 </button>
+
+<button onClick={handlePrint} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center space-x-2"> {/* Print button */}
+            <FaPrint />
+            <span>Print</span>
+          </button>
 </div>
 
 
