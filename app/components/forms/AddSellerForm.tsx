@@ -168,7 +168,7 @@ export default function SellerForm() {
         {/* Landlord Email Address */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="landlordEmailAddress">
-            Email Address
+            Email Address*
           </label>
           <input
             type="email"
@@ -181,27 +181,7 @@ export default function SellerForm() {
           />
         </div>
 
-        {/* Property Type */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700" htmlFor="landlordPropertyType">
-            Property Type
-          </label>
-          <select
-            name="landlordPropertyType"
-            id="landlordPropertyType"
-            value={formData.landlordPropertyType}
-            onChange={handleChange}
-            required
-            className="mt-1 p-2 border rounded-md w-full"
-          >
-            <option value="">Select Property Type</option>
-            {propertyTypes.map((type, index) => (
-              <option key={index} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-        </div>
+       
            
            {/*  */}
            <div className='mb-4'>
@@ -220,11 +200,33 @@ export default function SellerForm() {
                 <option value={'Land'}>Land</option>
                </select>
             </div>
+
+             {/* Property Type */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="landlordPropertyType">
+            Property Type*
+          </label>
+          <select
+            name="landlordPropertyType"
+            id="landlordPropertyType"
+            value={formData.landlordPropertyType}
+            onChange={handleChange}
+            required
+            className="mt-1 p-2 border rounded-md w-full"
+          >
+            <option value="">Select Property Type</option>
+            {propertyTypes.map((type, index) => (
+              <option key={index} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+        </div>
             
         {/* Property Address */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="landlordPropertyAddress">
-            Area Required
+            Area Required*
           </label>
           <select
             name="landlordPropertyAddress"
@@ -246,7 +248,7 @@ export default function SellerForm() {
         {/* SIZE */}
         <div className="mb-4">
   <label className="block text-sm font-medium text-gray-700" htmlFor="Size">
-    Size Required
+    Size Required*
   </label>
   <select
     name="Size" // Matches the state key
@@ -268,7 +270,7 @@ export default function SellerForm() {
         {/* Rent */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="landlordRent">
-            My Budget
+            My Budget*
           </label>
           <select
             name="landlordRent"
@@ -292,7 +294,7 @@ export default function SellerForm() {
         {/* Notes */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="notes">
-            Notes
+            Notes (optional)
           </label>
           <textarea
             name="notes"

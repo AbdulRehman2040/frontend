@@ -13,6 +13,7 @@ interface FormData {
   FirstLineofAddress: string;
   postcode: string;
   budget: Number;
+  deposit: Number;
   notes: string;
   propertyAvailableDate: string;
 }
@@ -28,6 +29,7 @@ const BuyerForm = () => {
     FirstLineofAddress: '',
     postcode: '',
     budget: 0,
+    deposit:0,
     notes: '',
     propertyAvailableDate: '',
   });
@@ -115,7 +117,7 @@ const BuyerForm = () => {
     try {
       const response = await axios.post('https://requsest-response.vercel.app/api/buyers', formData);
       setLoading(false);
-      setSuccessMessage('Buyer data submitted successfully!');
+      setSuccessMessage('Your Data is submitted successfully !');
       setFormData({
         name: '',
         phoneNumber: '',
@@ -126,6 +128,7 @@ const BuyerForm = () => {
         FirstLineofAddress: '',
         postcode: '',
         budget: 0,
+        deposit: 0,
         notes: '',
         propertyAvailableDate: '',
       });
@@ -191,6 +194,26 @@ const BuyerForm = () => {
             className="mt-1 p-2 border rounded-md w-full"
           />
         </div>
+
+        <div className='mb-4'>
+              <label className='block text-sm font-medium text-gray-700' htmlFor="propertyCategory">
+                Property Category*</label>
+               <select
+               name='propertyCategory'
+               id='propertyCategory'
+               value={formData.propertyCategory}
+               onChange={handleChange}
+               required
+               className="mt-1 p-2 border rounded-md w-full">
+                <option value=''>Select Property Category</option>
+                <option value={'Commercial'} >Commercial</option>
+                <option value={'Industrial'}>Industrial</option>
+                <option value={'Land'}>Land</option>
+               </select>
+            </div>
+
+
+
         {/* property types */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="propertyTypeSelect">
@@ -214,22 +237,7 @@ const BuyerForm = () => {
         </div>
             
             {/*  */}
-            <div className='mb-4'>
-              <label className='block text-sm font-medium text-gray-700' htmlFor="propertyCategory">
-                Property Category*</label>
-               <select
-               name='propertyCategory'
-               id='propertyCategory'
-               value={formData.propertyCategory}
-               onChange={handleChange}
-               required
-               className="mt-1 p-2 border rounded-md w-full">
-                <option value=''>Select Property Category</option>
-                <option value={'Commercial'} >Commercial</option>
-                <option value={'Industrial'}>Industrial</option>
-                <option value={'Land'}>Land</option>
-               </select>
-            </div>
+           
         
 
         <div className='mb-4'>
@@ -285,6 +293,24 @@ const BuyerForm = () => {
           />
         </div>
 
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="deposit">
+          Deposit*
+          </label>
+          <input
+            name="deposit"
+            id="deposit"
+            value={Number(formData.deposit) || ""}
+            onChange={handleChange}
+            required
+            className="mt-1 p-2 border rounded-md w-full"
+          />
+           
+          
+        </div>
+      
+
         {/* Budget */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="budget">
@@ -301,8 +327,9 @@ const BuyerForm = () => {
            
           
         </div>
+           {/* deposit */}
+           
 
-      
         
 
         {/* Property Available Date */}
@@ -324,7 +351,7 @@ const BuyerForm = () => {
                {/* Notes */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="notes">
-            Notes
+            Notes(optional)
           </label>
           <textarea
             name="notes"
@@ -351,7 +378,7 @@ const BuyerForm = () => {
         </button>
       </form>
        {/* Success and Error Messages */}
-       {successMessage && <p className="text-green-500 mt-4">{successMessage}</p>}
+       {successMessage && <p className="text-green-500 font-serif text-lg  mt-4">{successMessage}</p>}
       {errorMessage && <p className="text-red-500 mt-4">{errorMessage}</p>}
 
     </div>

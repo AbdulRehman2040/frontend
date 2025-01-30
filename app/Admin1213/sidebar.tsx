@@ -23,9 +23,9 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveTab }) => {
   const [sellerOpen, setSellerOpen] = useState(false);
 
   return (
-    <div className={`h-screen bg-black text-white ${isOpen ? "w-64" : "w-20"} transition-all duration-300 p-4 fixed left-0 top-0`}> 
+    <div className={`h-screen bg-black text-white ${isOpen ? "w-64" : "w-20"} transition-all duration-300  p-4 fixed left-0 top-0`}> 
       {/* Sidebar Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-8 mt-20 xl:mt-28">
         {isOpen && <h1 className="text-lg font-bold">Admin Panel</h1>}
         <button onClick={() => setIsOpen(!isOpen)} className="text-xl">
           {isOpen ? <MdClose /> : <FaBars />}
@@ -33,7 +33,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveTab }) => {
       </div>
 
       {/* Sidebar Menu */}
-      <nav className="flex flex-col gap-4">
+      <nav className="flex flex-col gap-4 ">
         <SidebarItem icon={<FaTachometerAlt />} label="Dashboard" onClick={() => setActiveTab("dashboard")} isOpen={isOpen} />
         
         {/* Buyers Section */}

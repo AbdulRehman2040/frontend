@@ -6,7 +6,7 @@ import * as XLSX from 'xlsx'
 import { CgSearch } from 'react-icons/cg';
 import { AiOutlineDownload } from 'react-icons/ai';
 import { HiDownload } from 'react-icons/hi';
-import { subscribe } from 'diagnostics_channel';
+
 interface Buyer {
   _id: string;
   name: string;
@@ -16,14 +16,15 @@ interface Buyer {
   propertyCategory:string;
   areaRequired: string;
   budget: number;
+  deposit: number;
   notes: string;
   propertyAvailableDate: string;
   FirstLineofAddress: string;
   postcode: string;
   propertyStatus: string;
   formCreatedDate: string;
+  subscriptionStatus: string;
   
-  subscribe: boolean;
   
 }
 
@@ -126,31 +127,48 @@ const BuyerList = () => {
       }
     };
     //
-    const updateSubscription = async (buyerId: string, value: boolean) => {
-      try {
-        // Optimistic UI update: update UI before API call
-        setBuyers((prev) =>
-          prev.map((buyer) =>
-            buyer._id === buyerId ? { ...buyer, subscribe: value } : buyer
-          )
-        );
+
+    const handleSubscribeStatus = async(buyer:string, news: string )=>{
+      
+    }
+
+    // const handleSubscribe = async (buyerId: string) => {
+    //   try {
+    //     // Make sure the request body includes the correct subscriptionStatus
+    //     const response = await axios.put(`http://localhost:5000/api/buyers/${buyerId}`, {
+    //       subscriptionStatus: 'Subscribed',
+    //     });
     
-        // API call to update subscription status in the backend
-        await axios.put(`https://requsest-response.vercel.app/api/buyers/${buyerId}`, { subscribe: value });
+    //     // If subscription is successful, update state or handle success
+    //     console.log('Subscription successful:', response.data);
+    //     toast.success('Buyer subscribed successfully!');
+    //   } catch (error) {
+    //     // Handle the error from the backend
+    //     console.error('Error subscribing the buyer:', error);
+    //     toast.error('Failed to subscribe the buyer.');
+    //   }
+    // };
     
-        toast.success(`Subscription ${value ? "enabled" : "disabled"} successfully!`);
-      } catch (error) {
-        console.error("Error updating subscription:", error);
-        toast.error("Failed to update subscription.");
-    
-        // Revert UI change if API call fails
-        setBuyers((prev) =>
-          prev.map((buyer) =>
-            buyer._id === buyerId ? { ...buyer, subscribe: !value } : buyer
-          )
-        );
-      }
-    };
+  
+    // // Unsubscribe function (sets subscriptionStatus to 'Unsubscribed')
+    // const handleUnsubscribe = async (buyerId: string) => {
+    //   try {
+    //     await axios.put(`http://localhost:5000/api/buyers/${buyerId}`, {
+    //       subscriptionStatus: 'Unsubscribed', // Set subscriptionStatus to "Unsubscribed"
+    //     });
+  
+    //     setBuyers((prevBuyers) =>
+    //       prevBuyers.map((buyer) =>
+    //         buyer._id === buyerId ? { ...buyer, subscriptionStatus: 'Unsubscribed' } : buyer
+    //       )
+    //     );
+  
+    //     toast.success("Buyer unsubscribed successfully!");
+    //   } catch (error) {
+    //     toast.error("Failed to unsubscribe the buyer.");
+    //   }
+    // };
+  
     
     
   
@@ -163,14 +181,15 @@ const BuyerList = () => {
       Area: buyer.areaRequired,
       'Property Type': buyer.propertyTypeSelect,
       propertyCategory: buyer.propertyCategory,
-      Budget: `£${buyer.budget.toLocaleString()}`,
+      Budget: `£${buyer.budget}`,
+      deposit:`${buyer.deposit}`,
       Notes: buyer.notes,
       'Available Date': new Date(buyer.propertyAvailableDate).toLocaleDateString(),
       Address: buyer.FirstLineofAddress,
       Postcode: buyer.postcode,
       formCreatedDate:buyer.formCreatedDate,
       Status: buyer.propertyStatus,
-      subscribe: buyer.subscribe,
+      
     }));
 
     const ws = XLSX.utils.json_to_sheet(buyersData);
@@ -381,12 +400,13 @@ const BuyerList = () => {
             <th className="border px-2 py-1">Property Type</th>
             <th className="border px-2 py-1">Property Category</th>
             <th className="border px-2 py-1">Budget</th>
+            <th className="border px-2 py-1">Deposit</th>
             <th className="border px-2 py-1">Notes</th>
             <th className="border px-2 py-1">Available Date</th>
             <th className="border px-2 py-1">Address</th>
             <th className="border px-2 py-1">Postcode</th>
             <th className="border px-2 py-1">Status</th>
-            <th className="border py-2 px-2">Subscribed</th>
+            <th className="border px-2 py-1">Subscribe</th>
             <th className="border px-2 py-1">Actions</th>
           </tr>
         </thead>
@@ -402,6 +422,7 @@ const BuyerList = () => {
               <td className="border px-2 py-1">{buyer.propertyTypeSelect}</td>
               <td className="border px-2 py-1">{buyer.propertyCategory}</td>
               <td className="border px-2 py-1">£{buyer.budget}</td>
+              <td className="border px-2 py-1">£{buyer.deposit}</td>
               <td className="border px-2 py-1">{buyer.notes}</td>
               <td className="border px-2 py-1">{new Date(buyer.propertyAvailableDate).toLocaleDateString()}</td>
               <td className="border px-2 py-1">{buyer.FirstLineofAddress}</td>
@@ -416,14 +437,16 @@ const BuyerList = () => {
                 <option value="non-active">Non-Active</option>
               </select>
             </td>
-            <td className="px-4 py-2">
-        <input
-          type="checkbox"
-          checked={buyer.subscribe}
-          onChange={() => updateSubscription(buyer._id, !buyer.subscribe)}
-          className="cursor-pointer text-2xl"
-        />
-      </td>
+            <td className="border px-2 py-1">
+               <select
+               value={buyer.subscriptionStatus}
+               onChange={(e)=> handleSubscribeStatus(buyer._id, e.target.value) }
+               >
+
+               </select>
+              </td>
+
+
               <td className="border px-2 py-1">
                 <button 
                   className="bg-red-500 text-white px-2 py-1 rounded"
