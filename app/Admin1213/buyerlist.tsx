@@ -373,6 +373,7 @@ const BuyerList = () => {
         <thead>
           <tr>
             <th className="border px-2 py-1">#</th>
+            <th className='border px-2 py-1' >Created Date</th>
             <th className="border px-2 py-1">Name</th>
             <th className="border px-2 py-1">Phone</th>
             <th className="border px-2 py-1">Email</th>
@@ -381,12 +382,11 @@ const BuyerList = () => {
             <th className="border px-2 py-1">Property Category</th>
             <th className="border px-2 py-1">Budget</th>
             <th className="border px-2 py-1">Notes</th>
-            <th className='border px-2 py-1' >Created Date</th>
             <th className="border px-2 py-1">Available Date</th>
             <th className="border px-2 py-1">Address</th>
             <th className="border px-2 py-1">Postcode</th>
             <th className="border px-2 py-1">Status</th>
-            <th className="border py-1 px-2">Subscribed</th>
+            <th className="border py-2 px-2">Subscribed</th>
             <th className="border px-2 py-1">Actions</th>
           </tr>
         </thead>
@@ -394,6 +394,7 @@ const BuyerList = () => {
           {currentBuyers.map((buyer, index) => (
             <tr key={buyer._id}>
              <td className="border px-2 py-1">{index + 1 + (currentPage - 1) * buyersPerPage}</td>
+              <td className='border px-2 py-1'>{new Date(buyer.formCreatedDate).toLocaleDateString()}</td>
               <td className="border px-2 py-1">{buyer.name}</td>
               <td className="border px-2 py-1">{buyer.phoneNumber}</td>
               <td className="border px-2 py-1">{buyer.emailAddress}</td>
@@ -402,7 +403,6 @@ const BuyerList = () => {
               <td className="border px-2 py-1">{buyer.propertyCategory}</td>
               <td className="border px-2 py-1">£{buyer.budget}</td>
               <td className="border px-2 py-1">{buyer.notes}</td>
-              <td className='border px-2 py-1'>{new Date(buyer.formCreatedDate).toLocaleDateString()}</td>
               <td className="border px-2 py-1">{new Date(buyer.propertyAvailableDate).toLocaleDateString()}</td>
               <td className="border px-2 py-1">{buyer.FirstLineofAddress}</td>
               <td className="border px-2 py-1">{buyer.postcode}</td>
