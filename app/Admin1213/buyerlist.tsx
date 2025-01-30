@@ -71,7 +71,7 @@ const BuyerList = () => {
   useEffect(() => {
     const fetchBuyers = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/buyers');
+        const response = await axios.get('https://requsest-response.vercel.app/api/buyers');
         setBuyers(response.data);
         setFilteredBuyers(response.data); // Initially show all buyers
       } catch (error) {
@@ -88,7 +88,7 @@ const BuyerList = () => {
     if (!selectedBuyerId) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/buyers/${selectedBuyerId}`);
+      await axios.delete(`https://requsest-response.vercel.app/api/buyers/${selectedBuyerId}`);
       setBuyers(buyers.filter((buyer) => buyer._id !== selectedBuyerId));
       setShowModal(false);
       toast.success('Buyer deleted successfully!');
@@ -109,7 +109,7 @@ const BuyerList = () => {
     // 
     const handleStatusChange = async (buyerId: string, newStatus: string) => {
       try {
-        await axios.put(`http://localhost:5000/api/buyers/${buyerId}`, {
+        await axios.put(`https://requsest-response.vercel.app/api/buyers/${buyerId}`, {
           propertyStatus: newStatus,
 
         });
@@ -136,7 +136,7 @@ const BuyerList = () => {
         );
     
         // API call to update subscription status in the backend
-        await axios.put(`http://localhost:5000/api/buyers/${buyerId}`, { subscribe: value });
+        await axios.put(`https://requsest-response.vercel.app/api/buyers/${buyerId}`, { subscribe: value });
     
         toast.success(`Subscription ${value ? "enabled" : "disabled"} successfully!`);
       } catch (error) {
