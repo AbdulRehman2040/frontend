@@ -28,6 +28,7 @@ interface Buyer {
   
 }
 
+
 const areas = [
   "Aireborough", "Baildon", "Bingley", "Bradford", "Brighouse", "Castleford", 
   "Colne Valley", "Denby Dale", "Denholme", "Dewsbury", "Elland", "Featherstone", 
@@ -67,7 +68,7 @@ const BuyerList = () => {
   const [selectedPropertyType, setSelectedPropertyType] = useState<string>('');
   const [selectedPropertycategory, setSelectedPropertycategory] = useState<string>(''); // Property type filter
   const [selectedBudget, setSelectedBudget] = useState<number | string>(''); // Budget filter
-  const [selectedStatus, setSelectedStatus] = useState<string>(''); // Property status filter
+  const [selectedStatus, setSelectedStatus] = useState<string>('active'); // Property status filter
 
   useEffect(() => {
     const fetchBuyers = async () => {
@@ -128,8 +129,21 @@ const BuyerList = () => {
     };
     //
 
-    const handleSubscribeStatus = async(buyer:string, news: string )=>{
+    const handleSubscribeStatus = async(buyerId:string, news: string )=>{
+      try{
+        await axios.put(`https://requsest-response.vercel.app/api/buyers/${buyerId}`,{
+          subscriptionStatus: news,
+        });
       
+      setBuyers((prevBuyers) =>
+        prevBuyers.map((buyer) =>
+          buyer._id === buyerId ? { ...buyer, subscriptionStatus: news } : buyer
+        )
+      );
+      toast.success("subscriptionStatus updated successfully!");
+    } catch (error) {
+      toast.error("Failed to update status.");
+    }
     }
 
     // const handleSubscribe = async (buyerId: string) => {
@@ -189,6 +203,7 @@ const BuyerList = () => {
       Postcode: buyer.postcode,
       formCreatedDate:buyer.formCreatedDate,
       Status: buyer.propertyStatus,
+      subscriptionStatus: buyer.subscriptionStatus
       
     }));
 
@@ -285,7 +300,7 @@ const BuyerList = () => {
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
-    <div className="mx-6">
+    <div className="container  w-full overflow-hidden  p-4">
       <h2 className="text-xl font-bold mb-4">Landlord List</h2>
       {error && <p className="text-red-500">{error}</p>}
 
@@ -368,7 +383,7 @@ const BuyerList = () => {
 </select>
 
 
-        <select
+        {/* <select
           value={selectedStatus}
           onChange={(e) => setSelectedStatus(e.target.value)}
           className="px-4 py-2 border rounded"
@@ -379,7 +394,7 @@ const BuyerList = () => {
               {status}
             </option>
           ))}
-        </select>
+        </select> */}
 
 
         
@@ -387,8 +402,12 @@ const BuyerList = () => {
 
       
 
+
       {/* Table */}
-      <table className="w-full border-collapse mb-4">
+      <div className="overflow-x-auto">
+
+      
+      <table className="w-full border-collapse mb-4 table-auto">
         <thead>
           <tr>
             <th className="border px-2 py-1">#</th>
@@ -442,6 +461,8 @@ const BuyerList = () => {
                value={buyer.subscriptionStatus}
                onChange={(e)=> handleSubscribeStatus(buyer._id, e.target.value) }
                >
+                <option value="Subscribed">Subscribed</option>
+                <option value="UnSubscribed">UnSubscribed</option>
 
                </select>
               </td>
@@ -459,6 +480,7 @@ const BuyerList = () => {
           ))}
         </tbody>
       </table>
+      </div>
 
       {/* Pagination */}
       <div className="flex justify-center mt-4">
