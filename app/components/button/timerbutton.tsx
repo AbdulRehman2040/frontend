@@ -42,7 +42,7 @@ const MatchButtontime: React.FC = () => {
 
       // Show success notification if emails are sent successfully
       if (response.data.message) {
-        toast.success("Emails sent to matched buyers successfully!");
+        toast.success("Emails sent to matched Tenant successfully!");
       } else {
         toast.info("No matches found.");
       }

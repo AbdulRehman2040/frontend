@@ -91,7 +91,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveTab, activeTab }) => {
         />
         <SidebarItem
           icon={<MdRadioButtonChecked />}
-          label="button"
+          label="Set Timer"
           onClick={() => handleTabClick("matchbutton")}
           isOpen={isOpen}
         />
