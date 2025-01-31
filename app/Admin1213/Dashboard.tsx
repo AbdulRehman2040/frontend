@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Bar, Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from "chart.js";
+import { FaSpinner } from "react-icons/fa"; // Import spinner icon
+import Dashboard4 from "./EmailActions";
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
@@ -37,7 +39,12 @@ interface DashboardProps {
 }
 
 // Summary Box Component
-const SummaryBox: React.FC<{ title: string; value: number; color: string }> = ({ title, value, color }) => {
+const SummaryBox: React.FC<{ title: string; value: number; color: string; loading?: boolean }> = ({
+  title,
+  value,
+  color,
+  loading,
+}) => {
   const bgColorClass = {
     blue: "bg-[#22344c]",
     green: "bg-[#964B00]",
@@ -50,17 +57,29 @@ const SummaryBox: React.FC<{ title: string; value: number; color: string }> = ({
       className={`${bgColorClass} text-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300`}
     >
       <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-3xl font-bold">{value}</p>
+      {loading ? (
+        <div className="animate-pulse bg-gray-300 h-8 w-16 rounded"></div> // Skeleton loader for value
+      ) : (
+        <p className="text-3xl font-bold">{value}</p>
+      )}
     </div>
   );
 };
 
 // Chart Component
-const ChartContainer: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => {
+const ChartContainer: React.FC<{ title: string; children: React.ReactNode; loading?: boolean }> = ({
+  title,
+  children,
+  loading,
+}) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h3 className="text-xl font-semibold mb-4">{title}</h3>
-      <div className="w-full h-64 sm:h-80 md:h-96">{children}</div> {/* Adjust height for responsiveness */}
+      {loading ? (
+        <div className="animate-pulse bg-gray-300 h-64 sm:h-80 md:h-96 rounded"></div> // Skeleton loader for chart
+      ) : (
+        <div className="w-full h-64 sm:h-80 md:h-96">{children}</div>
+      )}
     </div>
   );
 };
@@ -152,7 +171,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
       },
       title: {
         display: true,
-        text: "Buyers vs. Sellers",
+        text: "",
         font: {
           size: 16,
         },
@@ -191,7 +210,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
     labels: ["Matched Properties", "Emails Sent"],
     datasets: [
       {
-        label: "Count",
+        label: "",
         data: [matchedPairs, emailsSent],
         backgroundColor: ["#964B00", "#facc15"],
         borderColor: ["#964B00", "#FFFF00"],
@@ -200,18 +219,18 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
     ],
   };
 
-  // Options for Email Chart
-  const emailOptions = {
+  // Options for Matched Property vs Emails Sent Chart
+  const matchedVsEmailsOptions = {
+    indexAxis: "y" as const, // Horizontal bar chart
     responsive: true,
     maintainAspectRatio: false, // Allow chart to resize freely
     plugins: {
       legend: {
-        display: true,
-        position: "top" as const,
+        display: false, // Hide the legend
       },
       title: {
         display: true,
-        text: "Emails Sent to Sellers",
+        text: "Matched Property vs Emails Sent",
         font: {
           size: 16,
         },
@@ -224,7 +243,11 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
   };
 
   if (loading) {
-    return <div className="text-center py-8 text-gray-600">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <FaSpinner className="animate-spin text-4xl text-blue-500" /> {/* Spinner animation */}
+      </div>
+    );
   }
 
   if (error) {
@@ -237,28 +260,28 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
 
       {/* Summary Boxes */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <SummaryBox title="Total Buyers" value={buyers.length} color="blue" />
-        <SummaryBox title="Total Sellers" value={sellers.length} color="silver" />
-        <SummaryBox title="Matched Property" value={matchedPairs} color="green" />
-        <SummaryBox title="Emails Sent" value={emailsSent} color="purple" />
+        <SummaryBox title="Total Landlord" value={buyers.length} color="blue" loading={loading} />
+        <SummaryBox title="Total Tenants" value={sellers.length} color="silver" loading={loading} />
+        <SummaryBox title="Matched Property" value={matchedPairs} color="green" loading={loading} />
+        <SummaryBox title="Emails Sent" value={emailsSent} color="purple" loading={loading} />
       </div>
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Buyers vs. Sellers Chart (Horizontal Bar Chart) */}
-        <ChartContainer title="Buyers vs. Sellers">
+        <ChartContainer title="Landlords vs. Tenants" loading={loading}>
           <Bar data={totalData} options={barOptions} />
         </ChartContainer>
 
         {/* Match Statistics Chart (Doughnut Chart) */}
-        <ChartContainer title="Match Statistics">
+        <ChartContainer title="Match Statistics" loading={loading}>
           <Doughnut data={matchData} options={doughnutOptions} />
         </ChartContainer>
 
         {/* Matched Property vs Emails Sent Chart (Bar Chart) */}
         <div className="lg:col-span-2">
-          <ChartContainer title="Matched Property vs Emails Sent">
-            <Bar data={matchedVsEmailsData} options={barOptions} />
+          <ChartContainer title="Matched Property vs Emails Sent" loading={loading}>
+            <Bar data={matchedVsEmailsData} options={matchedVsEmailsOptions} />
           </ChartContainer>
         </div>
       </div>

@@ -354,7 +354,7 @@ const SellerList = () => {
           onChange={(e) => setSelectedArea(e.target.value)}
           className="px-4 py-2 border rounded w-full"
         >
-          <option value="">Select Area</option>
+          <option value=""> Area</option>
           {areas.map((area) => (
             <option key={area} value={area}>
               {area}
@@ -367,7 +367,7 @@ const SellerList = () => {
           onChange={(e) => setSelectedPropertyType(e.target.value)}
           className="px-4 py-2 border rounded w-full"
         >
-          <option value="">Select Property Type</option>
+          <option value=""> Property Type</option>
           {propertyTypes.map((type) => (
             <option key={type} value={type}>
               {type}
@@ -380,7 +380,7 @@ const SellerList = () => {
           onChange={(e) => setSelectedPropertyCategory(e.target.value)}
           className="px-4 py-2 border rounded w-full"
         >
-          <option value="">Select Property Category</option>
+          <option value=""> Property Category</option>
           <option value="Commercial">Commercial</option>
           <option value="Industrial">Industrial</option>
           <option value="Land">Land</option>
@@ -391,7 +391,7 @@ const SellerList = () => {
           onChange={(e) => setSelectedSize(e.target.value)}
           className="px-4 py-2 border rounded w-full"
         >
-          <option value="">Select Size</option>
+          <option value=""> Size</option>
           {sizes.map((size) => (
             <option key={size} value={size}>
               {size}
@@ -404,7 +404,7 @@ const SellerList = () => {
           onChange={(e) => setSelectedRent(e.target.value)}
           className="px-4 py-2 border rounded w-full"
         >
-          <option value="">Select Rent</option>
+          <option value=""> Rent</option>
           {rentRanges.map((rent) => (
             <option key={rent} value={rent}>
               {rent}
@@ -426,8 +426,8 @@ const SellerList = () => {
               <th className="border px-2 py-1">Phone</th>
               <th className="border px-2 py-1">Email</th>
               <th className="border px-2 py-1">Area</th>
-              <th className="border px-2 py-1">Property Type</th>
               <th className="border px-2 py-1">Property Category</th>
+              <th className="border px-2 py-1">Property Type</th>
               <th className="border px-2 py-1">Size</th>
               <th className="border px-2 py-1">Rent</th>
               <th className="border px-2 py-1">Notes</th>
@@ -445,8 +445,8 @@ const SellerList = () => {
                 <td className="border px-2 py-1">{seller.landlordPhoneNumber}</td>
                 <td className="border px-2 py-1">{seller.landlordEmailAddress}</td>
                 <td className="border px-2 py-1">{seller.landlordPropertyAddress}</td>
-                <td className="border px-2 py-1">{seller.landlordPropertyType}</td>
                 <td className="border px-2 py-1">{seller.propertyCategory}</td>
+                <td className="border px-2 py-1">{seller.landlordPropertyType}</td>
                 <td className="border px-2 py-1">{seller.Size}</td>
                 <td className="border px-2 py-1">{seller.landlordRent}</td>
                 <td className="border px-2 py-1">{seller.notes}</td>

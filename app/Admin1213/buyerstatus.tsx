@@ -68,10 +68,10 @@ const NonActiveBuyers = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4 text-center">Non-Active Buyers</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center">In-Active Landlord</h2>
 
       {loading ? (
-        <p className="text-center text-gray-500">Loading buyers...</p>
+        <p className="text-center text-gray-500">Loading Landlord...</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full border-collapse border border-gray-300 shadow-md">
@@ -82,8 +82,8 @@ const NonActiveBuyers = () => {
                 <th className="border border-gray-300 p-3">Name</th>
                 <th className="border border-gray-300 p-3">Phone</th>
                 <th className="border border-gray-300 p-3">Email</th>
-                <th className="border border-gray-300 p-3">Property Type</th>
                 <th className="border border-gray-300 p-3">Property Category</th>
+                <th className="border border-gray-300 p-3">Property Type</th>
                 <th className="border border-gray-300 p-3">Area Required</th>
                 <th className="border border-gray-300 p-3">Budget</th>
                 <th className="border border-gray-300 p-3">Deposit</th>
@@ -107,8 +107,8 @@ const NonActiveBuyers = () => {
                   <td className="border border-gray-300 p-3">{buyer.name}</td>
                   <td className="border border-gray-300 p-3">{buyer.phoneNumber}</td>
                   <td className="border border-gray-300 p-3">{buyer.emailAddress}</td>
-                  <td className="border border-gray-300 p-3">{buyer.propertyTypeSelect}</td>
                   <td className="border border-gray-300 p-3">{buyer.propertyCategory}</td>
+                  <td className="border border-gray-300 p-3">{buyer.propertyTypeSelect}</td>
                   <td className="border border-gray-300 p-3">{buyer.areaRequired}</td>
                   <td className="border border-gray-300 p-3">{buyer.budget}</td>
                   <td className="border border-gray-300 p-3">{buyer.deposit}</td>

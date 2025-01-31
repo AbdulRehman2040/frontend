@@ -50,7 +50,7 @@ const AdminDashboard = () => {
 
         {/* Main Content */}
         <div className="p-4 bg-gray-100 flex-1 ml-20 overflow-hidden transition-all">
-          <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
+          <h1 className="text-2xl font-bold mb-6">Admin Panel</h1>
 
           <div className="bg-white p-4 rounded shadow">
             {activeTab === "dashboard" && <Dashboard buyers={buyers} sellers={sellers} />}

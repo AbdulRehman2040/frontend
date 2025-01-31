@@ -86,7 +86,7 @@ const PropertyStatusManagerseller = () => {
 
   return (
     <div className="p-6 bg-gray-100 rounded-lg shadow-md max-w-7xl mx-auto">
-      <h1 className="text-xl font-bold mb-4">Non-Active Sellers</h1>
+      <h1 className="text-xl font-bold mb-4">In-Active Tenants</h1>
 
       {message && (
         <div
@@ -115,7 +115,7 @@ const PropertyStatusManagerseller = () => {
               <th className="py-2 px-4 text-left border-r">Rent</th>
               <th className="py-2 px-4 text-left border-r">Notes</th>
               <th className="py-2 px-4 text-left border-r">Status</th>
-              <th className="py-2 px-4 text-left">Actions</th>
+              <th className="py-2 px-4 text-left">Active/In-Active</th>
             </tr>
           </thead>
           <tbody>

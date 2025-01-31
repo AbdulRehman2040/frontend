@@ -1,34 +1,41 @@
 "use client";
 
 import React, { useState, useEffect, JSX } from "react";
-import { FaBars, FaChevronDown, FaChevronRight } from "react-icons/fa";
-import { MdClose, MdPeople, MdDashboard } from "react-icons/md";
+import { FaBars, FaChevronDown, FaChevronRight, FaSignOutAlt } from "react-icons/fa";
+import { MdClose, MdPeople, MdDashboard, MdRadioButtonChecked } from "react-icons/md";
 import { RiUserSettingsLine } from "react-icons/ri";
 
 interface SidebarProps {
   setActiveTab: React.Dispatch<React.SetStateAction<string>>;
-  activeTab: string; // Add activeTab to props
+  activeTab: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ setActiveTab, activeTab }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  // Automatically close sidebar when activeTab changes
-  useEffect(() => {
-    if (isMobile) setIsOpen(false); // Close sidebar on mobile when a tab is selected
-  }, [activeTab, isMobile]);
-
   // Handle window resize
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth >= 768) setIsOpen(true); // Open sidebar on desktop
+      if (window.innerWidth >= 768) setIsOpen(true);
     };
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    window.location.reload();
+  };
+
+  // Handle tab click and close sidebar
+  const handleTabClick = (tab: string) => {
+    setActiveTab(tab);
+    setIsOpen(false); // Always close the sidebar
+  };
 
   return (
     <div
@@ -49,42 +56,56 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveTab, activeTab }) => {
       </div>
 
       {/* Sidebar Navigation */}
-      <nav className="flex flex-col gap-4">
+      <nav className="flex flex-col gap-4 h-[calc(100vh-8rem)]">
         <SidebarItem
           icon={<MdDashboard />}
           label="Dashboard"
-          onClick={() => setActiveTab("dashboard")}
+          onClick={() => handleTabClick("dashboard")}
           isOpen={isOpen}
         />
 
-        {/* Tenant Section */}
         <SidebarItem
           icon={<MdPeople />}
           label="Manage Tenants"
-          onClick={() => setActiveTab("sellers")}
+          onClick={() => handleTabClick("sellers")}
           isOpen={isOpen}
         />
         <SidebarItem
           icon={<MdPeople />}
           label="In-Active Tenants"
-          onClick={() => setActiveTab("propertyStatusSeller")}
+          onClick={() => handleTabClick("propertyStatusSeller")}
           isOpen={isOpen}
         />
 
-        {/* Landlord Section */}
         <SidebarItem
           icon={<RiUserSettingsLine />}
           label="Manage Landlords"
-          onClick={() => setActiveTab("buyers")}
+          onClick={() => handleTabClick("buyers")}
           isOpen={isOpen}
         />
         <SidebarItem
           icon={<RiUserSettingsLine />}
           label="In-Active Landlords"
-          onClick={() => setActiveTab("propertyStatusBuyer")}
+          onClick={() => handleTabClick("propertyStatusBuyer")}
+          isOpen={isOpen}
+        />
+        <SidebarItem
+          icon={<MdRadioButtonChecked />}
+          label="button"
+          onClick={() => handleTabClick("matchbutton")}
           isOpen={isOpen}
         />
       </nav>
+
+      {/* Logout Button */}
+      <div className="mt-auto">
+        <SidebarItem
+          icon={<FaSignOutAlt />}
+          label="Logout"
+          onClick={handleLogout}
+          isOpen={isOpen}
+        />
+      </div>
     </div>
   );
 };
