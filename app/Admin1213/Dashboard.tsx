@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Bar, Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from "chart.js";
-import EmailActions from "./EmailActions"; // Import the new component
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
@@ -42,8 +41,8 @@ const SummaryBox: React.FC<{ title: string; value: number; color: string }> = ({
   const bgColorClass = {
     blue: "bg-[#22344c]",
     green: "bg-[#964B00]",
-    silver:'bg-[#b4a483]',
-    purple: "bg-yellow-400"
+    silver: "bg-[#b4a483]",
+    purple: "bg-yellow-400",
   }[color];
 
   return (
@@ -61,7 +60,7 @@ const ChartContainer: React.FC<{ title: string; children: React.ReactNode }> = (
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h3 className="text-xl font-semibold mb-4">{title}</h3>
-      {children}
+      <div className="w-full h-64 sm:h-80 md:h-96">{children}</div> {/* Adjust height for responsiveness */}
     </div>
   );
 };
@@ -106,7 +105,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
       {
         label: "Total Count",
         data: [buyers.length, sellers.length],
-        backgroundColor: ["#22344c","#b4a483"],
+        backgroundColor: ["#22344c", "#b4a483"],
         borderColor: ["#1E40AF", "#047857"],
         borderWidth: 1,
       },
@@ -134,7 +133,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
       {
         label: "Count",
         data: [emailsSent],
-        backgroundColor: ["#FFEE40" ,],
+        backgroundColor: ["#FFEE40"],
         borderColor: ["#FFFF00"],
         borderWidth: 1,
       },
@@ -145,6 +144,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
   const barOptions = {
     indexAxis: "y" as const, // Horizontal bar chart
     responsive: true,
+    maintainAspectRatio: false, // Allow chart to resize freely
     plugins: {
       legend: {
         display: true,
@@ -167,6 +167,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
   // Options for Doughnut Chart
   const doughnutOptions = {
     responsive: true,
+    maintainAspectRatio: false, // Allow chart to resize freely
     plugins: {
       legend: {
         display: true,
@@ -185,6 +186,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
       easing: "easeInOutQuad" as const,
     },
   };
+
   const matchedVsEmailsData = {
     labels: ["Matched Properties", "Emails Sent"],
     datasets: [
@@ -201,6 +203,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
   // Options for Email Chart
   const emailOptions = {
     responsive: true,
+    maintainAspectRatio: false, // Allow chart to resize freely
     plugins: {
       legend: {
         display: true,
@@ -232,9 +235,6 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
     <div className="max-w-7xl mx-auto px-4 py-8">
       <h2 className="text-3xl font-bold mb-8 text-gray-800">Dashboard Overview</h2>
 
-      {/* Email Actions */}
-      {/* <EmailActions matches={matches} /> */}
-
       {/* Summary Boxes */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <SummaryBox title="Total Buyers" value={buyers.length} color="blue" />
@@ -255,11 +255,11 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
           <Doughnut data={matchData} options={doughnutOptions} />
         </ChartContainer>
 
-        {/* Emails Sent Chart (Bar Chart) */}
+        {/* Matched Property vs Emails Sent Chart (Bar Chart) */}
         <div className="lg:col-span-2">
-        <ChartContainer title="Matched Property vs Emails Sent">
-          <Bar data={matchedVsEmailsData} options={barOptions} />
-        </ChartContainer>
+          <ChartContainer title="Matched Property vs Emails Sent">
+            <Bar data={matchedVsEmailsData} options={barOptions} />
+          </ChartContainer>
         </div>
       </div>
     </div>

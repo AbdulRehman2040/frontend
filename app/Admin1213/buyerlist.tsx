@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify'; // Importing ToastContainer and toast
-import 'react-toastify/dist/ReactToastify.css'; // Importing CSS for Toastify
-import * as XLSX from 'xlsx'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import * as XLSX from 'xlsx';
 import { CgSearch } from 'react-icons/cg';
-import { AiOutlineDownload } from 'react-icons/ai';
 import { HiDownload } from 'react-icons/hi';
 import { FaPrint } from 'react-icons/fa';
 
@@ -14,7 +13,7 @@ interface Buyer {
   phoneNumber: string;
   emailAddress: string;
   propertyTypeSelect: string;
-  propertyCategory:string;
+  propertyCategory: string;
   areaRequired: string;
   budget: number;
   deposit: number;
@@ -25,24 +24,21 @@ interface Buyer {
   propertyStatus: string;
   formCreatedDate: string;
   subscriptionStatus: string;
-  
-  
 }
 
-
 const areas = [
-  "Aireborough", "Baildon", "Bingley", "Bradford", "Brighouse", "Castleford", 
-  "Colne Valley", "Denby Dale", "Denholme", "Dewsbury", "Elland", "Featherstone", 
-  "Halifax", "Hebden Royd", "Heckmondwike", "Hemsworth", "Holmfirth", "Huddersfield", 
-  "Ilkley", "Keighley", "Knottingley", "Leeds", "Meltham", "Mirfield", "Morley", 
-  "Normanton", "Ossett", "Otley", "Pontefract", "Pudsey", "Queensbury and Shelf", 
-  "Ripponden", "Rothwell", "Shipley", "Silsden", "Skipton", "Spenborough", "Stanley", 
+  "Aireborough", "Baildon", "Bingley", "Bradford", "Brighouse", "Castleford",
+  "Colne Valley", "Denby Dale", "Denholme", "Dewsbury", "Elland", "Featherstone",
+  "Halifax", "Hebden Royd", "Heckmondwike", "Hemsworth", "Holmfirth", "Huddersfield",
+  "Ilkley", "Keighley", "Knottingley", "Leeds", "Meltham", "Mirfield", "Morley",
+  "Normanton", "Ossett", "Otley", "Pontefract", "Pudsey", "Queensbury and Shelf",
+  "Ripponden", "Rothwell", "Shipley", "Silsden", "Skipton", "Spenborough", "Stanley",
   "Tadcaster", "Todmorden", "Wakefield", "Wetherby", "Wharfedale", "Other"
 ];
 
 const propertyTypes = [
-  "Cafe", "Car Wash", "Factory", "Healthcare", "Hotel", "Medical Center", "Nursing Homes", 
-  "Office", "Pub", "Restaurant", "Retail", "Shops", "Shopping Center", "Sports Facilities", 
+  "Cafe", "Car Wash", "Factory", "Healthcare", "Hotel", "Medical Center", "Nursing Homes",
+  "Office", "Pub", "Restaurant", "Retail", "Shops", "Shopping Center", "Sports Facilities",
   "Unit", "Warehouse", "Other"
 ];
 
@@ -52,9 +48,7 @@ const budgetRanges = [
   "£2001-£3000",
   "£5001-£10,000",
   "£10,000+",
-]; // Example budget ranges
-
-const propertyStatuses = ["active", "non-active"]; // Example property statuses
+];
 
 const BuyerList = () => {
   const [buyers, setBuyers] = useState<Buyer[]>([]);
@@ -65,18 +59,18 @@ const BuyerList = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedBuyerId, setSelectedBuyerId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [selectedArea, setSelectedArea] = useState<string>(''); // Area filter
+  const [selectedArea, setSelectedArea] = useState<string>('');
   const [selectedPropertyType, setSelectedPropertyType] = useState<string>('');
-  const [selectedPropertycategory, setSelectedPropertycategory] = useState<string>(''); // Property type filter
-  const [selectedBudget, setSelectedBudget] = useState<number | string>(''); // Budget filter
-  const [selectedStatus, setSelectedStatus] = useState<string>('active'); // Property status filter
+  const [selectedPropertycategory, setSelectedPropertycategory] = useState<string>('');
+  const [selectedBudget, setSelectedBudget] = useState<number | string>('');
+  const [selectedStatus, setSelectedStatus] = useState<string>('active');
 
   useEffect(() => {
     const fetchBuyers = async () => {
       try {
         const response = await axios.get('https://requsest-response.vercel.app/api/buyers');
         setBuyers(response.data);
-        setFilteredBuyers(response.data); // Initially show all buyers
+        setFilteredBuyers(response.data);
       } catch (error) {
         setError('Failed to load buyers.');
         toast.error('Failed to load buyers.');
@@ -86,7 +80,6 @@ const BuyerList = () => {
     fetchBuyers();
   }, []);
 
-  // Handle deletion of buyer
   const handleDelete = async () => {
     if (!selectedBuyerId) return;
 
@@ -110,54 +103,26 @@ const BuyerList = () => {
     setShowModal(false);
   };
 
-
-
   
-    // 
-    const handlePrint = () => {
-      const printContents = document.querySelector('.table-container');
-  
-      if (printContents) {
-        const printWindow = window.open('', '_blank'); // Open a new window for printing
-        if (printWindow) {
-          printWindow.document.write(`
-            <html>
-              <head>
-                <title>Buyers List</title>
-                <style type="text/css" media="print">
-                  @page { size: landscape; } /* Set to landscape for horizontal screens */
-                  body { font-family: sans-serif; }
-                  table { width: 100%; border-collapse: collapse; }
-                  th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                  /* Add any other print-specific styles here */
-                  .no-print { display: none; } /* Hide elements you don't want to print */
-                </style>
-              </head>
-              <body>${printContents.innerHTML}</body>
-            </html>
-          `);
-          printWindow.document.close();
-          printWindow.print();
-          printWindow.close(); // Close the print window after printing
-        } else {
-          console.error("Could not open print window.");
-          toast.error("Could not open print window. Please allow pop-ups."); // Inform the user about pop-up blocker
-        }
-  
-      } else {
-        console.error("No element with class 'table-container' found for printing.");
-        toast.error("No data found for printing.");
-      }
-    };
-  
+  const handleSubscribeStatus = async(buyerId:string, news: string )=>{
+    try{
+      await axios.put(`https://requsest-response.vercel.app/api/buyers/${buyerId}`,{
+        subscriptionStatus: news,
+      });
     
-    
-    
+    setBuyers((prevBuyers) =>
+      prevBuyers.map((buyer) =>
+        buyer._id === buyerId ? { ...buyer, subscriptionStatus: news } : buyer
+      )
+    );
+    toast.success("subscriptionStatus updated successfully!");
+  } catch (error) {
+    toast.error("Failed to update status.");
+  }
+  }
 
 
-
-
-    const handleStatusChange = async (buyerId: string, newStatus: string) => {
+  const handleStatusChange = async (buyerId: string, newStatus: string) => {
       try {
         await axios.put(`https://requsest-response.vercel.app/api/buyers/${buyerId}`, {
           propertyStatus: newStatus,
@@ -174,66 +139,87 @@ const BuyerList = () => {
       } catch (error) {
         toast.error("Failed to update status.");
       }
-    };
-    //
-
-    const handleSubscribeStatus = async(buyerId:string, news: string )=>{
-      try{
-        await axios.put(`https://requsest-response.vercel.app/api/buyers/${buyerId}`,{
-          subscriptionStatus: news,
-        });
-      
-      setBuyers((prevBuyers) =>
-        prevBuyers.map((buyer) =>
-          buyer._id === buyerId ? { ...buyer, subscriptionStatus: news } : buyer
-        )
-      );
-      toast.success("subscriptionStatus updated successfully!");
-    } catch (error) {
-      toast.error("Failed to update status.");
-    }
     }
 
-    // const handleSubscribe = async (buyerId: string) => {
-    //   try {
-    //     // Make sure the request body includes the correct subscriptionStatus
-    //     const response = await axios.put(`http://localhost:5000/api/buyers/${buyerId}`, {
-    //       subscriptionStatus: 'Subscribed',
-    //     });
-    
-    //     // If subscription is successful, update state or handle success
-    //     console.log('Subscription successful:', response.data);
-    //     toast.success('Buyer subscribed successfully!');
-    //   } catch (error) {
-    //     // Handle the error from the backend
-    //     console.error('Error subscribing the buyer:', error);
-    //     toast.error('Failed to subscribe the buyer.');
-    //   }
-    // };
-    
-  
-    // // Unsubscribe function (sets subscriptionStatus to 'Unsubscribed')
-    // const handleUnsubscribe = async (buyerId: string) => {
-    //   try {
-    //     await axios.put(`http://localhost:5000/api/buyers/${buyerId}`, {
-    //       subscriptionStatus: 'Unsubscribed', // Set subscriptionStatus to "Unsubscribed"
-    //     });
-  
-    //     setBuyers((prevBuyers) =>
-    //       prevBuyers.map((buyer) =>
-    //         buyer._id === buyerId ? { ...buyer, subscriptionStatus: 'Unsubscribed' } : buyer
-    //       )
-    //     );
-  
-    //     toast.success("Buyer unsubscribed successfully!");
-    //   } catch (error) {
-    //     toast.error("Failed to unsubscribe the buyer.");
-    //   }
-    // };
-  
-    
-    
-  
+  const handlePrint = () => {
+    const printTable = `
+      <html>
+        <head>
+          <title>Buyers List</title>
+          <style type="text/css" media="print">
+            @page { size: landscape; }
+            body { font-family: sans-serif; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            .no-print { display: none; }
+          </style>
+        </head>
+        <body>
+          <h2>Buyers List</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Created Date</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Area</th>
+                <th>Property Type</th>
+                <th>Property Category</th>
+                <th>Budget</th>
+                <th>Deposit</th>
+                <th>Notes</th>
+                <th>Available Date</th>
+                <th>Address</th>
+                <th>Postcode</th>
+                <th>Status</th>
+                <th>Subscribe</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filteredBuyers.map((buyer, index) => `
+                <tr key="${buyer._id}">
+                  <td>${index + 1}</td>
+                  <td>${new Date(buyer.formCreatedDate).toLocaleDateString()}</td>
+                  <td>${buyer.name}</td>
+                  <td>${buyer.phoneNumber}</td>
+                  <td>${buyer.emailAddress}</td>
+                  <td>${buyer.areaRequired}</td>
+                  <td>${buyer.propertyTypeSelect}</td>
+                  <td>${buyer.propertyCategory}</td>
+                  <td>£${buyer.budget}</td>
+                  <td>£${buyer.deposit}</td>
+                  <td>${buyer.notes}</td>
+                  <td>${new Date(buyer.propertyAvailableDate).toLocaleDateString()}</td>
+                  <td>${buyer.FirstLineofAddress}</td>
+                  <td>${buyer.postcode}</td>
+                  <td>${buyer.propertyStatus}</td>
+                  <td>${buyer.subscriptionStatus}</td>
+                  <td>
+                    <button class="bg-red-500 text-white px-2 py-1 rounded">
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(printTable);
+      printWindow.document.close();
+      printWindow.print();
+      printWindow.close();
+    } else {
+      toast.error("Could not open print window. Please allow pop-ups.");
+    }
+  };
 
   const handleExportToExcel = () => {
     const buyersData = filteredBuyers.map((buyer) => ({
@@ -244,48 +230,38 @@ const BuyerList = () => {
       'Property Type': buyer.propertyTypeSelect,
       propertyCategory: buyer.propertyCategory,
       Budget: `£${buyer.budget}`,
-      deposit:`${buyer.deposit}`,
+      deposit: `${buyer.deposit}`,
       Notes: buyer.notes,
       'Available Date': new Date(buyer.propertyAvailableDate).toLocaleDateString(),
       Address: buyer.FirstLineofAddress,
       Postcode: buyer.postcode,
-      formCreatedDate:buyer.formCreatedDate,
+      formCreatedDate: buyer.formCreatedDate,
       Status: buyer.propertyStatus,
       subscriptionStatus: buyer.subscriptionStatus
-      
     }));
 
     const ws = XLSX.utils.json_to_sheet(buyersData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Buyers');
-
-    // Export the workbook to Excel
     XLSX.writeFile(wb, 'buyers.xlsx');
   };
- 
 
-
-
-  // Handle search input
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
 
     if (value === '') {
-      setFilteredBuyers(buyers); // Show all buyers when search is empty
+      setFilteredBuyers(buyers);
     } else {
-      const filtered = buyers.filter((buyer) => {
-        return (
-          buyer.name.toLowerCase().includes(value.toLowerCase()) ||
-          buyer.emailAddress.toLowerCase().includes(value.toLowerCase()) ||
-          buyer.areaRequired.toLowerCase().includes(value.toLowerCase())
-        );
-      });
+      const filtered = buyers.filter((buyer) =>
+        buyer.name.toLowerCase().includes(value.toLowerCase()) ||
+        buyer.emailAddress.toLowerCase().includes(value.toLowerCase()) ||
+        buyer.areaRequired.toLowerCase().includes(value.toLowerCase())
+      );
       setFilteredBuyers(filtered);
     }
   };
 
-  // Handle area, property type, budget, and status filter changes
   const handleFilterChange = () => {
     let filtered = buyers;
 
@@ -300,46 +276,47 @@ const BuyerList = () => {
     if (selectedArea) {
       filtered = filtered.filter((buyer) => buyer.areaRequired === selectedArea);
     }
-   
+
     if (selectedPropertycategory) {
       filtered = filtered.filter((buyer) => buyer.propertyCategory === selectedPropertycategory);
     }
-  
 
     if (selectedPropertyType) {
       filtered = filtered.filter((buyer) => buyer.propertyTypeSelect === selectedPropertyType);
     }
 
     if (selectedBudget) {
-      filtered = filtered.filter((buyer) => {
-        switch (selectedBudget) {
-          case "£0-£1000":
-            return buyer.budget >= 0 && buyer.budget <= 1000;
-          case "£1001-£2000":
-            return buyer.budget > 1000 && buyer.budget <= 2000;
-          case "£2001-£3000":
-            return buyer.budget > 2000 && buyer.budget <= 3000;
-          case "£5001-£10,000":
-            return buyer.budget > 5000 && buyer.budget <= 10000;
-          case "£10,000+":
-            return buyer.budget > 10000;
-          default:
-            return true;
-        }
-      });
+      switch (selectedBudget) {
+        case "£0-£1000":
+          filtered = filtered.filter((buyer) => buyer.budget >= 0 && buyer.budget <= 1000);
+          break;
+        case "£1001-£2000":
+          filtered = filtered.filter((buyer) => buyer.budget > 1000 && buyer.budget <= 2000);
+          break;
+        case "£2001-£3000":
+          filtered = filtered.filter((buyer) => buyer.budget > 2000 && buyer.budget <= 3000);
+          break;
+        case "£5001-£10,000":
+          filtered = filtered.filter((buyer) => buyer.budget > 5000 && buyer.budget <= 10000);
+          break;
+        case "£10,000+":
+          filtered = filtered.filter((buyer) => buyer.budget > 10000);
+          break;
+        default:
+          break;
+      }
     }
-  
-    setFilteredBuyers(filtered); 
+
     if (selectedStatus) {
       filtered = filtered.filter((buyer) => buyer.propertyStatus === selectedStatus);
     }
 
-    setFilteredBuyers(filtered); // Update filtered buyers list
+    setFilteredBuyers(filtered);
   };
 
   useEffect(() => {
-    handleFilterChange(); // Apply filter whenever any filter value changes
-  }, [searchTerm, selectedArea, selectedPropertyType,selectedPropertycategory,  selectedBudget, selectedStatus, buyers]);
+    handleFilterChange();
+  }, [searchTerm, selectedArea, selectedPropertyType, selectedPropertycategory, selectedBudget, selectedStatus, buyers]);
 
   const indexOfLastBuyer = currentPage * buyersPerPage;
   const indexOfFirstBuyer = indexOfLastBuyer - buyersPerPage;
@@ -348,48 +325,48 @@ const BuyerList = () => {
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
-    <div className="container  w-full overflow-hidden  p-4   table-container no-print">
+    <div className="container mx-auto p-4">
       <h2 className="text-xl font-bold mb-4">Landlord List</h2>
       {error && <p className="text-red-500">{error}</p>}
 
-      {/* Search Bar */}
-      <div className="mb-4 flex items-center justify-between space-x-4 w-full">
-      <div className="flex items-center gap-3 bg-white border rounded-lg px-4 py-2 shadow-sm focus-within:ring-2 focus-within:ring-green-500">
-  <CgSearch className="text-gray-500 text-xl" />
-  <input
-    type="text"
-    value={searchTerm}
-    onChange={handleSearch}
-    placeholder="Search by name, email, or area"
-    className="w-full outline-none bg-transparent text-gray-700 placeholder-gray-400"
-  />
-</div>
+      {/* Search Bar and Actions */}
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
+        <div className="flex items-center bg-white border rounded-lg px-4 py-2 shadow-sm focus-within:ring-2 focus-within:ring-green-500 w-full md:w-auto">
+          <CgSearch className="text-gray-500 text-xl" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleSearch}
+            placeholder="Search by name, email, or area"
+            className="w-full outline-none bg-transparent text-gray-700 placeholder-gray-400 ml-2"
+          />
+        </div>
 
+        <div className="flex space-x-2">
+          <button
+            onClick={handleExportToExcel}
+            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center space-x-2 transition duration-300"
+          >
+            <HiDownload />
+            <span>Export to Excel</span>
+          </button>
 
-  <button
-  onClick={handleExportToExcel}
-  className="bg-green-500 text-white px-4 py-2 rounded flex items-center space-x-2"
->
-  <HiDownload /> {/* Add the download icon */}
-  <span>Export to Excel</span>
-</button>
-
-<button onClick={handlePrint} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center space-x-2"> 
+          <button
+            onClick={handlePrint}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center space-x-2 transition duration-300"
+          >
             <FaPrint />
             <span>Print</span>
           </button>
+        </div>
+      </div>
 
-
-
-</div>
-
-
-      {/* Filter Dropdowns */}
-      <div className="flex space-x-4 mb-4">
+      {/* Filters */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <select
           value={selectedArea}
           onChange={(e) => setSelectedArea(e.target.value)}
-          className="px-4 py-2 border rounded"
+          className="px-4 py-2 border rounded w-full"
         >
           <option value="">Select Area</option>
           {areas.map((area) => (
@@ -402,7 +379,7 @@ const BuyerList = () => {
         <select
           value={selectedPropertyType}
           onChange={(e) => setSelectedPropertyType(e.target.value)}
-          className="px-4 py-2 border rounded"
+          className="px-4 py-2 border rounded w-full"
         >
           <option value="">Select Property Type</option>
           {propertyTypes.map((type) => (
@@ -415,140 +392,114 @@ const BuyerList = () => {
         <select
           value={selectedPropertycategory}
           onChange={(e) => setSelectedPropertycategory(e.target.value)}
-          className="px-4 py-2 border rounded"
+          className="px-4 py-2 border rounded w-full"
         >
           <option value="">Select Property Category</option>
-          <option value={'Commercial'} >Commercial</option>
-                <option value={'Industrial'}>Industrial</option>
-                <option value={'Land'}>Land</option>
-          
+          <option value="Commercial">Commercial</option>
+          <option value="Industrial">Industrial</option>
+          <option value="Land">Land</option>
         </select>
 
-
         <select
-  value={selectedBudget}
-  onChange={(e) => setSelectedBudget(e.target.value)}
-  className="px-4 py-2 border rounded"
->
-  <option value="">Select Budget</option>
-  {budgetRanges.map((budget) => (
-    <option key={budget} value={budget}>
-      {budget}
-    </option>
-  ))}
-</select>
-
-
-        {/* <select
-          value={selectedStatus}
-          onChange={(e) => setSelectedStatus(e.target.value)}
-          className="px-4 py-2 border rounded"
+          value={selectedBudget}
+          onChange={(e) => setSelectedBudget(e.target.value)}
+          className="px-4 py-2 border rounded w-full"
         >
-          <option value="">Select Status</option>
-          {propertyStatuses.map((status) => (
-            <option key={status} value={status}>
-              {status}
+          <option value="">Select Budget</option>
+          {budgetRanges.map((budget) => (
+            <option key={budget} value={budget}>
+              {budget}
             </option>
           ))}
-        </select> */}
-
-
-        
+        </select>
       </div>
-
-      
-
 
       {/* Table */}
       <div className="overflow-x-auto">
-
-      
-      <table className="w-full border-collapse mb-4 table-auto">
-        <thead>
-          <tr>
-            <th className="border px-2 py-1">#</th>
-            <th className='border px-2 py-1' >Created Date</th>
-            <th className="border px-2 py-1">Name</th>
-            <th className="border px-2 py-1">Phone</th>
-            <th className="border px-2 py-1">Email</th>
-            <th className="border px-2 py-1">Area</th>
-            <th className="border px-2 py-1">Property Type</th>
-            <th className="border px-2 py-1">Property Category</th>
-            <th className="border px-2 py-1">Budget</th>
-            <th className="border px-2 py-1">Deposit</th>
-            <th className="border px-2 py-1">Notes</th>
-            <th className="border px-2 py-1">Available Date</th>
-            <th className="border px-2 py-1">Address</th>
-            <th className="border px-2 py-1">Postcode</th>
-            <th className="border px-2 py-1">Status</th>
-            <th className="border px-2 py-1">Subscribe</th>
-            <th className="border px-2 py-1">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentBuyers.map((buyer, index) => (
-            <tr key={buyer._id}>
-             <td className="border px-2 py-1">{index + 1 + (currentPage - 1) * buyersPerPage}</td>
-              <td className='border px-2 py-1'>{new Date(buyer.formCreatedDate).toLocaleDateString()}</td>
-              <td className="border px-2 py-1">{buyer.name}</td>
-              <td className="border px-2 py-1">{buyer.phoneNumber}</td>
-              <td className="border px-2 py-1">{buyer.emailAddress}</td>
-              <td className="border px-2 py-1">{buyer.areaRequired}</td>
-              <td className="border px-2 py-1">{buyer.propertyTypeSelect}</td>
-              <td className="border px-2 py-1">{buyer.propertyCategory}</td>
-              <td className="border px-2 py-1">£{buyer.budget}</td>
-              <td className="border px-2 py-1">£{buyer.deposit}</td>
-              <td className="border px-2 py-1">{buyer.notes}</td>
-              <td className="border px-2 py-1">{new Date(buyer.propertyAvailableDate).toLocaleDateString()}</td>
-              <td className="border px-2 py-1">{buyer.FirstLineofAddress}</td>
-              <td className="border px-2 py-1">{buyer.postcode}</td>
-              <td className="border p-2">
-              <select
-                value={buyer.propertyStatus}
-                onChange={(e) => handleStatusChange(buyer._id, e.target.value)}
-                className="px-2 py-1 border rounded"
-              >
-                <option value="active">Active</option>
-                <option value="non-active">Non-Active</option>
-              </select>
-            </td>
-            <td className="border px-2 py-1">
-               <select
-               value={buyer.subscriptionStatus}
-               onChange={(e)=> handleSubscribeStatus(buyer._id, e.target.value) }
-               >
-                <option value="Subscribed">Subscribed</option>
-                <option value="UnSubscribed">UnSubscribed</option>
-
-               </select>
-              </td>
-
-
-              <td className="border px-2 py-1">
-                <button 
-                  className="bg-red-500 text-white px-2 py-1 rounded"
-                  onClick={() => confirmDelete(buyer._id)}
-                >
-                  Delete
-                </button>
-              </td>
+        <table className="w-full border-collapse mb-4">
+          <thead>
+            <tr>
+              <th className="border px-2 py-1">#</th>
+              <th className="border px-2 py-1">Created Date</th>
+              <th className="border px-2 py-1">Name</th>
+              <th className="border px-2 py-1">Phone</th>
+              <th className="border px-2 py-1">Email</th>
+              <th className="border px-2 py-1">Area</th>
+              <th className="border px-2 py-1">Property Type</th>
+              <th className="border px-2 py-1">Property Category</th>
+              <th className="border px-2 py-1">Budget</th>
+              <th className="border px-2 py-1">Deposit</th>
+              <th className="border px-2 py-1">Notes</th>
+              <th className="border px-2 py-1">Available Date</th>
+              <th className="border px-2 py-1">Address</th>
+              <th className="border px-2 py-1">Postcode</th>
+              <th className="border px-2 py-1">Status</th>
+              <th className="border px-2 py-1">Subscribe</th>
+              <th className="border px-2 py-1">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {currentBuyers.map((buyer, index) => (
+              <tr key={buyer._id}>
+                <td className="border px-2 py-1">{index + 1 + (currentPage - 1) * buyersPerPage}</td>
+                <td className="border px-2 py-1">{new Date(buyer.formCreatedDate).toLocaleDateString()}</td>
+                <td className="border px-2 py-1">{buyer.name}</td>
+                <td className="border px-2 py-1">{buyer.phoneNumber}</td>
+                <td className="border px-2 py-1">{buyer.emailAddress}</td>
+                <td className="border px-2 py-1">{buyer.areaRequired}</td>
+                <td className="border px-2 py-1">{buyer.propertyTypeSelect}</td>
+                <td className="border px-2 py-1">{buyer.propertyCategory}</td>
+                <td className="border px-2 py-1">£{buyer.budget}</td>
+                <td className="border px-2 py-1">£{buyer.deposit}</td>
+                <td className="border px-2 py-1">{buyer.notes}</td>
+                <td className="border px-2 py-1">{new Date(buyer.propertyAvailableDate).toLocaleDateString()}</td>
+                <td className="border px-2 py-1">{buyer.FirstLineofAddress}</td>
+                <td className="border px-2 py-1">{buyer.postcode}</td>
+                <td className="border px-2 py-1">
+                  <select
+                    value={buyer.propertyStatus}
+                    onChange={(e) => handleStatusChange(buyer._id, e.target.value)}
+                    className="px-2 py-1 border rounded"
+                  >
+                    <option value="active">Active</option>
+                    <option value="non-active">Non-Active</option>
+                  </select>
+                </td>
+                <td className="border px-2 py-1">
+                  <select
+                    value={buyer.subscriptionStatus}
+                    onChange={(e) => handleSubscribeStatus(buyer._id, e.target.value)}
+                    className="px-2 py-1 border rounded"
+                  >
+                    <option value="Subscribed">Subscribed</option>
+                    <option value="UnSubscribed">UnSubscribed</option>
+                  </select>
+                </td>
+                <td className="border px-2 py-1">
+                  <button
+                    className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded"
+                    onClick={() => confirmDelete(buyer._id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {/* Pagination */}
       <div className="flex justify-center mt-4">
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
           onClick={() => paginate(currentPage - 1)}
           disabled={currentPage === 1}
         >
           Previous
         </button>
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded ml-2"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded ml-2"
           onClick={() => paginate(currentPage + 1)}
           disabled={currentPage * buyersPerPage >= filteredBuyers.length}
         >
@@ -563,13 +514,13 @@ const BuyerList = () => {
             <p>Are you sure you want to delete this buyer?</p>
             <div className="mt-4 flex justify-between">
               <button
-                className="bg-gray-500 text-white px-4 py-2 rounded"
+                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
                 onClick={cancelDelete}
               >
                 Cancel
               </button>
               <button
-                className="bg-red-500 text-white px-4 py-2 rounded"
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
                 onClick={handleDelete}
               >
                 Delete

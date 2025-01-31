@@ -1,116 +1,536 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify'; // Importing ToastContainer and toast
-import 'react-toastify/dist/ReactToastify.css'; // Importing CSS for Toastify
-
-import { MdDeleteForever } from "react-icons/md";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import * as XLSX from 'xlsx';
+import { CgSearch } from 'react-icons/cg';
+import { HiDownload } from 'react-icons/hi';
+import { FaPrint } from 'react-icons/fa';
 
 interface Seller {
   _id: string;
   landlordName: string;
   landlordPhoneNumber: string;
   landlordEmailAddress: string;
+  propertyCategory: string;
   landlordPropertyType: string;
   landlordPropertyAddress: string;
-  landlordRent: number;
-  propertyAvailableDate: string;
+  Size: string;
+  landlordRent: string;
+  propertyStatus: string;
   notes: string;
+  formCreatedDate: string;
+  subscriptionStatus: string;
 }
+
+const areas = [
+  "Aireborough", "Baildon", "Bingley", "Bradford", "Brighouse", "Castleford", 
+  "Colne Valley", "Denby Dale", "Denholme", "Dewsbury", "Elland", "Featherstone", 
+  "Halifax", "Hebden Royd", "Heckmondwike", "Hemsworth", "Holmfirth", "Huddersfield", 
+  "Ilkley", "Keighley", "Knottingley", "Leeds", "Meltham", "Mirfield", "Morley", 
+  "Normanton", "Ossett", "Otley", "Pontefract", "Pudsey", "Queensbury and Shelf", 
+  "Ripponden", "Rothwell", "Shipley", "Silsden", "Skipton", "Spenborough", "Stanley", 
+  "Tadcaster", "Todmorden", "Wakefield", "Wetherby", "Wharfedale", "Other"
+];
+
+const propertyTypes = [
+  "Cafe", "Car Wash", "Factory", "Healthcare", "Hotel", "Medical Center", "Nursing Homes", 
+  "Office", "Pub", "Restaurant", "Retail", "Shops", "Shopping Center", "Sports Facilities", 
+  "Unit", "Warehouse", "Other"
+];
+
+const sizes = [
+  "0-1000 sq. ft.",
+  "1000-2000 sq. ft.",
+  "2000-3000 sq. ft.",
+  "5000-10000 sq. ft.",
+  "10000-20000 sq. ft.",
+  "20000 sq. ft. +"
+];
+
+const rentRanges = [
+  "£0-£1000",
+  "£1001-£2000",
+  "£2001-£3000",
+  "£5001-£10,000",
+  "£10,000+",
+];
+
+const propertyStatuses = ["active", "non-active"];
 
 const SellerList = () => {
   const [sellers, setSellers] = useState<Seller[]>([]);
+  const [filteredSellers, setFilteredSellers] = useState<Seller[]>([]);
   const [error, setError] = useState<string>('');
-  const [currentPage, setCurrentPage] = useState<number>(1); // Current page number
-  const [SellersPerPage] = useState<number>(10); // Set 10 buyers per page
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [sellersPerPage] = useState<number>(10);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedSellerId, setSelectedSellerId] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedArea, setSelectedArea] = useState<string>('');
+  const [selectedPropertyType, setSelectedPropertyType] = useState<string>('');
+  const [selectedPropertyCategory, setSelectedPropertyCategory] = useState<string>('');
+  const [selectedSize, setSelectedSize] = useState<string>('');
+  const [selectedRent, setSelectedRent] = useState<string>('');
+  const [selectedStatus, setSelectedStatus] = useState<string>('active');
 
   useEffect(() => {
     const fetchSellers = async () => {
       try {
         const response = await axios.get('https://requsest-response.vercel.app/api/sellers');
         setSellers(response.data);
+        setFilteredSellers(response.data);
       } catch (error) {
         setError('Failed to load sellers.');
-        toast.error('Failed to load sellers.'); // Show toast on error
+        toast.error('Failed to load sellers.');
       }
     };
 
     fetchSellers();
   }, []);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async () => {
+    if (!selectedSellerId) return;
+
     try {
-      await axios.delete(`https://requsest-response.vercel.app/api/sellers/${id}`);
-      setSellers(sellers.filter((seller) => seller._id !== id));
-      toast.success('Seller deleted successfully!'); // Show success toast
+      await axios.delete(`https://requsest-response.vercel.app/api/sellers/${selectedSellerId}`);
+      setSellers(sellers.filter((seller) => seller._id !== selectedSellerId));
+      setShowModal(false);
+      toast.success('Seller deleted successfully!');
     } catch (error) {
       setError('Failed to delete seller.');
-      toast.error('Failed to delete seller.'); // Show error toast
+      toast.error('Failed to delete seller.');
     }
   };
 
-  const indexOfLastSeller = currentPage * SellersPerPage;
-  const indexOfFirstSeller = indexOfLastSeller - SellersPerPage;
-  const currentSellers = sellers.slice(indexOfFirstSeller, indexOfLastSeller);
+  const confirmDelete = (id: string) => {
+    setSelectedSellerId(id);
+    setShowModal(true);
+  };
 
-  // Change page
+  const cancelDelete = () => {
+    setShowModal(false);
+  };
+
+  const handlePrint = () => {
+    // Create a new table element for printing
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      // Create a table with all sellers
+      const printTable = `
+        <html>
+          <head>
+            <title>Sellers List</title>
+            <style type="text/css" media="print">
+              @page { size: landscape; }
+              body { font-family: sans-serif; }
+              table { width: 100%; border-collapse: collapse; }
+              th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+              .no-print { display: none; }
+            </style>
+          </head>
+          <body>
+            <h2>Seller List</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Created Date</th>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Email</th>
+                  <th>Area</th>
+                  <th>Property Type</th>
+                  <th>Property Category</th>
+                  <th>Size</th>
+                  <th>Rent</th>
+                  <th>Notes</th>
+                  <th>Status</th>
+                  <th>Subscribe</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${filteredSellers
+                  .map(
+                    (seller, index) => `
+                  <tr>
+                    <td>${index + 1}</td>
+                    <td>${new Date(seller.formCreatedDate).toLocaleDateString()}</td>
+                    <td>${seller.landlordName}</td>
+                    <td>${seller.landlordPhoneNumber}</td>
+                    <td>${seller.landlordEmailAddress}</td>
+                    <td>${seller.landlordPropertyAddress}</td>
+                    <td>${seller.landlordPropertyType}</td>
+                    <td>${seller.propertyCategory}</td>
+                    <td>${seller.Size}</td>
+                    <td>${seller.landlordRent}</td>
+                    <td>${seller.notes}</td>
+                    <td>${seller.propertyStatus}</td>
+                    <td>${seller.subscriptionStatus}</td>
+                  </tr>
+                `
+                  )
+                  .join('')}
+              </tbody>
+            </table>
+          </body>
+        </html>
+      `;
+  
+      // Write the table to the new window
+      printWindow.document.write(printTable);
+      printWindow.document.close();
+  
+      // Trigger the print dialog
+      printWindow.print();
+      printWindow.close();
+    } else {
+      console.error("Could not open print window.");
+      toast.error("Could not open print window. Please allow pop-ups.");
+    }
+  };
+
+  const handleStatusChange = async (sellerId: string, newStatus: string) => {
+    try {
+      await axios.put(`https://requsest-response.vercel.app/api/sellers/${sellerId}`, {
+        propertyStatus: newStatus,
+      });
+
+      setSellers((prevSellers) =>
+        prevSellers.map((seller) =>
+          seller._id === sellerId ? { ...seller, propertyStatus: newStatus } : seller
+        )
+      );
+
+      toast.success("Status updated successfully!");
+    } catch (error) {
+      toast.error("Failed to update status.");
+    }
+  };
+
+  const handleSubscribeStatus = async (sellerId: string, news: string) => {
+    try {
+      await axios.put(`https://requsest-response.vercel.app/api/sellers/${sellerId}`, {
+        subscriptionStatus: news,
+      });
+
+      setSellers((prevSellers) =>
+        prevSellers.map((seller) =>
+          seller._id === sellerId ? { ...seller, subscriptionStatus: news } : seller
+        )
+      );
+
+      toast.success("Subscription status updated successfully!");
+    } catch (error) {
+      toast.error("Failed to update subscription status.");
+    }
+  };
+
+  const handleExportToExcel = () => {
+    const sellersData = filteredSellers.map((seller) => ({
+      Name: seller.landlordName,
+      Phone: seller.landlordPhoneNumber,
+      Email: seller.landlordEmailAddress,
+      Area: seller.landlordPropertyAddress,
+      'Property Type': seller.landlordPropertyType,
+      'Property Category': seller.propertyCategory,
+      Size: seller.Size,
+      Rent: seller.landlordRent,
+      Notes: seller.notes,
+      'Available Date': new Date(seller.formCreatedDate).toLocaleDateString(),
+      Status: seller.propertyStatus,
+      'Subscription Status': seller.subscriptionStatus
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(sellersData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sellers');
+
+    XLSX.writeFile(wb, 'sellers.xlsx');
+  };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    if (value === '') {
+      setFilteredSellers(sellers);
+    } else {
+      const filtered = sellers.filter((seller) => {
+        return (
+          seller.landlordName.toLowerCase().includes(value.toLowerCase()) ||
+          seller.landlordEmailAddress.toLowerCase().includes(value.toLowerCase()) ||
+          seller.landlordPropertyAddress.toLowerCase().includes(value.toLowerCase())
+        );
+      });
+      setFilteredSellers(filtered);
+    }
+  };
+
+  const handleFilterChange = () => {
+    let filtered = sellers;
+
+    if (searchTerm) {
+      filtered = filtered.filter((seller) =>
+        seller.landlordName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        seller.landlordEmailAddress.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        seller.landlordPropertyAddress.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (selectedArea) {
+      filtered = filtered.filter((seller) => seller.landlordPropertyAddress === selectedArea);
+    }
+
+    if (selectedPropertyCategory) {
+      filtered = filtered.filter((seller) => seller.propertyCategory === selectedPropertyCategory);
+    }
+
+    if (selectedPropertyType) {
+      filtered = filtered.filter((seller) => seller.landlordPropertyType === selectedPropertyType);
+    }
+
+    if (selectedSize) {
+      filtered = filtered.filter((seller) => seller.Size === selectedSize);
+    }
+
+    if (selectedRent) {
+      filtered = filtered.filter((seller) => seller.landlordRent === selectedRent);
+    }
+
+    if (selectedStatus) {
+      filtered = filtered.filter((seller) => seller.propertyStatus === selectedStatus);
+    }
+
+    setFilteredSellers(filtered);
+  };
+
+  useEffect(() => {
+    handleFilterChange();
+  }, [searchTerm, selectedArea, selectedPropertyType, selectedPropertyCategory, selectedSize, selectedRent, selectedStatus, sellers]);
+
+  const indexOfLastSeller = currentPage * sellersPerPage;
+  const indexOfFirstSeller = indexOfLastSeller - sellersPerPage;
+  const currentSellers = filteredSellers.slice(indexOfFirstSeller, indexOfLastSeller);
+
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
-    <div className="mx-6">
+    <div className="container w-full overflow-hidden p-4 table-container no-print">
       <h2 className="text-xl font-bold mb-4">Seller List</h2>
       {error && <p className="text-red-500">{error}</p>}
-      
-      {/* Table */}
-      <table className="min-w-full table-auto border-collapse text-sm">
-        <thead>
-          <tr>
-            <th className="border px-4 py-2">Name</th>
-            <th className="border px-4 py-2">Phone Number</th>
-            <th className="border px-4 py-2">Email</th>
-            <th className="border px-4 py-2">Property Type</th>
-            <th className="border px-4 py-2">Property Address</th>
-            <th className="border px-4 py-2">Rent</th>
-            <th className="border px-4 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentSellers.map((seller) => (
-            <tr key={seller._id}>
-              <td className="border px-4 py-2">{seller.landlordName}</td>
-              <td className="border px-4 py-2">{seller.landlordPhoneNumber}</td>
-              <td className="border px-4 py-2">{seller.landlordEmailAddress}</td>
-              <td className="border px-4 py-2">{seller.landlordPropertyType}</td>
-              <td className="border px-4 py-2">{seller.landlordPropertyAddress}</td>
-              <td className="border px-4 py-2">${seller.landlordRent}</td>
-              <td className="border px-4 py-2">
-                <button
-                
-                  className="bg-red-500 text-white px-4 py-2 rounded"
-                  onClick={() => handleDelete(seller._id)}
-                >
-                  .
-                 <MdDeleteForever />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
 
-      {/* Pagination */}
-      <div className="mt-4 flex justify-center space-x-2">
-        {Array.from({ length: Math.ceil(sellers.length / SellersPerPage) }, (_, index) => (
-          <button
-            key={index + 1}
-            onClick={() => paginate(index + 1)}
-            className={`px-4 py-2 border rounded ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-          >
-            {index + 1}
-          </button>
-        ))}
+      <div className="mb-4 flex items-center justify-between space-x-4 w-full">
+        <div className="flex items-center gap-3 bg-white border rounded-lg px-4 py-2 shadow-sm focus-within:ring-2 focus-within:ring-green-500">
+          <CgSearch className="text-gray-500 text-xl" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleSearch}
+            placeholder="Search by name, email, or area"
+            className="w-full outline-none bg-transparent text-gray-700 placeholder-gray-400"
+          />
+        </div>
+
+        <button
+          onClick={handleExportToExcel}
+          className="bg-green-500 text-white px-4 py-2 rounded flex items-center space-x-2"
+        >
+          <HiDownload />
+          <span>Export to Excel</span>
+        </button>
+
+        <button onClick={handlePrint} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center space-x-2">
+          <FaPrint />
+          <span>Print</span>
+        </button>
       </div>
 
-      {/* ToastContainer to show toast messages */}
+      <div className="flex space-x-4 mb-4">
+        <select
+          value={selectedArea}
+          onChange={(e) => setSelectedArea(e.target.value)}
+          className="px-4 py-2 border rounded"
+        >
+          <option value="">Select Area</option>
+          {areas.map((area) => (
+            <option key={area} value={area}>
+              {area}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={selectedPropertyType}
+          onChange={(e) => setSelectedPropertyType(e.target.value)}
+          className="px-4 py-2 border rounded"
+        >
+          <option value="">Select Property Type</option>
+          {propertyTypes.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={selectedPropertyCategory}
+          onChange={(e) => setSelectedPropertyCategory(e.target.value)}
+          className="px-4 py-2 border rounded"
+        >
+          <option value="">Select Property Category</option>
+          <option value="Commercial">Commercial</option>
+          <option value="Industrial">Industrial</option>
+          <option value="Land">Land</option>
+        </select>
+
+        <select
+          value={selectedSize}
+          onChange={(e) => setSelectedSize(e.target.value)}
+          className="px-4 py-2 border rounded"
+        >
+          <option value="">Select Size</option>
+          {sizes.map((size) => (
+            <option key={size} value={size}>
+              {size}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={selectedRent}
+          onChange={(e) => setSelectedRent(e.target.value)}
+          className="px-4 py-2 border rounded"
+        >
+          <option value="">Select Rent</option>
+          {rentRanges.map((rent) => (
+            <option key={rent} value={rent}>
+              {rent}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={selectedStatus}
+          onChange={(e) => setSelectedStatus(e.target.value)}
+          className="px-4 py-2 border rounded"
+        >
+          <option value="">Select Status</option>
+          {propertyStatuses.map((status) => (
+            <option key={status} value={status}>
+              {status}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse mb-4 table-auto">
+          <thead>
+            <tr>
+              <th className="border px-2 py-1">#</th>
+              <th className="border px-2 py-1">Created Date</th>
+              <th className="border px-2 py-1">Name</th>
+              <th className="border px-2 py-1">Phone</th>
+              <th className="border px-2 py-1">Email</th>
+              <th className="border px-2 py-1">Area</th>
+              <th className="border px-2 py-1">Property Type</th>
+              <th className="border px-2 py-1">Property Category</th>
+              <th className="border px-2 py-1">Size</th>
+              <th className="border px-2 py-1">Rent</th>
+              <th className="border px-2 py-1">Notes</th>
+              <th className="border px-2 py-1">Status</th>
+              <th className="border px-2 py-1">Subscribe</th>
+              <th className="border px-2 py-1">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentSellers.map((seller, index) => (
+              <tr key={seller._id}>
+                <td className="border px-2 py-1">{index + 1 + (currentPage - 1) * sellersPerPage}</td>
+                <td className="border px-2 py-1">{new Date(seller.formCreatedDate).toLocaleDateString()}</td>
+                <td className="border px-2 py-1">{seller.landlordName}</td>
+                <td className="border px-2 py-1">{seller.landlordPhoneNumber}</td>
+                <td className="border px-2 py-1">{seller.landlordEmailAddress}</td>
+                <td className="border px-2 py-1">{seller.landlordPropertyAddress}</td>
+                <td className="border px-2 py-1">{seller.landlordPropertyType}</td>
+                <td className="border px-2 py-1">{seller.propertyCategory}</td>
+                <td className="border px-2 py-1">{seller.Size}</td>
+                <td className="border px-2 py-1">{seller.landlordRent}</td>
+                <td className="border px-2 py-1">{seller.notes}</td>
+                <td className="border p-2">
+                  <select
+                    value={seller.propertyStatus}
+                    onChange={(e) => handleStatusChange(seller._id, e.target.value)}
+                    className="px-2 py-1 border rounded"
+                  >
+                    <option value="active">Active</option>
+                    <option value="non-active">Non-Active</option>
+                  </select>
+                </td>
+                <td className="border px-2 py-1 rounded">
+  <select
+    value={seller.subscriptionStatus || "Subscribed"} // Fallback to "Subscribed" if undefined
+    className="px-2 py-1 border rounded"
+    onChange={(e) => handleSubscribeStatus(seller._id, e.target.value)}
+  >
+    <option value="Subscribed">Subscribed</option>
+    <option value="UnSubscribed">UnSubscribed</option>
+  </select>
+</td>
+                <td className="border px-2 py-1">
+                  <button
+                    className="bg-red-500 text-white px-2 py-1 rounded"
+                    onClick={() => confirmDelete(seller._id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="flex justify-center mt-4">
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+          onClick={() => paginate(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded ml-2"
+          onClick={() => paginate(currentPage + 1)}
+          disabled={currentPage * sellersPerPage >= filteredSellers.length}
+        >
+          Next
+        </button>
+      </div>
+
+      {showModal && (
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-6 rounded">
+            <p>Are you sure you want to delete this seller?</p>
+            <div className="mt-4 flex justify-between">
+              <button
+                className="bg-gray-500 text-white px-4 py-2 rounded"
+                onClick={cancelDelete}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded"
+                onClick={handleDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <ToastContainer />
     </div>
   );

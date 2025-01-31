@@ -27,7 +27,7 @@ const AdminPanel = () => {
       {!isAuthenticated ? (
         <div className="w-full max-w-4xl flex flex-col md:flex-row shadow-lg rounded-lg overflow-hidden bg-white">
           {/* Left Side: Welcome Section */}
-          <div className="md:w-1/2 bg-blue-600 text-white flex flex-col justify-center items-center p-10 text-center">
+          <div className="md:w-1/2 bg-[#dbbf86] text-white flex flex-col justify-center items-center p-10 text-center">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
               Welcome Admin
             </h1>
