@@ -3,6 +3,7 @@ import React from 'react'
 import BuyerForm from '../components/forms/AddBuyerForm'
 import Responsivenav from '../components/navbar/responsivenav'
 import LogoSection from '../components/logo/logo'
+import Footer from '../components/footer/footer'
 
 const page = () => {
   return (
@@ -18,6 +19,7 @@ const page = () => {
             </div>
             <div className="border-b border-gray-400 mt-10"></div>
       <LogoSection/>
+      <Footer/>
       </div>
   )
 }

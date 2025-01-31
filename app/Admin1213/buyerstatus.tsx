@@ -8,13 +8,21 @@ interface Buyer {
   name: string;
   phoneNumber: string;
   emailAddress: string;
+  propertyTypeSelect: string;
+  propertyCategory: string;
+  areaRequired: string;
+  budget: number;
+  deposit: number;
+  notes: string;
+  propertyAvailableDate: string;
+  FirstLineofAddress: string;
+  postcode: string;
   propertyStatus: string;
+  formCreatedDate: string;
 }
 
 const NonActiveBuyers = () => {
   const [buyers, setBuyers] = useState<Buyer[]>([]);
-  const [editingBuyer, setEditingBuyer] = useState<Buyer | null>(null);
-  const [updatedStatus, setUpdatedStatus] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,32 +45,22 @@ const NonActiveBuyers = () => {
     fetchNonActiveBuyers();
   }, []);
 
-  const handleEdit = (buyer: Buyer) => {
-    setEditingBuyer(buyer);
-    setUpdatedStatus(buyer.propertyStatus);
-  };
-
-  const handleUpdate = async () => {
-    if (!editingBuyer) return;
-
+  const handleUpdateStatus = async (buyerId: string, newStatus: string) => {
     try {
       await axios.put(
-        `https://requsest-response.vercel.app/api/buyers/${editingBuyer._id}`,
+        `https://requsest-response.vercel.app/api/buyers/${buyerId}`,
         {
-          propertyStatus: updatedStatus,
+          propertyStatus: newStatus,
         }
       );
 
       setBuyers((prevBuyers) =>
         prevBuyers.map((buyer) =>
-          buyer._id === editingBuyer._id
-            ? { ...buyer, propertyStatus: updatedStatus }
-            : buyer
+          buyer._id === buyerId ? { ...buyer, propertyStatus: newStatus } : buyer
         )
       );
 
       toast.success("Status updated successfully!");
-      setEditingBuyer(null);
     } catch (error) {
       toast.error("Failed to update status.");
     }
@@ -70,7 +68,7 @@ const NonActiveBuyers = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4 text-center">Non-Active Landlords</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center">Non-Active Buyers</h2>
 
       {loading ? (
         <p className="text-center text-gray-500">Loading buyers...</p>
@@ -79,63 +77,79 @@ const NonActiveBuyers = () => {
           <table className="w-full border-collapse border border-gray-300 shadow-md">
             <thead className="bg-gray-100">
               <tr>
+                <th className="border border-gray-300 p-3">S.No</th>
+                <th className="border border-gray-300 p-3">Created Date</th>
                 <th className="border border-gray-300 p-3">Name</th>
                 <th className="border border-gray-300 p-3">Phone</th>
                 <th className="border border-gray-300 p-3">Email</th>
+                <th className="border border-gray-300 p-3">Property Type</th>
+                <th className="border border-gray-300 p-3">Property Category</th>
+                <th className="border border-gray-300 p-3">Area Required</th>
+                <th className="border border-gray-300 p-3">Budget</th>
+                <th className="border border-gray-300 p-3">Deposit</th>
+                <th className="border border-gray-300 p-3">Notes</th>
+                <th className="border border-gray-300 p-3">Available Date</th>
+                <th className="border border-gray-300 p-3">Address</th>
+                <th className="border border-gray-300 p-3">Postcode</th>
                 <th className="border border-gray-300 p-3">Status</th>
                 <th className="border border-gray-300 p-3 text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {buyers.map((buyer) => (
+              {buyers.map((buyer, index) => (
                 <tr key={buyer._id} className="hover:bg-gray-50 transition-all">
+                  <td className="border border-gray-300 p-3 text-center">
+                    {index + 1}
+                  </td>
+                  <td className="border border-gray-300 p-3">
+                    {new Date(buyer.formCreatedDate).toLocaleDateString()}
+                  </td>
                   <td className="border border-gray-300 p-3">{buyer.name}</td>
                   <td className="border border-gray-300 p-3">{buyer.phoneNumber}</td>
                   <td className="border border-gray-300 p-3">{buyer.emailAddress}</td>
+                  <td className="border border-gray-300 p-3">{buyer.propertyTypeSelect}</td>
+                  <td className="border border-gray-300 p-3">{buyer.propertyCategory}</td>
+                  <td className="border border-gray-300 p-3">{buyer.areaRequired}</td>
+                  <td className="border border-gray-300 p-3">{buyer.budget}</td>
+                  <td className="border border-gray-300 p-3">{buyer.deposit}</td>
+                  <td className="border border-gray-300 p-3">{buyer.notes}</td>
+                  <td className="border border-gray-300 p-3">
+                    {new Date(buyer.propertyAvailableDate).toLocaleDateString()}
+                  </td>
+                  <td className="border border-gray-300 p-3">{buyer.FirstLineofAddress}</td>
+                  <td className="border border-gray-300 p-3">{buyer.postcode}</td>
                   <td className="border border-gray-300 p-3">{buyer.propertyStatus}</td>
                   <td className="border border-gray-300 p-3 text-center">
-                    <button
-                      onClick={() => handleEdit(buyer)}
-                      className="bg-blue-500 text-white px-4 py-2 rounded-md transition hover:bg-blue-600"
-                    >
-                      Edit Status
-                    </button>
+                    <label className="flex items-center justify-center cursor-pointer">
+                      <div className="relative">
+                        <input
+                          type="checkbox"
+                          checked={buyer.propertyStatus === "active"}
+                          onChange={() =>
+                            handleUpdateStatus(
+                              buyer._id,
+                              buyer.propertyStatus === "active" ? "non-active" : "active"
+                            )
+                          }
+                          className="sr-only"
+                        />
+                        <div
+                          className={`block w-14 h-8 rounded-full transition-colors ${
+                            buyer.propertyStatus === "active" ? "bg-green-500" : "bg-red-500"
+                          }`}
+                        ></div>
+                        <div
+                          className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform ${
+                            buyer.propertyStatus === "active" ? "translate-x-6" : ""
+                          }`}
+                        ></div>
+                      </div>
+                    </label>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-      )}
-
-      {/* Modal for Updating Status */}
-      {editingBuyer && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h3 className="text-xl font-semibold mb-4">Update Status</h3>
-            <select
-              value={updatedStatus}
-              onChange={(e) => setUpdatedStatus(e.target.value)}
-              className="w-full border p-2 mb-4 rounded"
-            >
-              <option value="non-active">Non-Active</option>
-              <option value="active">Active</option>
-            </select>
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={() => setEditingBuyer(null)}
-                className="bg-gray-400 text-white px-4 py-2 rounded-md transition hover:bg-gray-500"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleUpdate}
-                className="bg-green-500 text-white px-4 py-2 rounded-md transition hover:bg-green-600"
-              >
-                Update
-              </button>
-            </div>
-          </div>
         </div>
       )}
 

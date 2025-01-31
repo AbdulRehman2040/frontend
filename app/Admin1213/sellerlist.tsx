@@ -113,10 +113,8 @@ const SellerList = () => {
   };
 
   const handlePrint = () => {
-    // Create a new table element for printing
     const printWindow = window.open('', '_blank');
     if (printWindow) {
-      // Create a table with all sellers
       const printTable = `
         <html>
           <head>
@@ -130,7 +128,7 @@ const SellerList = () => {
             </style>
           </head>
           <body>
-            <h2>Seller List</h2>
+            <h2>Tenant List</h2>
             <table>
               <thead>
                 <tr>
@@ -177,11 +175,8 @@ const SellerList = () => {
         </html>
       `;
   
-      // Write the table to the new window
       printWindow.document.write(printTable);
       printWindow.document.close();
-  
-      // Trigger the print dialog
       printWindow.print();
       printWindow.close();
     } else {
@@ -316,41 +311,48 @@ const SellerList = () => {
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
-    <div className="container w-full overflow-hidden p-4 table-container no-print">
-      <h2 className="text-xl font-bold mb-4">Seller List</h2>
+    <div className="container mx-auto p-4">
+      <h2 className="text-xl font-bold mb-4">Tenant List</h2>
       {error && <p className="text-red-500">{error}</p>}
 
-      <div className="mb-4 flex items-center justify-between space-x-4 w-full">
-        <div className="flex items-center gap-3 bg-white border rounded-lg px-4 py-2 shadow-sm focus-within:ring-2 focus-within:ring-green-500">
+      {/* Search Bar and Actions */}
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
+        <div className="flex items-center bg-white border rounded-lg px-4 py-2 shadow-sm focus-within:ring-2 focus-within:ring-green-500 w-full md:w-auto">
           <CgSearch className="text-gray-500 text-xl" />
           <input
             type="text"
             value={searchTerm}
             onChange={handleSearch}
             placeholder="Search by name, email, or area"
-            className="w-full outline-none bg-transparent text-gray-700 placeholder-gray-400"
+            className="w-full outline-none bg-transparent text-gray-700 placeholder-gray-400 ml-2"
           />
         </div>
 
-        <button
-          onClick={handleExportToExcel}
-          className="bg-green-500 text-white px-4 py-2 rounded flex items-center space-x-2"
-        >
-          <HiDownload />
-          <span>Export to Excel</span>
-        </button>
+        <div className="flex space-x-2">
+          <button
+            onClick={handleExportToExcel}
+            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center space-x-2 transition duration-300"
+          >
+            <HiDownload />
+            <span>Export to Excel</span>
+          </button>
 
-        <button onClick={handlePrint} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center space-x-2">
-          <FaPrint />
-          <span>Print</span>
-        </button>
+          <button
+            onClick={handlePrint}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center space-x-2 transition duration-300"
+          >
+            <FaPrint />
+            <span>Print</span>
+          </button>
+        </div>
       </div>
 
-      <div className="flex space-x-4 mb-4">
+      {/* Filters */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <select
           value={selectedArea}
           onChange={(e) => setSelectedArea(e.target.value)}
-          className="px-4 py-2 border rounded"
+          className="px-4 py-2 border rounded w-full"
         >
           <option value="">Select Area</option>
           {areas.map((area) => (
@@ -363,7 +365,7 @@ const SellerList = () => {
         <select
           value={selectedPropertyType}
           onChange={(e) => setSelectedPropertyType(e.target.value)}
-          className="px-4 py-2 border rounded"
+          className="px-4 py-2 border rounded w-full"
         >
           <option value="">Select Property Type</option>
           {propertyTypes.map((type) => (
@@ -376,7 +378,7 @@ const SellerList = () => {
         <select
           value={selectedPropertyCategory}
           onChange={(e) => setSelectedPropertyCategory(e.target.value)}
-          className="px-4 py-2 border rounded"
+          className="px-4 py-2 border rounded w-full"
         >
           <option value="">Select Property Category</option>
           <option value="Commercial">Commercial</option>
@@ -387,7 +389,7 @@ const SellerList = () => {
         <select
           value={selectedSize}
           onChange={(e) => setSelectedSize(e.target.value)}
-          className="px-4 py-2 border rounded"
+          className="px-4 py-2 border rounded w-full"
         >
           <option value="">Select Size</option>
           {sizes.map((size) => (
@@ -400,7 +402,7 @@ const SellerList = () => {
         <select
           value={selectedRent}
           onChange={(e) => setSelectedRent(e.target.value)}
-          className="px-4 py-2 border rounded"
+          className="px-4 py-2 border rounded w-full"
         >
           <option value="">Select Rent</option>
           {rentRanges.map((rent) => (
@@ -410,22 +412,12 @@ const SellerList = () => {
           ))}
         </select>
 
-        <select
-          value={selectedStatus}
-          onChange={(e) => setSelectedStatus(e.target.value)}
-          className="px-4 py-2 border rounded"
-        >
-          <option value="">Select Status</option>
-          {propertyStatuses.map((status) => (
-            <option key={status} value={status}>
-              {status}
-            </option>
-          ))}
-        </select>
+        
       </div>
 
+      {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse mb-4 table-auto">
+        <table className="w-full border-collapse mb-4">
           <thead>
             <tr>
               <th className="border px-2 py-1">#</th>
@@ -458,7 +450,7 @@ const SellerList = () => {
                 <td className="border px-2 py-1">{seller.Size}</td>
                 <td className="border px-2 py-1">{seller.landlordRent}</td>
                 <td className="border px-2 py-1">{seller.notes}</td>
-                <td className="border p-2">
+                <td className="border px-2 py-1">
                   <select
                     value={seller.propertyStatus}
                     onChange={(e) => handleStatusChange(seller._id, e.target.value)}
@@ -468,19 +460,19 @@ const SellerList = () => {
                     <option value="non-active">Non-Active</option>
                   </select>
                 </td>
-                <td className="border px-2 py-1 rounded">
-  <select
-    value={seller.subscriptionStatus || "Subscribed"} // Fallback to "Subscribed" if undefined
-    className="px-2 py-1 border rounded"
-    onChange={(e) => handleSubscribeStatus(seller._id, e.target.value)}
-  >
-    <option value="Subscribed">Subscribed</option>
-    <option value="UnSubscribed">UnSubscribed</option>
-  </select>
-</td>
+                <td className="border px-2 py-1">
+                  <select
+                    value={seller.subscriptionStatus || "Subscribed"}
+                    className="px-2 py-1 border rounded"
+                    onChange={(e) => handleSubscribeStatus(seller._id, e.target.value)}
+                  >
+                    <option value="Subscribed">Subscribed</option>
+                    <option value="UnSubscribed">UnSubscribed</option>
+                  </select>
+                </td>
                 <td className="border px-2 py-1">
                   <button
-                    className="bg-red-500 text-white px-2 py-1 rounded"
+                    className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded"
                     onClick={() => confirmDelete(seller._id)}
                   >
                     Delete
@@ -492,16 +484,17 @@ const SellerList = () => {
         </table>
       </div>
 
+      {/* Pagination */}
       <div className="flex justify-center mt-4">
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
           onClick={() => paginate(currentPage - 1)}
           disabled={currentPage === 1}
         >
           Previous
         </button>
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded ml-2"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded ml-2"
           onClick={() => paginate(currentPage + 1)}
           disabled={currentPage * sellersPerPage >= filteredSellers.length}
         >
@@ -509,19 +502,20 @@ const SellerList = () => {
         </button>
       </div>
 
+      {/* Modal for delete confirmation */}
       {showModal && (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50">
           <div className="bg-white p-6 rounded">
             <p>Are you sure you want to delete this seller?</p>
             <div className="mt-4 flex justify-between">
               <button
-                className="bg-gray-500 text-white px-4 py-2 rounded"
+                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
                 onClick={cancelDelete}
               >
                 Cancel
               </button>
               <button
-                className="bg-red-500 text-white px-4 py-2 rounded"
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
                 onClick={handleDelete}
               >
                 Delete

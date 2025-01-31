@@ -4,6 +4,7 @@ import React from 'react';
 import SellerForm from '../components/forms/AddSellerForm';
 import Responsivenav from '../components/navbar/responsivenav';
 import LogoSection from '../components/logo/logo';
+import Footer from '../components/footer/footer';
 
 const Page = () => {
   return (
@@ -21,6 +22,7 @@ const Page = () => {
       </div>
       <div className="border-b border-gray-400 mt-10"></div>
       <LogoSection/>
+      <Footer/>
     </div>
   );
 };

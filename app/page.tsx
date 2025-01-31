@@ -22,6 +22,7 @@ import PropertyStatusManagerseller from './Admin1213/sellerstatus';
 import BuyerStatus from './Admin1213/buyerstatus';
 import LogoSection from './components/logo/logo';
 import Responsivenav from './components/navbar/responsivenav';
+import Footer from './components/footer/footer';
 
 
 
@@ -53,6 +54,7 @@ export default function Home() {
      <FeaturesSection/>
      <BackgroundLinesDemo/>
      <LogoSection/>
+     <Footer/>
      {/* <LogoSection/> */}
      {/* <AddBuyerForm/> 
      <AddSellerForm/>    */}

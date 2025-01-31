@@ -1,6 +1,7 @@
 import Image from "next/image"; // For displaying images in Next.js
 import About from "./about";
 import Responsivenav from "../components/navbar/responsivenav";
+import Footer from "../components/footer/footer";
 
 const AboutUs = () => {
   return (
@@ -15,6 +16,7 @@ const AboutUs = () => {
                <About />
              </div>
            </div>
+           <Footer/>
      </div>
   );
 };

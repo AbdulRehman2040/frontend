@@ -155,7 +155,7 @@ const BuyerList = () => {
           </style>
         </head>
         <body>
-          <h2>Buyers List</h2>
+          <h2>Landlord  List</h2>
           <table>
             <thead>
               <tr>

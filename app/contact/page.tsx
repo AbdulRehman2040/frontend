@@ -1,4 +1,5 @@
 "use client"
+import Footer from "../components/footer/footer";
 import LogoSection from "../components/logo/logo";
 import Responsivenav from "../components/navbar/responsivenav";
 import ContactForm from "./contact";
@@ -39,6 +40,7 @@ const page = () => {
   </div>
   <div className="border-b border-gray-400 mt-10"></div>
       <LogoSection/>
+      <Footer/>
   </div>
   )
 }
