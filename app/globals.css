@@ -151,3 +151,27 @@ a {
   cursor: pointer;
   transform: scale(1.1);
 }
+
+@media print {
+  /* Ensure the table container uses the full page width */
+  .table-container {
+    width: 100%;
+    overflow-x: visible !important;
+    display: block;
+  }
+
+  table {
+    width: 100% !important;
+    table-layout: auto;
+  }
+
+  /* Hide elements you don’t need in print */
+  .no-print {
+    display: none;
+  }
+  
+  /* Adjust body overflow for better page handling */
+  body {
+    overflow: visible !important;
+  }
+}

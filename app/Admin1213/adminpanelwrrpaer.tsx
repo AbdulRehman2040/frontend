@@ -42,23 +42,31 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <div className="flex">
-      {/* Sidebar */}
-      <Sidebar setActiveTab={setActiveTab} />
+    <div className="flex flex-col min-h-screen overflow-hidden">
+      {/* Sidebar and Main Content */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Sidebar */}
+        <Sidebar setActiveTab={setActiveTab} activeTab={activeTab} />
 
-      {/* Main Content */}
-      <div className="p-4 bg-gray-100 min-h-screen flex-1 ml-64">
-        <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
+        {/* Main Content */}
+        <div className="p-4 bg-gray-100 flex-1 ml-20 overflow-hidden transition-all">
+          <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
 
-        <div className="bg-white p-4 rounded shadow">
-          {activeTab === "dashboard" && <Dashboard buyers={buyers} sellers={sellers} />}
-          {activeTab === "buyers" && <BuyerList  />}
-          {activeTab === "sellers" && <SellerList />}
-          {activeTab === "propertyStatusSeller" && <PropertyStatusManagerseller />}
-          {activeTab === "propertyStatusBuyer" && <PropertyStatusManagerBuyer />}
-          {activeTab === "matchbutton" && <MatchButton />}
+          <div className="bg-white p-4 rounded shadow">
+            {activeTab === "dashboard" && <Dashboard buyers={buyers} sellers={sellers} />}
+            {activeTab === "buyers" && <BuyerList  />}
+            {activeTab === "sellers" && <SellerList  />}
+            {activeTab === "propertyStatusSeller" && <PropertyStatusManagerseller />}
+            {activeTab === "propertyStatusBuyer" && <PropertyStatusManagerBuyer  />}
+            {activeTab === "matchbutton" && <MatchButton  />}
+          </div>
         </div>
       </div>
+
+      {/* One-Line Footer */}
+      <footer className="text-center py-3 bg-black text-white text-sm">
+        &copy; {new Date().getFullYear()} Admin Panel. All rights reserved.
+      </footer>
     </div>
   );
 };

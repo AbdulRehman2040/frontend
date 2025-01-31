@@ -115,15 +115,44 @@ const BuyerList = () => {
   
     // 
     const handlePrint = () => {
-      const printContents = document.querySelector('.table-container')?.innerHTML; // Select the table container
+      const printContents = document.querySelector('.table-container');
+  
       if (printContents) {
-      const originalContents = document.body.innerHTML; // Store original content
-        document.body.innerHTML = printContents; // Replace body content with the table
-        window.print(); // Trigger print
-        document.body.innerHTML = originalContents; // Restore original content
+        const printWindow = window.open('', '_blank'); // Open a new window for printing
+        if (printWindow) {
+          printWindow.document.write(`
+            <html>
+              <head>
+                <title>Buyers List</title>
+                <style type="text/css" media="print">
+                  @page { size: landscape; } /* Set to landscape for horizontal screens */
+                  body { font-family: sans-serif; }
+                  table { width: 100%; border-collapse: collapse; }
+                  th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                  /* Add any other print-specific styles here */
+                  .no-print { display: none; } /* Hide elements you don't want to print */
+                </style>
+              </head>
+              <body>${printContents.innerHTML}</body>
+            </html>
+          `);
+          printWindow.document.close();
+          printWindow.print();
+          printWindow.close(); // Close the print window after printing
+        } else {
+          console.error("Could not open print window.");
+          toast.error("Could not open print window. Please allow pop-ups."); // Inform the user about pop-up blocker
+        }
+  
       } else {
         console.error("No element with class 'table-container' found for printing.");
-      }}
+        toast.error("No data found for printing.");
+      }
+    };
+  
+    
+    
+    
 
 
 
@@ -319,7 +348,7 @@ const BuyerList = () => {
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
-    <div className="container  w-full overflow-hidden  p-4 overflow-x-auto table-container">
+    <div className="container  w-full overflow-hidden  p-4   table-container no-print">
       <h2 className="text-xl font-bold mb-4">Landlord List</h2>
       {error && <p className="text-red-500">{error}</p>}
 
@@ -345,10 +374,13 @@ const BuyerList = () => {
   <span>Export to Excel</span>
 </button>
 
-<button onClick={handlePrint} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center space-x-2"> {/* Print button */}
+<button onClick={handlePrint} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center space-x-2"> 
             <FaPrint />
             <span>Print</span>
           </button>
+
+
+
 </div>
 
 

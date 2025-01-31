@@ -23,11 +23,11 @@ export default function RootLayout({
       >
      
       <div className="">
-           <Responsivenav/>
+           
         {children}
       </div>
       
-        <Footer/>
+       
       </body>
     </html>
   );
