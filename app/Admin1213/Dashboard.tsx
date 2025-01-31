@@ -41,7 +41,8 @@ interface DashboardProps {
 const SummaryBox: React.FC<{ title: string; value: number; color: string }> = ({ title, value, color }) => {
   const bgColorClass = {
     blue: "bg-[#22344c]",
-    green: "bg-[#b4a483]",
+    green: "bg-[#964B00]",
+    silver:'bg-[#b4a483]',
     purple: "bg-yellow-400"
   }[color];
 
@@ -114,7 +115,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
 
   // Chart 2: Match Statistics (Doughnut Chart)
   const matchData = {
-    labels: ["Matched Pairs", "Unmatched Buyers", "Unmatched Sellers"],
+    labels: ["Matched Property", "Unmatched Buyers", "Unmatched Sellers"],
     datasets: [
       {
         label: "Count",
@@ -184,6 +185,18 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
       easing: "easeInOutQuad" as const,
     },
   };
+  const matchedVsEmailsData = {
+    labels: ["Matched Properties", "Emails Sent"],
+    datasets: [
+      {
+        label: "Count",
+        data: [matchedPairs, emailsSent],
+        backgroundColor: ["#964B00", "#facc15"],
+        borderColor: ["#964B00", "#FFFF00"],
+        borderWidth: 1,
+      },
+    ],
+  };
 
   // Options for Email Chart
   const emailOptions = {
@@ -225,8 +238,8 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
       {/* Summary Boxes */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <SummaryBox title="Total Buyers" value={buyers.length} color="blue" />
-        <SummaryBox title="Total Sellers" value={sellers.length} color="green" />
-        <SummaryBox title="Matched Pairs" value={matchedPairs} color="green" />
+        <SummaryBox title="Total Sellers" value={sellers.length} color="silver" />
+        <SummaryBox title="Matched Property" value={matchedPairs} color="green" />
         <SummaryBox title="Emails Sent" value={emailsSent} color="purple" />
       </div>
 
@@ -244,9 +257,9 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
 
         {/* Emails Sent Chart (Bar Chart) */}
         <div className="lg:col-span-2">
-          <ChartContainer title="Emails Sent to Sellers">
-            <Bar data={emailData} options={emailOptions} />
-          </ChartContainer>
+        <ChartContainer title="Matched Property vs Emails Sent">
+          <Bar data={matchedVsEmailsData} options={barOptions} />
+        </ChartContainer>
         </div>
       </div>
     </div>
