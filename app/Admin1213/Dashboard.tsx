@@ -75,7 +75,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
   useEffect(() => {
     const fetchMatches = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/match/matches");
+        const response = await fetch("https://requsest-response.vercel.app/api/match/matches");
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
