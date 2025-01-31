@@ -23,19 +23,19 @@ const AdminPanel = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       {!isAuthenticated ? (
-        <div className="w-full max-w-4xl flex shadow-lg rounded-lg overflow-hidden">
+        <div className="w-full max-w-4xl flex flex-col md:flex-row shadow-lg rounded-lg overflow-hidden bg-white">
           {/* Left Side: Welcome Section */}
-          <div className="w-1/2 bg-blue-600 text-white flex flex-col justify-center items-center p-10">
-            <h1 className="text-4xl font-bold mb-4">Welcome Admin</h1>
-            <p className="text-lg text-center">
-              Please enter your credentials to access the admin panel.
-            </p>
+          <div className="md:w-1/2 bg-blue-600 text-white flex flex-col justify-center items-center p-10 text-center">
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">
+              Welcome Admin
+            </h1>
+            <p className="text-lg">Access the panel by entering your credentials.</p>
           </div>
 
           {/* Right Side: Login Form */}
-          <div className="w-1/2 bg-white p-10 flex flex-col justify-center">
+          <div className="md:w-1/2 p-10 flex flex-col justify-center">
             <div className="flex justify-center mb-6">
               <Image
                 src={logo}
