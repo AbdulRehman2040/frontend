@@ -19,7 +19,7 @@ const BuyerEdit = () => {
     // Fetch the buyer data by ID
     const fetchBuyerData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/buyers/${id}`);
+        const response = await axios.get(`https://requsest-response.vercel.app/api/buyers/${id}`);
         setFormData(response.data);
       } catch (error) {
         console.error('Error fetching buyer data:', error);
@@ -42,7 +42,7 @@ const BuyerEdit = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/buyers/${id}`, formData);
+      await axios.put(`https://requsest-response.vercel.app/api/buyers/${id}`, formData);
       navigate('/admin');  // Redirect to the admin page after successful update
     } catch (error) {
       console.error('Error updating buyer:', error);
