@@ -95,7 +95,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
     const fetchMatchesAndEmailsSent = async () => {
       try {
         // Fetch matches
-        const matchesResponse = await fetch("http://localhost:5000/api/match/matches");
+        const matchesResponse = await fetch("https://requsest-response.vercel.app/api/match/matches");
         if (!matchesResponse.ok) {
           throw new Error(`HTTP error! Status: ${matchesResponse.status}`);
         }
@@ -103,7 +103,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
         setMatches(matchesData.matches || matchesData);
   
         // Fetch total emailsSent count
-        const emailsSentResponse = await fetch("http://localhost:5000/api/match/emails-sent");
+        const emailsSentResponse = await fetch("https://requsest-response.vercel.app/api/match/emails-sent");
         if (!emailsSentResponse.ok) {
           throw new Error(`HTTP error! Status: ${emailsSentResponse.status}`);
         }
@@ -123,7 +123,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
   // Function to send emails and update the emailsSent state
   const handleSendEmails = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/match/send-emails", {
+      const response = await fetch("https://requsest-response.vercel.app/api/match/send-emails", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
