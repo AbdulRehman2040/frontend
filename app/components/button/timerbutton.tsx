@@ -5,54 +5,48 @@ import "react-toastify/dist/ReactToastify.css";
 
 const MatchButtontime: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [timer, setTimer] = useState<number>(0); // Timer in seconds
-  const [hours, setHours] = useState<number>(0); // Hours input
-  const [minutes, setMinutes] = useState<number>(0); // Minutes input
-  const [seconds, setSeconds] = useState<number>(0); // Seconds input
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null); // To store the interval ID
-  const [initialTime, setInitialTime] = useState<number>(0); // Store the initial time for restarting
+  const [timer, setTimer] = useState<number>(0);
+  const [hours, setHours] = useState<number>(0);
+  const [minutes, setMinutes] = useState<number>(0);
+  const [seconds, setSeconds] = useState<number>(0);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const [initialTime, setInitialTime] = useState<number>(0);
+  // Control whether the timer should auto-restart (loop) after reaching zero
+  const [isLoopActive, setIsLoopActive] = useState<boolean>(true);
 
   useEffect(() => {
-    // Cleanup interval on component unmount
     return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
+      if (intervalId) clearInterval(intervalId);
     };
   }, [intervalId]);
 
   useEffect(() => {
-    if (timer === 0 && intervalId) {
+    // Only restart the timer if looping is active
+    if (timer === 0 && intervalId && isLoopActive) {
       clearInterval(intervalId);
       setIntervalId(null);
       toast.info("Time's up! Restarting timer...");
-
-      // Restart the timer immediately with the initial time
       setTimer(initialTime);
       startTimer(initialTime);
     }
-  }, [timer, intervalId, initialTime]);
+  }, [timer, intervalId, initialTime, isLoopActive]);
 
   const handleMatchClick = async () => {
     setLoading(true);
-
     try {
-      // Call the match API endpoint
-      const response = await axios.get("http://localhost:5000/api/match/matches");
-
-      // Show success notification if emails are sent successfully
+      const response = await axios.get(
+        "https://requsest-response.vercel.app/api/match/matches"
+      );
       if (response.data.message) {
         toast.success("Emails sent to matched Tenant successfully!");
       } else {
         toast.info("No matches found.");
       }
-
-      setLoading(false);
     } catch (error) {
       console.error("Error triggering match API:", error);
       toast.error("Failed to send match emails.");
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   const startTimer = (time: number) => {
@@ -60,102 +54,105 @@ const MatchButtontime: React.FC = () => {
       toast.error("Please enter a valid time greater than 0.");
       return;
     }
-
-    if (intervalId) {
-      clearInterval(intervalId);
-    }
-
+    if (intervalId) clearInterval(intervalId);
     setTimer(time);
-
+    // Ensure the loop is active when starting the timer
+    setIsLoopActive(true);
     const newIntervalId = setInterval(() => {
       setTimer((prevTimer) => (prevTimer > 0 ? prevTimer - 1 : 0));
-    }, 1000); // Update every second
-
+    }, 1000);
     setIntervalId(newIntervalId);
   };
 
   const handleStart = () => {
-    // Convert hours, minutes, and seconds to total seconds
     const totalSeconds = hours * 3600 + minutes * 60 + seconds;
-
     if (totalSeconds <= 0) {
       toast.error("Please enter a valid time greater than 0.");
       return;
     }
-
-    // Set the initial time for restarting
     setInitialTime(totalSeconds);
-
-    // Start the timer
     startTimer(totalSeconds);
   };
 
-  // Format seconds into HH:MM:SS
+  const handleStopLoop = () => {
+    if (intervalId) {
+      clearInterval(intervalId);
+      setIntervalId(null);
+    }
+    setIsLoopActive(false);
+    toast.info("Timer loop has been stopped.");
+  };
+
   const formatTime = (time: number): string => {
-    const hours = Math.floor(time / 3600);
-    const minutes = Math.floor((time % 3600) / 60);
-    const seconds = time % 60;
-    return `${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}:${
-      seconds < 10 ? "0" : ""
-    }${seconds}`;
+    const hrs = Math.floor(time / 3600);
+    const mins = Math.floor((time % 3600) / 60);
+    const secs = time % 60;
+    return `${hrs.toString().padStart(2, "0")}:${mins
+      .toString()
+      .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
   return (
-    <div className="container mx-auto p-6 text-center">
-      <div className="mb-4">
-        <div className="flex justify-center space-x-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Hour</label>
+    <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg text-center space-y-6">
+      <div className="grid grid-cols-3 gap-4">
+        {["Hour", "Min", "Sec"].map((label, index) => (
+          <div key={index} className="flex flex-col items-center">
+            <label className="text-sm font-medium mb-1">{label}</label>
             <input
               type="number"
-              value={hours}
-              onChange={(e) => setHours(Number(e.target.value))}
-              placeholder="HH"
-              className="border p-2 rounded w-20"
+              value={index === 0 ? hours : index === 1 ? minutes : seconds}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                index === 0
+                  ? setHours(value)
+                  : index === 1
+                  ? setMinutes(value)
+                  : setSeconds(value);
+              }}
+              placeholder={label.substring(0, 2)}
+              className="border p-2 rounded w-20 text-center"
               min="0"
+              max={index === 0 ? undefined : 59}
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Min</label>
-            <input
-              type="number"
-              value={minutes}
-              onChange={(e) => setMinutes(Number(e.target.value))}
-              placeholder="MM"
-              className="border p-2 rounded w-20"
-              min="0"
-              max="59"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Sec</label>
-            <input
-              type="number"
-              value={seconds}
-              onChange={(e) => setSeconds(Number(e.target.value))}
-              placeholder="SS"
-              className="border p-2 rounded w-20"
-              min="0"
-              max="59"
-            />
-          </div>
-        </div>
+        ))}
+      </div>
+
+      {/* Flex container to add gap between the buttons */}
+      <div className="flex flex-col gap-4">
         <button
           onClick={handleStart}
-          className="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700 mt-4"
+          className="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700 disabled:bg-gray-400"
           disabled={loading || (hours === 0 && minutes === 0 && seconds === 0)}
         >
           Start Timer
         </button>
+        <button
+          onClick={handleStopLoop}
+          className="bg-red-600 text-white px-4 py-2 rounded shadow hover:bg-red-700 disabled:bg-gray-400"
+          disabled={!isLoopActive || loading || timer === 0}
+        >
+          Stop Timer
+        </button>
+        <button
+          onClick={handleMatchClick}
+          className="bg-blue-600 text-white px-6 py-3 rounded shadow hover:bg-blue-700 disabled:bg-gray-400"
+          disabled={loading || timer > 0}
+        >
+          {loading
+            ? "Processing..."
+            : timer === 0
+            ? "Time's Up!"
+            : `Time Left: ${formatTime(timer)}`}
+        </button>
       </div>
-      <button
-        onClick={handleMatchClick}
-        className="bg-blue-600 text-white px-6 py-3 rounded shadow hover:bg-blue-700"
-        disabled={loading || timer > 0}
-      >
-        {loading ? "Processing..." : timer === 0 ? "Time's Up!" : `Time Left: ${formatTime(timer)}`}
-      </button>
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+      />
     </div>
   );
 };

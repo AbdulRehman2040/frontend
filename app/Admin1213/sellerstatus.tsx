@@ -28,7 +28,7 @@ const PropertyStatusManagerseller = () => {
   useEffect(() => {
     const fetchSellers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/sellers");
+        const response = await axios.get("https://requsest-response.vercel.app/api/sellers");
         setSellers(response.data);
       } catch (error) {
         setMessage("Error fetching sellers.");
@@ -46,7 +46,7 @@ const PropertyStatusManagerseller = () => {
       const payload = { propertyStatus: status }; // Payload with the new status
 
       const response = await axios.put(
-        `http://localhost:5000/api/sellers/${sellerId}`,
+        `https://requsest-response.vercel.app/api/sellers/${sellerId}`,
         payload
       );
       if (response.data.updatedSeller.propertyStatus) {

@@ -13,7 +13,7 @@ const MatchButton: React.FC = () => {
       setLoading(true);
 
       // Call the match API endpoint
-      const response = await axios.get("http://localhost:5000/api/match/matches");
+      const response = await axios.get("https://requsest-response.vercel.app/api/match/matches");
 
       // Show success notification if emails are sent successfully
       if (response.data.message) {
@@ -35,6 +35,7 @@ const MatchButton: React.FC = () => {
 
     
     <div className="container mx-auto p-6 text-center">
+      <h1 className="font-bold text-center">Send Instant Email</h1>
       <button
         onClick={handleMatchClick}
         className="bg-blue-600 text-white px-6 py-3 rounded shadow hover:bg-blue-700"
@@ -44,7 +45,7 @@ const MatchButton: React.FC = () => {
       </button>
       <ToastContainer />
     </div>
-    <h1 className="font-bold text-center">set timer email of 24 hours</h1>
+    <h1 className="font-bold text-center">Set Timer Email of 24 hours</h1>
     <MatchButtontime />
     </div>
   );
