@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Bar, Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from "chart.js";
 import { FaSpinner } from "react-icons/fa"; // Import spinner icon
-import Dashboard4 from "./EmailActions";
+import MatchButton from "../components/button/matchbutton";
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
@@ -92,25 +92,55 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
 
   // Fetch match data
   useEffect(() => {
-    const fetchMatches = async () => {
+    const fetchMatchesAndEmailsSent = async () => {
       try {
-        const response = await fetch("https://requsest-response.vercel.app/api/match/matches");
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        // Fetch matches
+        const matchesResponse = await fetch("http://localhost:5000/api/match/matches");
+        if (!matchesResponse.ok) {
+          throw new Error(`HTTP error! Status: ${matchesResponse.status}`);
         }
-        const data = await response.json();
-        setMatches(data.matches || data); // Handle both array and object responses
-        setEmailsSent(data.matches?.length || data.length || 0); // Safely count emails sent
+        const matchesData = await matchesResponse.json();
+        setMatches(matchesData.matches || matchesData);
+  
+        // Fetch total emailsSent count
+        const emailsSentResponse = await fetch("http://localhost:5000/api/match/emails-sent");
+        if (!emailsSentResponse.ok) {
+          throw new Error(`HTTP error! Status: ${emailsSentResponse.status}`);
+        }
+        const emailsSentData = await emailsSentResponse.json();
+        setEmailsSent(emailsSentData.totalEmailsSent || 0);
       } catch (error) {
-        console.error("Error fetching match data:", error);
-        setError("Failed to fetch match data. Please try again later.");
+        console.error("Error fetching data:", error);
+        setError("Failed to fetch data. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
-
-    fetchMatches();
+  
+    fetchMatchesAndEmailsSent();
   }, []);
+
+  // Function to send emails and update the emailsSent state
+  const handleSendEmails = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/match/send-emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setEmailsSent((prevCount) => prevCount + data.emailsSent); // Increment emailsSent by the number of emails sent
+    } catch (error) {
+      console.error("Error sending emails:", error);
+      setError("Failed to send emails. Please try again later.");
+    }
+  };
 
   // Count unmatched buyers and sellers
   const matchedPairs = matches.length;
@@ -145,15 +175,15 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
     ],
   };
 
-  // Chart 3: Emails Sent (Bar Chart)
-  const emailData = {
-    labels: ["Emails Sent"],
+  // Chart 3: Matched Property vs Emails Sent (Bar Chart)
+  const matchedVsEmailsData = {
+    labels: ["Matched Properties", "Emails Sent"],
     datasets: [
       {
-        label: "Count",
-        data: [emailsSent],
-        backgroundColor: ["#FFEE40"],
-        borderColor: ["#FFFF00"],
+        label: "",
+        data: [matchedPairs, emailsSent],
+        backgroundColor: ["#964B00", "#facc15"],
+        borderColor: ["#964B00", "#FFFF00"],
         borderWidth: 1,
       },
     ],
@@ -206,42 +236,6 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
     },
   };
 
-  const matchedVsEmailsData = {
-    labels: ["Matched Properties", "Emails Sent"],
-    datasets: [
-      {
-        label: "",
-        data: [matchedPairs, emailsSent],
-        backgroundColor: ["#964B00", "#facc15"],
-        borderColor: ["#964B00", "#FFFF00"],
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  // Options for Matched Property vs Emails Sent Chart
-  const matchedVsEmailsOptions = {
-    indexAxis: "y" as const, // Horizontal bar chart
-    responsive: true,
-    maintainAspectRatio: false, // Allow chart to resize freely
-    plugins: {
-      legend: {
-        display: false, // Hide the legend
-      },
-      title: {
-        display: true,
-        text: "Matched Property vs Emails Sent",
-        font: {
-          size: 16,
-        },
-      },
-    },
-    animation: {
-      duration: 1000,
-      easing: "easeInOutQuad" as const,
-    },
-  };
-
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -266,6 +260,8 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
         <SummaryBox title="Emails Sent" value={emailsSent} color="purple" loading={loading} />
       </div>
 
+      {/* Add a button to send emails */}
+     
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Buyers vs. Sellers Chart (Horizontal Bar Chart) */}
@@ -281,8 +277,9 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
         {/* Matched Property vs Emails Sent Chart (Bar Chart) */}
         <div className="lg:col-span-2">
           <ChartContainer title="Matched Property vs Emails Sent" loading={loading}>
-            <Bar data={matchedVsEmailsData} options={matchedVsEmailsOptions} />
+            <Bar data={matchedVsEmailsData} options={barOptions} />
           </ChartContainer>
+
         </div>
       </div>
     </div>

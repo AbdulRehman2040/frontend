@@ -7,19 +7,6 @@ import PropertyStatusManagerBuyer from "../Admin1213/buyerstatus";
 import MatchButton from "../components/button/matchbutton";
 import Dashboard from "./Dashboard";
 
-interface Seller {
-  _id: string;
-  landlordName: string;
-  landlordPhoneNumber: string;
-  landlordEmailAddress: string;
-  landlordPropertyType: string;
-  landlordPropertyAddress: string;
-  landlordRent: number;
-  propertyAvailableDate: string;
-  notes: string;
-  propertyStatus: string;
-}
-
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<string>("dashboard");
   const [buyers, setBuyers] = useState([]);
@@ -41,6 +28,28 @@ const AdminDashboard = () => {
       .catch((error) => console.error("Error fetching sellers:", error));
   }, []);
 
+  // Define the handleSendEmails function
+  const handleSendEmails = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/match/send-emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Emails sent:", data.emailsSent);
+    } catch (error) {
+      console.error("Error sending emails:", error);
+      throw error; // Re-throw the error to handle it in the MatchButton component
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen overflow-hidden">
       {/* Sidebar and Main Content */}
@@ -54,11 +63,13 @@ const AdminDashboard = () => {
 
           <div className="bg-white p-4 rounded shadow">
             {activeTab === "dashboard" && <Dashboard buyers={buyers} sellers={sellers} />}
-            {activeTab === "buyers" && <BuyerList  />}
-            {activeTab === "sellers" && <SellerList  />}
+            {activeTab === "buyers" && <BuyerList />}
+            {activeTab === "sellers" && <SellerList />}
             {activeTab === "propertyStatusSeller" && <PropertyStatusManagerseller />}
-            {activeTab === "propertyStatusBuyer" && <PropertyStatusManagerBuyer  />}
-            {activeTab === "matchbutton" && <MatchButton  />}
+            {activeTab === "propertyStatusBuyer" && <PropertyStatusManagerBuyer />}
+            {activeTab === "matchbutton" && (
+              <MatchButton handleSendEmails={handleSendEmails} /> // Pass the function as a prop
+            )}
           </div>
         </div>
       </div>
