@@ -81,8 +81,8 @@ const SellerList = () => {
         setSellers(response.data);
         setFilteredSellers(response.data);
       } catch (error) {
-        setError('Failed to load sellers.');
-        toast.error('Failed to load sellers.');
+        setError('Failed to load Tenants.');
+        toast.error('Failed to load Tenants.');
       }
     };
 
@@ -96,10 +96,10 @@ const SellerList = () => {
       await axios.delete(`https://requsest-response.vercel.app/api/sellers/${selectedSellerId}`);
       setSellers(sellers.filter((seller) => seller._id !== selectedSellerId));
       setShowModal(false);
-      toast.success('Seller deleted successfully!');
+      toast.success('Tenants deleted successfully!');
     } catch (error) {
-      setError('Failed to delete seller.');
-      toast.error('Failed to delete seller.');
+      setError('Failed to delete Tenants.');
+      toast.error('Failed to delete Tenants.');
     }
   };
 

@@ -72,8 +72,8 @@ const BuyerList = () => {
         setBuyers(response.data);
         setFilteredBuyers(response.data);
       } catch (error) {
-        setError('Failed to load buyers.');
-        toast.error('Failed to load buyers.');
+        setError('Failed to load Landlord.');
+        toast.error('Failed to load Landlord.');
       }
     };
 
@@ -89,8 +89,8 @@ const BuyerList = () => {
       setShowModal(false);
       toast.success('Buyer deleted successfully!');
     } catch (error) {
-      setError('Failed to delete buyer.');
-      toast.error('Failed to delete buyer.');
+      setError('Failed to delete Landlord.');
+      toast.error('Failed to delete Landlord.');
     }
   };
 
