@@ -87,7 +87,7 @@ const BuyerList = () => {
       await axios.delete(`https://requsest-response.vercel.app/api/buyers/${selectedBuyerId}`);
       setBuyers(buyers.filter((buyer) => buyer._id !== selectedBuyerId));
       setShowModal(false);
-      toast.success('Buyer deleted successfully!');
+      toast.success('Landlord deleted successfully!');
     } catch (error) {
       setError('Failed to delete Landlord.');
       toast.error('Failed to delete Landlord.');

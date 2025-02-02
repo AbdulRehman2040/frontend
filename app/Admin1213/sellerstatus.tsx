@@ -119,6 +119,7 @@ const PropertyStatusManagerseller = () => {
             </tr>
           </thead>
           <tbody>
+            
             {currentSellers.map((seller, index) => (
               <tr key={seller._id} className="border-b hover:bg-gray-50">
                 <td className="py-2 px-4 border-r">{index + 1 + (currentPage - 1) * sellersPerPage}</td>
