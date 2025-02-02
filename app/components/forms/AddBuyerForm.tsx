@@ -117,7 +117,7 @@ const BuyerForm = () => {
     try {
       const response = await axios.post('https://requsest-response.vercel.app/api/buyers', formData);
       setLoading(false);
-      setSuccessMessage('Your Data is submitted successfully !');
+      setSuccessMessage('Thank you for providing your information. Once we find a suitable tenant for your property, our representative will get in touch with you.');
       setFormData({
         name: '',
         phoneNumber: '',

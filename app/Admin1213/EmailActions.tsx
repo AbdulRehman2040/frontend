@@ -35,7 +35,7 @@ const Dashboard4 = () => {
   useEffect(() => {
     const fetchMatches = async () => {
       try {
-        const response = await axios.get<{ matches: Match[] }>("http://localhost:5000/api/match/matches"); // Define the response type
+        const response = await axios.get<{ matches: Match[] }>("https://requsest-response.vercel.app/api/match/matches"); // Define the response type
         setMatches(response.data.matches);
       } catch (error) {
         setError("Failed to fetch matches.");
@@ -52,7 +52,7 @@ const Dashboard4 = () => {
     setError("");
   
     try {
-      const response = await axios.post("http://localhost:5000/api/match/send-emails");
+      const response = await axios.post("https://requsest-response.vercel.app//api/match/send-emails");
       alert(response.data.message); // Show success message
     } catch (error) {
       setError("Failed to send match emails.");

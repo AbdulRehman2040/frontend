@@ -132,7 +132,7 @@ const PropertyStatusManagerseller = () => {
                 <td className="py-2 px-4 border-r">{seller.landlordPropertyType}</td>
                 <td className="py-2 px-4 border-r">{seller.landlordPropertyAddress}</td>
                 <td className="py-2 px-4 border-r">{seller.Size}</td>
-                <td className="py-2 px-4 border-r">{seller.landlordRent}</td>
+                <td className="py-2 px-4 border-r">£{seller.landlordRent}</td>
                 <td className="py-2 px-4 border-r">{seller.notes}</td>
                 <td className="py-2 px-4 border-r">{seller.propertyStatus}</td>
                 <td className="py-2 px-4">
@@ -152,7 +152,7 @@ const PropertyStatusManagerseller = () => {
                       />
                       <div
                         className={`block w-10 h-6 rounded-full transition-colors ${
-                          seller.propertyStatus === "active" ? "bg-blue-500" : "bg-gray-500"
+                          seller.propertyStatus === "active" ? "bg-blue-500" : "bg-red-500"
                         }`}
                       ></div>
                       <div

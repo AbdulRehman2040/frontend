@@ -109,7 +109,7 @@ export default function SellerForm() {
         { ...formData,  }
       );
       setLoading(false);
-      setSuccessMessage("Seller data submitted successfully!");
+      setSuccessMessage("Thank you for providing your information. As soon as we find a suitable property, our representative will contact you");
       setFormData({
         landlordName: "",
         landlordPhoneNumber: "",

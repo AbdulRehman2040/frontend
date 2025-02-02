@@ -7,6 +7,10 @@ import PropertyStatusManagerBuyer from "../Admin1213/buyerstatus";
 import MatchButton from "../components/button/matchbutton";
 import Dashboard from "./Dashboard";
 import TimerButton from "../components/button/timerbutton";
+import ChangePassword from "./ChangePassword";
+import AddAdmin from "./AddAdmin";
+import AdminProfile from "./AdminProfile";
+import AdminList from "./AdminList";
 
 
 const AdminDashboard = () => {
@@ -72,6 +76,11 @@ const AdminDashboard = () => {
             {activeTab === "matchbutton" && (
               <MatchButton handleSendEmails={handleSendEmails} /> // Pass the function as a prop
             )}
+             
+        {activeTab === "change-password" && <ChangePassword />}
+        {activeTab === "add-admin" && <AddAdmin />}
+        {activeTab === "admin-list" && <AdminList/>}
+        
            
             
           </div>

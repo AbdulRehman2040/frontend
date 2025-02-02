@@ -1,5 +1,3 @@
-
-
 import { useState } from "react";
 import { AiOutlineMail, AiOutlineUser, AiOutlinePhone } from "react-icons/ai";
 
@@ -15,6 +13,7 @@ const ContactForm = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
@@ -22,6 +21,7 @@ const ContactForm = () => {
     });
   };
 
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSuccess("");
@@ -29,7 +29,7 @@ const ContactForm = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("https://formspree.io/f/xovjjdkg", {
+      const response = await fetch("/https://requsest-response.vercel.app/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,8 +42,10 @@ const ContactForm = () => {
         }),
       });
 
+      const result = await response.json();
+
       if (response.ok) {
-        setSuccess("Thank you for your message. We'll get back to you shortly!");
+        setSuccess(result.message);
         setFormData({
           name: "",
           email: "",
@@ -51,7 +53,7 @@ const ContactForm = () => {
           message: "",
         });
       } else {
-        setError("Something went wrong. Please try again later.");
+        setError(result.message || "Something went wrong. Please try again later.");
       }
     } catch (err) {
       setError("There was an error submitting the form. Please try again.");
@@ -62,7 +64,7 @@ const ContactForm = () => {
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-xl border-2">
-      <h1 className="text-2xl font-bold mb-4 text-center text-balck">Contact Us</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center text-black">Contact Us</h1>
       <form onSubmit={handleSubmit}>
         {/* Name Field */}
         <div className="mb-4">

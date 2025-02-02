@@ -110,8 +110,8 @@ const NonActiveBuyers = () => {
                   <td className="border border-gray-300 p-3">{buyer.propertyCategory}</td>
                   <td className="border border-gray-300 p-3">{buyer.propertyTypeSelect}</td>
                   <td className="border border-gray-300 p-3">{buyer.areaRequired}</td>
-                  <td className="border border-gray-300 p-3">{buyer.budget}</td>
-                  <td className="border border-gray-300 p-3">{buyer.deposit}</td>
+                  <td className="border border-gray-300 p-3">£{buyer.budget}</td>
+                  <td className="border border-gray-300 p-3">£{buyer.deposit}</td>
                   <td className="border border-gray-300 p-3">{buyer.notes}</td>
                   <td className="border border-gray-300 p-3">
                     {new Date(buyer.propertyAvailableDate).toLocaleDateString()}

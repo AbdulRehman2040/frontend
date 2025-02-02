@@ -149,7 +149,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
 
   // Chart 1: Buyers vs. Sellers (Horizontal Bar Chart)
   const totalData = {
-    labels: ["Buyers", "Sellers"],
+    labels: ["Landlord", "Tenants"],
     datasets: [
       {
         label: "Total Count",
@@ -163,7 +163,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
 
   // Chart 2: Match Statistics (Doughnut Chart)
   const matchData = {
-    labels: ["Matched Property", "Unmatched Buyers", "Unmatched Sellers"],
+    labels: ["Matched Property", "Unmatched Landlord", "Unmatched Tenants"],
     datasets: [
       {
         label: "Count",
@@ -196,7 +196,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
     maintainAspectRatio: false, // Allow chart to resize freely
     plugins: {
       legend: {
-        display: true,
+        display: false,  // <-- Change this to false
         position: "top" as const,
       },
       title: {
@@ -212,6 +212,7 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
       easing: "easeInOutQuad" as const,
     },
   };
+  
 
   // Options for Doughnut Chart
   const doughnutOptions = {

@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, JSX } from "react";
-import { FaBars, FaChevronDown, FaChevronRight, FaSignOutAlt } from "react-icons/fa";
+import { FaBars, FaChevronDown, FaChevronRight, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { MdClose, MdPeople, MdDashboard, MdRadioButtonChecked } from "react-icons/md";
-import { RiLockPasswordLine, RiUserSettingsLine } from "react-icons/ri";
+import { RiAdminFill, RiLockPasswordLine, RiUserSettingsLine } from "react-icons/ri";
 
 interface SidebarProps {
   setActiveTab: React.Dispatch<React.SetStateAction<string>>;
@@ -13,6 +13,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ setActiveTab, activeTab }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [showDropdown, setShowDropdown] = useState(false); // State for dropdown visibility
 
   // Handle window resize
   useEffect(() => {
@@ -35,6 +36,11 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveTab, activeTab }) => {
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
     setIsOpen(false); // Always close the sidebar
+  };
+
+  // Toggle dropdown
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
   };
 
   return (
@@ -96,20 +102,58 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveTab, activeTab }) => {
           isOpen={isOpen}
         />
       </nav>
+
+      {/* User Icon and Dropdown */}
+      <div className="mt-auto relative">
+        <button
+          onClick={toggleDropdown}
+          className="flex items-center gap-4 p-3 rounded-lg hover:bg-white hover:text-black transition-all sidebar-link"
+        >
+          <FaUser />
+          {isOpen && <span>Admin</span>}
+          {isOpen && <FaChevronDown className="ml-auto" />}
        
+        </button>
 
-
-
+        {/* Dropdown Menu */}
+        {showDropdown && (
+          <div className="absolute bottom-16 left-4 bg-white text-black rounded-lg shadow-lg w-48">
+            <button
+              onClick={() => handleTabClick("change-password")}
+              className="w-full flex items-center gap-2 p-3 hover:bg-gray-100 rounded-lg"
+              
+            >
+              <RiLockPasswordLine />
+              <span>Change Password</span>
+            </button>
+            <button
+              onClick={() => handleTabClick("add-admin")}
+              className="w-full flex items-center gap-2 p-3 hover:bg-gray-100 rounded-lg"
+            >
+              <MdPeople />
+              <span>Add New Admin</span>
+            </button>
+            <button
+              onClick={() => handleTabClick("admin-list")}
+              className="w-full flex items-center gap-2 p-3 hover:bg-gray-100 rounded-lg"
+            >
+              <RiAdminFill />
+              <span>Admin List</span>
+            </button>
+            
+        <button
+         onClick={handleLogout}
+         className="w-full flex items-center gap-2 p-3 hover:bg-gray-100 rounded-lg">
+        <FaSignOutAlt />
+        <span>Logout</span>
+        </button>
+      </div>
+          
+        )}
+      </div>
 
       {/* Logout Button */}
-      <div className="mt-auto">
-        <SidebarItem
-          icon={<FaSignOutAlt />}
-          label="Logout"
-          onClick={handleLogout}
-          isOpen={isOpen}
-        />
-      </div>
+      
     </div>
   );
 };

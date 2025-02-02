@@ -37,7 +37,7 @@ const MatchButton: React.FC<MatchButtonProps> = ({ handleSendEmails }) => {
           {loading ? "Processing..." : "Send Match Emails"}
         </button>
         <ToastContainer />
-        <TimerButton/>
+        <TimerButton handleSendEmails={handleSendEmails} />
       </div>
     </div>
   );

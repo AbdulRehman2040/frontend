@@ -1,166 +1,174 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const MatchButtontime: React.FC = () => {
-  const [loading, setLoading] = useState(false);
-  const [timer, setTimer] = useState<number>(0);
+interface MatchButtonTimeProps {
+  handleSendEmails: () => Promise<void>;
+}
+
+const TIMER_START_KEY = "match_timer_start";
+const TIMER_DURATION_KEY = "match_timer_duration";
+
+const MatchButtonTime: React.FC<MatchButtonTimeProps> = ({ handleSendEmails }) => {
   const [hours, setHours] = useState<number>(0);
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-  const [initialTime, setInitialTime] = useState<number>(0);
-   const [emailsSent, setEmailsSent] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [isRunning, setIsRunning] = useState<boolean>(false);
 
-    const [error, setError] = useState<string | null>(null);
-  // Control whether the timer should auto-restart (loop) after reaching zero
-  const [isLoopActive, setIsLoopActive] = useState<boolean>(true);
-
+  // Load timer state from localStorage when component mounts
   useEffect(() => {
-    return () => {
-      if (intervalId) clearInterval(intervalId);
-    };
-  }, [intervalId]);
+    const storedStart = localStorage.getItem(TIMER_START_KEY);
+    const storedDuration = localStorage.getItem(TIMER_DURATION_KEY);
 
-  useEffect(() => {
-    // Only restart the timer if looping is active
-    if (timer === 0 && intervalId && isLoopActive) {
-      clearInterval(intervalId);
-      setIntervalId(null);
-      toast.info("Time's up! Restarting timer...");
-      setTimer(initialTime);
-      startTimer(initialTime);
-    }
-  }, [timer, intervalId, initialTime, isLoopActive]);
+    if (storedStart && storedDuration) {
+      const startTime = parseInt(storedStart, 10);
+      const duration = parseInt(storedDuration, 10);
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const remainingTime = Math.max(0, duration - elapsed);
 
-  const handleSendEmails = async () => {
-    try {
-      const response = await fetch("https://requsest-response.vercel.app/api/match/send-emails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+      if (remainingTime > 0) {
+        setTimeLeft(remainingTime);
+        setIsRunning(true);
+      } else {
+        localStorage.removeItem(TIMER_START_KEY);
+        localStorage.removeItem(TIMER_DURATION_KEY);
       }
+    }
+  }, []);
 
-      const data = await response.json();
-      setEmailsSent((prevCount) => prevCount + data.emailsSent); // Increment emailsSent by the number of emails sent
+  // Timer countdown effect
+  useEffect(() => {
+    if (!isRunning || timeLeft <= 0) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          handleMatchClick(); // Trigger function when timer reaches 0
+          // Restart the timer after it reaches 0
+          if (isRunning) {
+            setTimeLeft(hours * 3600 + minutes * 60 + seconds); // Restart with initial time
+            localStorage.setItem(TIMER_START_KEY, Date.now().toString());
+          }
+          return hours * 3600 + minutes * 60 + seconds; // Reset timer to initial value
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isRunning, timeLeft]);
+
+  // Start Timer
+  const startTimer = () => {
+    if (hours <= 0 && minutes <= 0 && seconds <= 0) {
+      toast.error("Enter a valid time greater than 0.");
+      return;
+    }
+
+    const totalTimeInSeconds = hours * 3600 + minutes * 60 + seconds;
+    const now = Date.now();
+    localStorage.setItem(TIMER_START_KEY, now.toString());
+    localStorage.setItem(TIMER_DURATION_KEY, totalTimeInSeconds.toString());
+
+    setTimeLeft(totalTimeInSeconds);
+    setIsRunning(true);
+  };
+
+  // Trigger Email Function When Timer Reaches 0
+  const handleMatchClick = async () => {
+    try {
+      await handleSendEmails();
+      toast.success("Emails sent successfully!");
+      // After sending the email, restart the timer
+      if (isRunning) {
+        setTimeLeft(hours * 3600 + minutes * 60 + seconds); // Restart with the same initial time
+        localStorage.setItem(TIMER_START_KEY, Date.now().toString());
+      }
     } catch (error) {
       console.error("Error sending emails:", error);
-      setError("Failed to send emails. Please try again later.");
+      toast.error("Failed to send emails.");
     }
   };
 
-  const startTimer = (time: number) => {
-    if (time <= 0) {
-      toast.error("Please enter a valid time greater than 0.");
-      return;
-    }
-    if (intervalId) clearInterval(intervalId);
-    setTimer(time);
-    // Ensure the loop is active when starting the timer
-    setIsLoopActive(true);
-    const newIntervalId = setInterval(() => {
-      setTimer((prevTimer) => (prevTimer > 0 ? prevTimer - 1 : 0));
-    }, 1000);
-    setIntervalId(newIntervalId);
+  // Stop Timer and Reset
+  const stopTimer = () => {
+    setIsRunning(false);
+    setTimeLeft(0);
+    localStorage.removeItem(TIMER_START_KEY);
+    localStorage.removeItem(TIMER_DURATION_KEY);
+    toast.info("Timer stopped.");
   };
 
-  const handleStart = () => {
-    const totalSeconds = hours * 3600 + minutes * 60 + seconds;
-    if (totalSeconds <= 0) {
-      toast.error("Please enter a valid time greater than 0.");
-      return;
-    }
-    setInitialTime(totalSeconds);
-    startTimer(totalSeconds);
-  };
+  // Format time to HH:mm:ss
+  const formatTime = (seconds: number) => {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
 
-  const handleStopLoop = () => {
-    if (intervalId) {
-      clearInterval(intervalId);
-      setIntervalId(null);
-    }
-    setIsLoopActive(false);
-    toast.info("Timer loop has been stopped.");
-  };
-
-  const formatTime = (time: number): string => {
-    const hrs = Math.floor(time / 3600);
-    const mins = Math.floor((time % 3600) / 60);
-    const secs = time % 60;
-    return `${hrs.toString().padStart(2, "0")}:${mins
-      .toString()
-      .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    return `${String(hrs).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   };
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg text-center space-y-6">
-      <div className="grid grid-cols-3 gap-4">
-        {["Hour", "Min", "Sec"].map((label, index) => (
-          <div key={index} className="flex flex-col items-center">
-            <label className="text-sm font-medium mb-1">{label}</label>
-            <input
-              type="number"
-              value={index === 0 ? hours : index === 1 ? minutes : seconds}
-              onChange={(e) => {
-                const value = Number(e.target.value);
-                index === 0
-                  ? setHours(value)
-                  : index === 1
-                  ? setMinutes(value)
-                  : setSeconds(value);
-              }}
-              placeholder={label.substring(0, 2)}
-              className="border p-2 rounded w-20 text-center"
-              min="0"
-              max={index === 0 ? undefined : 59}
-            />
-          </div>
-        ))}
-      </div>
+  <div className="text-xl font-semibold">Enter Time (HH:mm:ss)</div> {/* Label for HH:mm:ss */}
+  
+  {/* Time Input Fields */}
+  <div className="flex justify-center space-x-2">
+    <input
+      type="number"
+      value={hours}
+      onChange={(e) => setHours(Math.max(0, Math.min(23, parseInt(e.target.value) || 0)))}
+      placeholder="HH"
+      className="w-16 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    <input
+      type="number"
+      value={minutes}
+      onChange={(e) => setMinutes(Math.max(0, Math.min(59, parseInt(e.target.value) || 0)))}
+      placeholder="MM"
+      className="w-16 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    <input
+      type="number"
+      value={seconds}
+      onChange={(e) => setSeconds(Math.max(0, Math.min(59, parseInt(e.target.value) || 0)))}
+      placeholder="SS"
+      className="w-16 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+  </div>
 
-      {/* Flex container to add gap between the buttons */}
-      <div className="flex flex-col gap-4">
-        <button
-          onClick={handleStart}
-          className="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700 disabled:bg-gray-400"
-          disabled={loading || (hours === 0 && minutes === 0 && seconds === 0)}
-        >
-          Start Timer
-        </button>
-        <button
-          onClick={handleStopLoop}
-          className="bg-red-600 text-white px-4 py-2 rounded shadow hover:bg-red-700 disabled:bg-gray-400"
-          disabled={!isLoopActive || loading || timer === 0}
-        >
-          Stop Timer
-        </button>
-        <button
-          onClick={handleSendEmails}
-          className="bg-blue-600 text-white px-6 py-3 rounded shadow hover:bg-blue-700 disabled:bg-gray-400"
-          disabled={loading || timer > 0}
-        >
-          {loading
-            ? "Processing..."
-            : timer === 0
-            ? "Time's Up!"
-            : `Time Left: ${formatTime(timer)}`}
-        </button>
-      </div>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar
-        newestOnTop
-        closeOnClick
-      />
-    </div>
+  {/* Timer Buttons */}
+  <div className="space-y-4">
+    <button
+      onClick={startTimer}
+      className="w-full bg-green-600 text-white px-6 py-3 rounded shadow hover:bg-green-700"
+      disabled={isRunning}
+    >
+      Start Timer
+    </button>
+
+    <button
+      onClick={handleMatchClick}
+      className="w-full bg-blue-600 text-white px-6 py-3 rounded shadow hover:bg-blue-700 disabled:bg-gray-400"
+      disabled={timeLeft > 0}
+    >
+      {timeLeft === 0 ? "Send Emails" : `Time Left: ${formatTime(timeLeft)}`}
+    </button>
+
+    <button
+      onClick={stopTimer}
+      className="w-full bg-red-600 text-white px-6 py-3 rounded shadow hover:bg-red-700"
+    >
+      Stop Timer
+    </button>
+  </div>
+
+  <ToastContainer />
+</div>
+
   );
 };
 
-export default MatchButtontime;
+export default MatchButtonTime;
