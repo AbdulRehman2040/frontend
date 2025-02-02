@@ -25,7 +25,7 @@ const PropertyStatus = () => {
       console.log("Sending payload:", payload); // Debugging
   
       const response = await axios.put(
-        `http://localhost:5000/api/buyers/${buyerId}`,
+        `https://requsest-response.vercel.app/api/buyers/${buyerId}`,
         payload
       );
   

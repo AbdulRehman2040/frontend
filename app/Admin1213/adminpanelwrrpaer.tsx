@@ -31,7 +31,7 @@ const AdminDashboard = () => {
   // Define the handleSendEmails function
   const handleSendEmails = async () => {
     try {
-      const response = await fetch("https://requsest-response.vercel.app/match/send-emails", {
+      const response = await fetch("https://requsest-response.vercel.app/api/match/send-emails", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
