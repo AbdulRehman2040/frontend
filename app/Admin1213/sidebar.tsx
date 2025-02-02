@@ -3,7 +3,7 @@
 import React, { useState, useEffect, JSX } from "react";
 import { FaBars, FaChevronDown, FaChevronRight, FaSignOutAlt } from "react-icons/fa";
 import { MdClose, MdPeople, MdDashboard, MdRadioButtonChecked } from "react-icons/md";
-import { RiUserSettingsLine } from "react-icons/ri";
+import { RiLockPasswordLine, RiUserSettingsLine } from "react-icons/ri";
 
 interface SidebarProps {
   setActiveTab: React.Dispatch<React.SetStateAction<string>>;
@@ -96,6 +96,10 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveTab, activeTab }) => {
           isOpen={isOpen}
         />
       </nav>
+       
+
+
+
 
       {/* Logout Button */}
       <div className="mt-auto">

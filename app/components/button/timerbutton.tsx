@@ -11,6 +11,9 @@ const MatchButtontime: React.FC = () => {
   const [seconds, setSeconds] = useState<number>(0);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [initialTime, setInitialTime] = useState<number>(0);
+   const [emailsSent, setEmailsSent] = useState<number>(0);
+
+    const [error, setError] = useState<string | null>(null);
   // Control whether the timer should auto-restart (loop) after reaching zero
   const [isLoopActive, setIsLoopActive] = useState<boolean>(true);
 
@@ -31,22 +34,25 @@ const MatchButtontime: React.FC = () => {
     }
   }, [timer, intervalId, initialTime, isLoopActive]);
 
-  const handleMatchClick = async () => {
-    setLoading(true);
+  const handleSendEmails = async () => {
     try {
-      const response = await axios.get(
-        "https://requsest-response.vercel.app/api/match/matches"
-      );
-      if (response.data.message) {
-        toast.success("Emails sent to matched Tenant successfully!");
-      } else {
-        toast.info("No matches found.");
+      const response = await fetch("https://requsest-response.vercel.app/api/match/send-emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
+
+      const data = await response.json();
+      setEmailsSent((prevCount) => prevCount + data.emailsSent); // Increment emailsSent by the number of emails sent
     } catch (error) {
-      console.error("Error triggering match API:", error);
-      toast.error("Failed to send match emails.");
+      console.error("Error sending emails:", error);
+      setError("Failed to send emails. Please try again later.");
     }
-    setLoading(false);
   };
 
   const startTimer = (time: number) => {
@@ -135,7 +141,7 @@ const MatchButtontime: React.FC = () => {
           Stop Timer
         </button>
         <button
-          onClick={handleMatchClick}
+          onClick={handleSendEmails}
           className="bg-blue-600 text-white px-6 py-3 rounded shadow hover:bg-blue-700 disabled:bg-gray-400"
           disabled={loading || timer > 0}
         >

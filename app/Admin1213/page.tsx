@@ -1,3 +1,4 @@
+// admin page.tsx
 "use client";
 
 import { useState } from "react";
@@ -8,45 +9,53 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { motion } from "framer-motion";
 
 const AdminPanel = () => {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handlePasswordSubmit = () => {
-    const adminPassword = "admin123"; // Replace with env variable in production
-    if (password === adminPassword) {
-      setIsAuthenticated(true);
-      setError("");
-    } else {
-      setError("Incorrect password. Please try again.");
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("https://requsest-response.vercel.app/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem("token", data.token);
+        setIsAuthenticated(true);
+        setError("");
+      } else {
+        setError(data.message || "Invalid credentials");
+      }
+    } catch (error) {
+      setError("Server error. Please try again.");
     }
   };
-
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
-  };
-
-  const leftSideVariants = {
-    hidden: { x: -100, opacity: 0 },
-    visible: { x: 0, opacity: 1, transition: { duration: 0.5, delay: 0.2 } },
-  };
-
-  const rightSideVariants = {
-    hidden: { x: 100, opacity: 0 },
-    visible: { x: 0, opacity: 1, transition: { duration: 0.5, delay: 0.2 } },
-  };
-
-  const errorVariants = {
-    hidden: { opacity: 0, y: -10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-  };
-
-  const buttonVariants = {
-    hover: { scale: 1.05, transition: { duration: 0.2 } },
-    tap: { scale: 0.95 },
+  const handleForgotPassword = async () => {
+    console.log("Forgot password clicked"); // Debugging
+    try {
+      const response = await fetch("https://requsest-response.vercel.app/api/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Password reset email sent:", data.message); // Debugging
+        alert(data.message);
+      } else {
+        console.error("Failed to send reset email:", data.message); // Debugging
+        setError(data.message || "Failed to send reset email");
+      }
+    } catch (error) {
+      console.error("Forgot password error:", error); // Debugging
+      setError("Server error. Please try again.");
+    }
   };
 
   return (
@@ -54,14 +63,14 @@ const AdminPanel = () => {
       {!isAuthenticated ? (
         <motion.div
           className="w-full max-w-6xl flex flex-col md:flex-row shadow-2xl rounded-lg overflow-hidden bg-white"
-          variants={containerVariants}
+        
           initial="hidden"
           animate="visible"
         >
           {/* Left Side: Welcome Section */}
           <motion.div
             className="md:w-1/2 bg-gradient-to-r from-[#dbbf86] to-[#c7a96a] text-white flex flex-col justify-center items-center p-12 text-center"
-            variants={leftSideVariants}
+         
           >
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
               Welcome Admin
@@ -74,7 +83,7 @@ const AdminPanel = () => {
           {/* Right Side: Login Form */}
           <motion.div
             className="md:w-1/2 p-12 flex flex-col justify-center"
-            variants={rightSideVariants}
+          
           >
             <div className="flex justify-center mb-8">
               <Image
@@ -93,13 +102,23 @@ const AdminPanel = () => {
             {error && (
               <motion.p
                 className="text-red-500 text-sm mb-4 text-center"
-                variants={errorVariants}
+               
                 initial="hidden"
                 animate="visible"
               >
                 {error}
               </motion.p>
             )}
+
+            <div className="mb-6">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter Admin Email"
+                className="w-full px-5 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none bg-gray-50 transition-all duration-200"
+              />
+            </div>
 
             <div className="relative mb-6">
               <input
@@ -123,14 +142,21 @@ const AdminPanel = () => {
             </div>
 
             <motion.button
-              onClick={handlePasswordSubmit}
-              className="w-full bg-blue-600 text-white px-5 py-4 rounded-lg hover:bg-blue-700 transition-all duration-200 focus:ring-2 focus:ring-blue-300 text-lg font-semibold"
-              variants={buttonVariants}
+              onClick={handleLogin}
+              className="w-full bg-blue-600 text-white px-5 py-4 rounded-lg hover:bg-blue-700 transition-all duration-200 focus:ring-2 focus:ring-blue-300 text-lg font-semibold mb-4"
+         
               whileHover="hover"
               whileTap="tap"
             >
               Login
             </motion.button>
+
+            <button
+              onClick={handleForgotPassword}
+              className="text-blue-600 hover:text-blue-800 text-sm text-center"
+            >
+              Forgot Password?
+            </button>
           </motion.div>
         </motion.div>
       ) : (
