@@ -448,7 +448,7 @@ const SellerList = () => {
                 <td className="border px-2 py-1">{seller.propertyCategory}</td>
                 <td className="border px-2 py-1">{seller.landlordPropertyType}</td>
                 <td className="border px-2 py-1">{seller.Size}</td>
-                <td className="border px-2 py-1">£{seller.landlordRent}</td>
+                <td className="border px-2 py-1">{seller.landlordRent}</td>
                 <td className="border px-2 py-1">{seller.notes}</td>
                 <td className="border px-2 py-1">
                   <select

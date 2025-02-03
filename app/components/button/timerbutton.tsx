@@ -121,21 +121,21 @@ const MatchButtonTime: React.FC<MatchButtonTimeProps> = ({ handleSendEmails }) =
       value={hours}
       onChange={(e) => setHours(Math.max(0, Math.min(23, parseInt(e.target.value) || 0)))}
       placeholder="HH"
-      className="w-16 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="w-full max-w-[4rem] p-2 md:p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#b4a483] text-sm md:text-base"
     />
     <input
       type="number"
       value={minutes}
       onChange={(e) => setMinutes(Math.max(0, Math.min(59, parseInt(e.target.value) || 0)))}
       placeholder="MM"
-      className="w-16 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="w-full max-w-[4rem] p-2 md:p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#b4a483] text-sm md:text-base"
     />
     <input
       type="number"
       value={seconds}
       onChange={(e) => setSeconds(Math.max(0, Math.min(59, parseInt(e.target.value) || 0)))}
       placeholder="SS"
-      className="w-16 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="w-full max-w-[4rem] p-2 md:p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#b4a483] text-sm md:text-base"
     />
   </div>
 
