@@ -252,12 +252,22 @@ const Dashboard: React.FC<DashboardProps> = ({ buyers, sellers }) => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-     <div className="flex justify-between items-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-800">Dashboard Overview</h2>
-        {companyLogo && (
-          <Image src={companyLogo} alt="Company Logo" width={120} height={120}  className="h-16 w-auto " /> // Use Next.js Image component
-        )}
-      </div>
+   <div className="flex flex-col sm:flex-row justify-between items-center mb-8"> {/* Responsive flex direction */}
+  <h2 className="text-3xl font-bold text-gray-800 mb-4 sm:mb-0">Dashboard Overview</h2> {/* Margin bottom only on small screens */}
+  {companyLogo && (
+    <div className="relative h-16 w-auto rounded-lg overflow-hidden  transition duration-300 hover:scale-105 sm:h-20 md:h-24 lg:h-16">
+      <Image
+        src={companyLogo}
+        alt="Company Logo"
+        width={120}
+        height={120}
+      
+        objectFit="contain"
+        
+      />
+    </div>
+  )}
+</div>
      
 
   {/* <MatchButton handleSendEmails={handleSendEmails} /> */}
