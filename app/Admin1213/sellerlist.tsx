@@ -6,6 +6,9 @@ import * as XLSX from 'xlsx';
 import { CgSearch } from 'react-icons/cg';
 import { HiDownload } from 'react-icons/hi';
 import { FaPrint } from 'react-icons/fa';
+import NoteModal from './Admin-note';
+import AddNoteModals from './AddNoteModals';
+import SeeNoteModals from './SeeNoteModals';
 
 interface Seller {
   _id: string;
@@ -19,6 +22,7 @@ interface Seller {
   landlordRent: string;
   propertyStatus: string;
   notes: string;
+  adminNotes: string;
   formCreatedDate: string;
   subscriptionStatus: string;
 }
@@ -73,6 +77,10 @@ const SellerList = () => {
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [selectedRent, setSelectedRent] = useState<string>('');
   const [selectedStatus, setSelectedStatus] = useState<string>('active');
+  const [selectedNoteSellerId, setSelectedNoteSellerId] = useState<string | null>(null);
+  const [currentNote, setCurrentNote] = useState<string>('');
+  const [showAddNoteModal, setShowAddNoteModal] = useState<boolean>(false);
+  const [showSeeNoteModal, setShowSeeNoteModal] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchSellers = async () => {
@@ -111,6 +119,36 @@ const SellerList = () => {
   const cancelDelete = () => {
     setShowModal(false);
   };
+  const handleSaveNote = async (sellerId: string, note: string) => {
+    try {
+      const response = await axios.put(`https://requsest-response.vercel.app/api/sellers/${sellerId}`, {
+        adminNotes: note,
+      });
+
+      setSellers((prevSellers) =>
+        prevSellers.map((seller) =>
+          seller._id === sellerId ? { ...seller, adminNotes: note } : seller
+        )
+      );
+
+      toast.success('Note saved successfully!');
+    } catch (error) {
+      console.error('Error saving note:', error);
+      toast.error('Failed to save note.');
+    }
+  };
+
+  const handleAddNoteClick = (sellerId: string, currentNote: string) => {
+    setSelectedNoteSellerId(sellerId);
+    setCurrentNote(currentNote);
+    setShowAddNoteModal(true);
+  };
+
+  const handleSeeNoteClick = (note: string) => {
+    setCurrentNote(note);
+    setShowSeeNoteModal(true);
+  };
+
 
   const handlePrint = () => {
     const printWindow = window.open('', '_blank');
@@ -433,6 +471,7 @@ const SellerList = () => {
               <th className="border px-2 py-1">Notes</th>
               <th className="border px-2 py-1">Status</th>
               <th className="border px-2 py-1">Subscribe</th>
+              <th className="border px-2 py-1">Admin Notes</th>
               <th className="border px-2 py-1">Actions</th>
             </tr>
           </thead>
@@ -469,6 +508,23 @@ const SellerList = () => {
                     <option value="Subscribed">Subscribed</option>
                     <option value="UnSubscribed">UnSubscribed</option>
                   </select>
+                </td>
+                <td className="border px-2 py-1">
+                <select
+            onChange={(e) => {
+              if (e.target.value === 'add') {
+                handleAddNoteClick(seller._id, seller.adminNotes);
+              } else if (e.target.value === 'see') {
+                handleSeeNoteClick(seller.adminNotes);
+              }
+            }}
+            className="px-2 py-1 border rounded"
+            style={{ color: seller.adminNotes ? 'red' : 'inherit' }}
+          >
+            <option value="">Select</option>
+            <option value="add">Add Note</option>
+            <option value="see">See Note</option>
+          </select>
                 </td>
                 <td className="border px-2 py-1">
                   <button
@@ -524,6 +580,21 @@ const SellerList = () => {
           </div>
         </div>
       )}
+       <AddNoteModals
+        isOpen={showAddNoteModal}
+        onClose={() => setShowAddNoteModal(false)}
+        sellerId={selectedNoteSellerId || ''}
+        currentNote={currentNote}
+        onSave={handleSaveNote}
+      />
+
+      {/* See Note Modal */}
+      <SeeNoteModals
+        isOpen={showSeeNoteModal}
+        onClose={() => setShowSeeNoteModal(false)}
+        note={currentNote}
+      />
+
 
       <ToastContainer />
     </div>

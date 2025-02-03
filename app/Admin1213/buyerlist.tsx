@@ -6,6 +6,9 @@ import * as XLSX from 'xlsx';
 import { CgSearch } from 'react-icons/cg';
 import { HiDownload } from 'react-icons/hi';
 import { FaPrint } from 'react-icons/fa';
+import NoteModal from './Admin-note';
+import AddNoteModal from './AddNoteModal';
+import SeeNoteModal from './SeeNoteModal';
 
 interface Buyer {
   _id: string;
@@ -18,6 +21,7 @@ interface Buyer {
   budget: number;
   deposit: number;
   notes: string;
+  adminNotes: string;
   propertyAvailableDate: string;
   FirstLineofAddress: string;
   postcode: string;
@@ -64,6 +68,13 @@ const BuyerList = () => {
   const [selectedPropertycategory, setSelectedPropertycategory] = useState<string>('');
   const [selectedBudget, setSelectedBudget] = useState<number | string>('');
   const [selectedStatus, setSelectedStatus] = useState<string>('active');
+  const [showNoteModal, setShowNoteModal] = useState<boolean>(false);
+  const [selectedNoteBuyerId, setSelectedNoteBuyerId] = useState<string | null>(null);
+  const [currentNote, setCurrentNote] = useState<string>('');
+  const [showAddNoteModal, setShowAddNoteModal] = useState<boolean>(false);
+  const [showSeeNoteModal, setShowSeeNoteModal] = useState<boolean>(false);
+  
+
 
   useEffect(() => {
     const fetchBuyers = async () => {
@@ -141,6 +152,42 @@ const BuyerList = () => {
       }
     }
 
+    const handleSaveNote = async (buyerId: string, note: string) => {
+      try {
+        // Update the backend
+        const response = await axios.put(`https://requsest-response.vercel.app/api/buyers/${buyerId}`, {
+          adminNotes: note,
+        });
+    
+        // Update the frontend state
+        setBuyers((prevBuyers) =>
+          prevBuyers.map((buyer) =>
+            buyer._id === buyerId ? { ...buyer, adminNotes: note } : buyer
+          )
+        );
+    
+        toast.success('Note saved successfully!');
+      } catch (error) {
+        console.error('Error saving note:', error);
+        toast.error('Failed to save note.');
+      }
+    };
+  
+  
+    
+    const handleAddNoteClick = (buyerId: string, currentNote: string) => {
+      setSelectedNoteBuyerId(buyerId);
+      setCurrentNote(currentNote);
+      setShowAddNoteModal(true);
+    };
+  
+    const handleSeeNoteClick = (note: string) => {
+      setCurrentNote(note);
+      setShowSeeNoteModal(true);
+    };
+  
+  
+  
   const handlePrint = () => {
     const printTable = `
       <html>
@@ -435,6 +482,7 @@ const BuyerList = () => {
               <th className="border px-2 py-1">Postcode</th>
               <th className="border px-2 py-1">Status</th>
               <th className="border px-2 py-1">Subscribe</th>
+              <th className="border px-2 py-1">Admin Notes</th>
               <th className="border px-2 py-1">Actions</th>
             </tr>
           </thead>
@@ -452,6 +500,7 @@ const BuyerList = () => {
                 <td className="border px-2 py-1">£{buyer.budget}</td>
                 <td className="border px-2 py-1">£{buyer.deposit}</td>
                 <td className="border px-2 py-1">{buyer.notes}</td>
+               
                 <td className="border px-2 py-1">{new Date(buyer.propertyAvailableDate).toLocaleDateString()}</td>
                 <td className="border px-2 py-1">{buyer.FirstLineofAddress}</td>
                 <td className="border px-2 py-1">{buyer.postcode}</td>
@@ -475,6 +524,28 @@ const BuyerList = () => {
                     <option value="UnSubscribed">UnSubscribed</option>
                   </select>
                 </td>
+                <td  className="px-2 py-1 border " >
+      <select
+       className="px-2 py-1 border rounded"
+        onChange={(e) => {
+          if (e.target.value === 'add') {
+            handleAddNoteClick(buyer._id, buyer.adminNotes);
+          } else if (e.target.value === 'see') {
+            handleSeeNoteClick(buyer.adminNotes);
+          }
+        }}
+        style={{ color: buyer.adminNotes ? 'red' : 'inherit' }}
+      >
+        <option value="">Select</option>
+        <option value="add">Add Note</option>
+        <option
+          value="see"
+           // Red if note exists
+        >
+          See Note
+        </option>
+      </select>
+    </td>
                 <td className="border px-2 py-1">
                   <button
                     className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded"
@@ -529,6 +600,21 @@ const BuyerList = () => {
           </div>
         </div>
       )}
+
+<AddNoteModal
+        isOpen={showAddNoteModal}
+        onClose={() => setShowAddNoteModal(false)}
+        buyerId={selectedNoteBuyerId || ''}
+        currentNote={currentNote}
+        onSave={handleSaveNote}
+      />
+
+      {/* See Note Modal */}
+      <SeeNoteModal
+        isOpen={showSeeNoteModal}
+        onClose={() => setShowSeeNoteModal(false)}
+        note={currentNote}
+      />
 
       <ToastContainer />
     </div>
