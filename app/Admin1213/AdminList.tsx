@@ -24,7 +24,7 @@ const AdminList = () => {
         const data = await response.json();
 
         // Manually assigning serial numbers
-        const manualSerialNumbers = [1];
+        const manualSerialNumbers = [1,2,3,4,5,6];
 
         const formattedData = data.map((admin: any, index: number) => ({
           serial: manualSerialNumbers[index] || index + 1,
