@@ -11,6 +11,7 @@ import ChangePassword from "./ChangePassword";
 import AddAdmin from "./AddAdmin";
 import AdminProfile from "./AdminProfile";
 import AdminList from "./AdminList";
+import MatchList from "./match-load";
 
 
 const AdminDashboard = () => {
@@ -76,7 +77,8 @@ const AdminDashboard = () => {
             {activeTab === "matchbutton" && (
               <MatchButton handleSendEmails={handleSendEmails} /> // Pass the function as a prop
             )}
-             
+
+          {activeTab === "match" && <MatchList />}    
         {activeTab === "change-password" && <ChangePassword />}
         {activeTab === "add-admin" && <AddAdmin />}
         {activeTab === "admin-list" && <AdminList/>}

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, JSX } from "react";
 import { FaBars, FaChevronDown, FaChevronRight, FaSignOutAlt, FaUser } from "react-icons/fa";
-import { MdClose, MdPeople, MdDashboard, MdRadioButtonChecked } from "react-icons/md";
+import { MdClose, MdPeople, MdDashboard, MdRadioButtonChecked, MdTableChart } from "react-icons/md";
 import { RiAdminFill, RiLockPasswordLine, RiUserSettingsLine } from "react-icons/ri";
 
 interface SidebarProps {
@@ -45,7 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveTab, activeTab }) => {
 
   return (
     <div
-      className={`h-screen bg-[#b4a483] text-white transition-all fixed left-0 top-0 z-50 p-4 ${
+      className={`h-screen bg-[#b4a483] text-white transition-all fixed left-0 top-0 z-20 p-4 ${
         isOpen ? "w-64" : "w-20"
       }`}
     >
@@ -99,6 +99,12 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveTab, activeTab }) => {
           icon={<MdRadioButtonChecked />}
           label="Set Timer"
           onClick={() => handleTabClick("matchbutton")}
+          isOpen={isOpen}
+        />
+        <SidebarItem
+          icon={<MdTableChart/>}
+          label="Match Property"
+          onClick={() => handleTabClick("match")}
           isOpen={isOpen}
         />
       </nav>

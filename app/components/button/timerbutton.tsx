@@ -11,6 +11,7 @@ const TIMER_DURATION_KEY = "match_timer_duration";
 
 const MatchButtonTime: React.FC<MatchButtonTimeProps> = ({ handleSendEmails }) => {
   const [hours, setHours] = useState<number>(0);
+  const [days, setDays] = useState<number>(0);
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
   const [timeLeft, setTimeLeft] = useState<number>(0);
@@ -62,12 +63,14 @@ const MatchButtonTime: React.FC<MatchButtonTimeProps> = ({ handleSendEmails }) =
 
   // Start Timer
   const startTimer = () => {
-    if (hours <= 0 && minutes <= 0 && seconds <= 0) {
+    if (days <= 0 && hours <= 0 && minutes <= 0 && seconds <= 0) {
       toast.error("Enter a valid time greater than 0.");
       return;
     }
+  
 
-    const totalTimeInSeconds = hours * 3600 + minutes * 60 + seconds;
+    const totalTimeInSeconds = days * 86400 + hours * 3600 + minutes * 60 + seconds;
+
     const now = Date.now();
     localStorage.setItem(TIMER_START_KEY, now.toString());
     localStorage.setItem(TIMER_DURATION_KEY, totalTimeInSeconds.toString());
@@ -102,20 +105,29 @@ const MatchButtonTime: React.FC<MatchButtonTimeProps> = ({ handleSendEmails }) =
   };
 
   // Format time to HH:mm:ss
-  const formatTime = (seconds: number) => {
-    const hrs = Math.floor(seconds / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-
-    return `${String(hrs).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  const formatTime = (totalSeconds: number) => {
+    const d = Math.floor(totalSeconds / 86400);
+    const hrs = Math.floor((totalSeconds % 86400) / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
+    const secs = totalSeconds % 60;
+    return `${String(d).padStart(2, "0")}:${String(hrs).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   };
+  
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg text-center space-y-6">
-  <div className="text-xl font-semibold">Enter Time (HH:mm:ss)</div> {/* Label for HH:mm:ss */}
+  <div className="text-xl font-semibold">Enter Time (DD:HH:mm:ss)</div> {/* Label for HH:mm:ss */}
   
   {/* Time Input Fields */}
   <div className="flex justify-center space-x-2">
+  <input
+  type="number"
+  value={days}
+  onChange={(e) => setDays(Math.max(0, Math.min(7, parseInt(e.target.value) || 0)))}
+  placeholder="DD"
+ className="w-full max-w-[4rem] p-2 md:p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#b4a483] text-sm md:text-base"
+/>
+
     <input
       type="number"
       value={hours}

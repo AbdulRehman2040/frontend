@@ -2,6 +2,7 @@ import { useState } from "react";
 
 const AddAdmin = () => {
     const [email, setEmail] = useState("");
+    const [username, setusername] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
@@ -11,7 +12,7 @@ const AddAdmin = () => {
         const response = await fetch("https://requsest-response.vercel.app/api/add-admin", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
+          body: JSON.stringify({username, email, password }),
         });
   
         const data = await response.json();
@@ -30,6 +31,13 @@ const AddAdmin = () => {
         <h2 className="text-2xl font-bold mb-4">Add New Admin</h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         {message && <p className="text-green-500 mb-4">{message}</p>}
+        <input
+          type="text"
+          placeholder="username"
+          value={username}
+          onChange={(e) => setusername(e.target.value)}
+          className="w-full p-2 mb-4 border rounded-lg"
+        />
         <input
           type="email"
           placeholder="Email"
