@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import AddNoteModal from "./AddNoteModal";
 interface Admin {
   serial: number;
   _id: string;
@@ -42,6 +42,8 @@ const AdminList = () => {
 
     fetchAdmins();
   }, []);
+  
+
 
   const handleDeleteClick = (admin: Admin) => {
     setSelectedAdmin(admin);
@@ -152,7 +154,9 @@ const AdminList = () => {
           </div>
         </div>
       )}
+      
     </div>
+    
   );
 };
 

@@ -23,6 +23,8 @@ interface Seller {
   propertyStatus: string;
   notes: string;
   adminNotes: string;
+  noteCreatedDate: string; // New field
+  noteAddedBy: string; // New field
   formCreatedDate: string;
   subscriptionStatus: string;
 }
@@ -81,6 +83,7 @@ const SellerList = () => {
   const [currentNote, setCurrentNote] = useState<string>('');
   const [showAddNoteModal, setShowAddNoteModal] = useState<boolean>(false);
   const [showSeeNoteModal, setShowSeeNoteModal] = useState<boolean>(false);
+  const [adminName, setAdminName] = useState<string>(''); // Add this 
 
   useEffect(() => {
     const fetchSellers = async () => {
@@ -96,6 +99,26 @@ const SellerList = () => {
 
     fetchSellers();
   }, []);
+  // Add this useEffect to fetch admin name
+useEffect(() => {
+  const fetchAdminName = async () => {
+    try {
+      const response = await axios.get('https://requsest-response.vercel.app/api/admins/me', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      if (response.data.username) {
+        setAdminName(response.data.username);
+      }
+    } catch (error) {
+      console.error('Error fetching admin name:', error);
+    }
+  };
+
+  fetchAdminName();
+}, []);
 
   const handleDelete = async () => {
     if (!selectedSellerId) return;
@@ -119,34 +142,52 @@ const SellerList = () => {
   const cancelDelete = () => {
     setShowModal(false);
   };
-  const handleSaveNote = async (sellerId: string, note: string) => {
+  const handleSaveNote = async (sellerId: string, note: string, noteAddedBy: string) => {
     try {
-      const response = await axios.put(`https://requsest-response.vercel.app/api/sellers/${sellerId}`, {
-        adminNotes: note,
+      const noteCreatedDate = new Date().toISOString();
+      const newNoteEntry = `---\n${note}\n- Added by ${noteAddedBy} on ${new Date(noteCreatedDate).toLocaleDateString()}`;
+  
+      // Preserve existing notes
+      const seller = sellers.find(s => s._id === sellerId);
+      const updatedNotes = seller?.adminNotes 
+        ? `${seller.adminNotes}${newNoteEntry}`
+        : newNoteEntry;
+  
+      await axios.put(`https://requsest-response.vercel.app/api/sellers/${sellerId}`, {
+        adminNotes: updatedNotes,
+        noteCreatedDate,
+        noteAddedBy
       });
-
-      setSellers((prevSellers) =>
-        prevSellers.map((seller) =>
-          seller._id === sellerId ? { ...seller, adminNotes: note } : seller
+  
+      setSellers(prevSellers =>
+        prevSellers.map(seller =>
+          seller._id === sellerId ? { 
+            ...seller, 
+            adminNotes: updatedNotes,
+            noteCreatedDate,
+            noteAddedBy
+          } : seller
         )
       );
-
+  
       toast.success('Note saved successfully!');
     } catch (error) {
       console.error('Error saving note:', error);
       toast.error('Failed to save note.');
     }
   };
-
   const handleAddNoteClick = (sellerId: string, currentNote: string) => {
     setSelectedNoteSellerId(sellerId);
     setCurrentNote(currentNote);
     setShowAddNoteModal(true);
   };
 
-  const handleSeeNoteClick = (note: string) => {
-    setCurrentNote(note);
-    setShowSeeNoteModal(true);
+  const handleSeeNoteClick = (sellerId: string) => {
+    const seller = sellers.find((seller) => seller._id === sellerId);
+    if (seller) {
+      setCurrentNote(seller.adminNotes); // Set the actual note content
+      setShowSeeNoteModal(true);
+    }
   };
 
 
@@ -511,21 +552,22 @@ const SellerList = () => {
                 </td>
                 <td className="border px-2 py-1">
                 <select
-            onChange={(e) => {
-              if (e.target.value === 'add') {
-                handleAddNoteClick(seller._id, seller.adminNotes);
-              } else if (e.target.value === 'see') {
-                handleSeeNoteClick(seller.adminNotes);
-              }
-            }}
-            className="px-2 py-1 border rounded"
-            style={{ color: seller.adminNotes ? 'red' : 'inherit' }}
-          >
-            <option value="">Select</option>
-            <option value="add">Add Note</option>
-            <option value="see">See Note</option>
-          </select>
+  onChange={(e) => {
+    if (e.target.value === 'add') {
+      handleAddNoteClick(seller._id, seller.adminNotes);
+    } else if (e.target.value === 'see') {
+      handleSeeNoteClick(seller._id); // Pass the seller ID
+    }
+  }}
+  className="px-2 py-1 border rounded"
+  style={{ color: seller.adminNotes ? 'red' : 'inherit' }}
+>
+  <option value="">Select</option>
+  <option value="add">Add Note</option>
+  <option value="see">See Note</option>
+</select>
                 </td>
+               
                 <td className="border px-2 py-1">
                   <button
                     className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded"
@@ -585,15 +627,15 @@ const SellerList = () => {
         onClose={() => setShowAddNoteModal(false)}
         sellerId={selectedNoteSellerId || ''}
         currentNote={currentNote}
-        onSave={handleSaveNote}
-      />
+        onSave={(note) => handleSaveNote(selectedNoteSellerId || '', note, adminName)} // Pass the admin's name or ID
+        adminName={adminName}/>
 
       {/* See Note Modal */}
       <SeeNoteModals
-        isOpen={showSeeNoteModal}
-        onClose={() => setShowSeeNoteModal(false)}
-        note={currentNote}
-      />
+  isOpen={showSeeNoteModal}
+  onClose={() => setShowSeeNoteModal(false)}
+  note={currentNote} // Pass the actual note content
+/>
 
 
       <ToastContainer />

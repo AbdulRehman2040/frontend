@@ -12,6 +12,7 @@ import AddAdmin from "./AddAdmin";
 import AdminProfile from "./AdminProfile";
 import AdminList from "./AdminList";
 import MatchList from "./match-load";
+import UnMatchTable from "./unmatch-load";
 
 
 const AdminDashboard = () => {
@@ -79,6 +80,7 @@ const AdminDashboard = () => {
             )}
 
           {activeTab === "match" && <MatchList />}    
+          {activeTab === "unmatch" && <UnMatchTable />}  
         {activeTab === "change-password" && <ChangePassword />}
         {activeTab === "add-admin" && <AddAdmin />}
         {activeTab === "admin-list" && <AdminList/>}

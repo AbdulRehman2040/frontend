@@ -36,7 +36,7 @@ const NoteModal = ({ isOpen, onClose, buyerId, currentNote, onSave }: NoteModalP
             Cancel
           </button>
           <button
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+            className="bg-bg-[#b4a483] hover:bg-[#cc9830] text-white px-4 py-2 rounded"
             onClick={handleSave}
           >
             Save

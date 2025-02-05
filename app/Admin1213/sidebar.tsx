@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect, JSX } from "react";
 import { FaBars, FaChevronDown, FaChevronRight, FaSignOutAlt, FaUser } from "react-icons/fa";
-import { MdClose, MdPeople, MdDashboard, MdRadioButtonChecked, MdTableChart } from "react-icons/md";
+import { MdClose, MdPeople, MdDashboard, MdRadioButtonChecked, MdTableChart, MdTsunami } from "react-icons/md";
 import { RiAdminFill, RiLockPasswordLine, RiUserSettingsLine } from "react-icons/ri";
-
+import { TbCancel } from "react-icons/tb";
 interface SidebarProps {
   setActiveTab: React.Dispatch<React.SetStateAction<string>>;
   activeTab: string;
@@ -105,6 +105,12 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveTab, activeTab }) => {
           icon={<MdTableChart/>}
           label="Match Property"
           onClick={() => handleTabClick("match")}
+          isOpen={isOpen}
+        />
+         <SidebarItem
+          icon={<TbCancel />}
+          label="Un-Match Property"
+          onClick={() => handleTabClick("unmatch")}
           isOpen={isOpen}
         />
       </nav>

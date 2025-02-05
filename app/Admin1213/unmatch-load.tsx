@@ -11,7 +11,15 @@ interface Seller {
   propertyCategory: string;
   landlordPropertyType: string;
   landlordPropertyAddress: string;
-  [key: string]: any;
+  Size: string;
+  landlordRent: string;
+  propertyStatus: string;
+  notes: string;
+  adminNotes: string;
+  subscriptionStatus: string;
+  emailsSent: number;
+  formCreatedDate: string;
+  __v: number;
 }
 
 interface Buyer {
@@ -22,50 +30,67 @@ interface Buyer {
   propertyCategory: string;
   propertyTypeSelect: string;
   areaRequired: string;
+  FirstLineofAddress: string;
+  postcode: string;
+  budget: number;
+  deposit: number;
+  notes: string;
+  adminNotes: string[];
+  propertyAvailableDate: string;
+  propertyStatus: string;
+  subscriptionStatus: string;
   formCreatedDate: string;
-  [key: string]: any;
+  __v: number;
 }
 
-interface Match {
-  seller: Seller;
-  buyer: Buyer;
+interface UnmatchedPropertiesResponse {
+  unmatchedSellers: Seller[];
+  unmatchedBuyers: Buyer[];
 }
 
 const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0'); // Ensure 2 digits
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`; // Format as DD/MM/YYYY
-  };
-  
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
 
 /* ========= Mapping Objects ========= */
 const sellerMapping: Record<string, string> = {
-    
   landlordName: 'Name',
   landlordPhoneNumber: 'Phone',
   landlordEmailAddress: 'Email',
   landlordPropertyAddress: 'Address',
   landlordPropertyType: 'Property Type',
   propertyCategory: 'Category',
+  Size: 'Size',
   landlordRent: 'Rent',
-  subscriptionStatus:'Subscription',
-  emailsSent:'Email sent',
-  formCreatedDate:'Created Date'
+  propertyStatus: 'Status',
+  notes: 'Notes',
+  adminNotes: 'Admin Notes',
+  subscriptionStatus: 'Subscription',
+  emailsSent: 'Emails Sent',
+  formCreatedDate: 'Created Date',
 };
 
 const buyerMapping: Record<string, string> = {
   name: 'Name',
   phoneNumber: 'Phone',
   emailAddress: 'Email',
-  areaRequired: 'Address',
+  areaRequired: 'Area Required',
   propertyTypeSelect: 'Property Type',
   propertyCategory: 'Category',
-  FirstLineofAddress:' Address',
-  propertyAvailableDate:'Available Date',
-  subscriptionStatus:'Subscription',
-  formCreatedDate:'Created Date'
+  FirstLineofAddress: 'Address',
+  postcode: 'Postcode',
+  budget: 'Budget',
+  deposit: 'Deposit',
+  notes: 'Notes',
+  adminNotes: 'Admin Notes',
+  propertyAvailableDate: 'Available Date',
+  propertyStatus: 'Status',
+  subscriptionStatus: 'Subscription',
+  formCreatedDate: 'Created Date',
 };
 
 const ignoreKeys = ['_id', '__v'];
@@ -78,7 +103,7 @@ interface ResponsiveEmailProps {
 const ResponsiveEmail: React.FC<ResponsiveEmailProps> = ({ email }) => {
   const [expanded, setExpanded] = useState(false);
   const windowWidth = useWindowWidth();
-  const isMobile = windowWidth < 480; // Adjust breakpoint as needed
+  const isMobile = windowWidth < 480;
 
   const displayEmail =
     isMobile && !expanded
@@ -191,6 +216,13 @@ const ModalContent = styled(motion.div)`
   overflow-y: auto;
   z-index: 10000;
 `;
+const TableContainer = styled.div`
+  overflow-x: auto;
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+`;
 
 const ModalCloseButton = styled.button`
   border: none;
@@ -239,13 +271,6 @@ const PaginationButton = styled.button`
     cursor: not-allowed;
   }
 `;
-const TableContainer = styled.div`
-  overflow-x: auto;
-  width: 100%;
-  margin-bottom: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-`;
 
 /* ========= Framer Motion Variants ========= */
 const modalVariants = {
@@ -257,39 +282,52 @@ const modalVariants = {
 };
 
 /* ========= Main Component ========= */
-const MatchTable: React.FC = () => {
-  const [matches, setMatches] = useState<Match[]>([]);
-  const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
+const UnmatchedProperties: React.FC = () => {
+  const [unmatchedProperties, setUnmatchedProperties] = useState<UnmatchedPropertiesResponse>({
+    unmatchedSellers: [],
+    unmatchedBuyers: [],
+  });
+  const [selectedSeller, setSelectedSeller] = useState<Seller | null>(null);
+  const [selectedBuyer, setSelectedBuyer] = useState<Buyer | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
   // Fetch data on mount
   useEffect(() => {
-    fetch('https://requsest-response.vercel.app/api/match/matches')
+    fetch('https://requsest-response.vercel.app/api/match/unmatched-properties')
       .then((res) => res.json())
-      .then((data) => {
-        setMatches(data.matches);
+      .then((data: UnmatchedPropertiesResponse) => {
+        setUnmatchedProperties(data);
       })
-      .catch((err) => console.error('Error fetching matches:', err));
+      .catch((err) => console.error('Error fetching unmatched properties:', err));
   }, []);
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentMatches = matches.slice(indexOfFirstItem, indexOfLastItem);
+  const currentSellers = unmatchedProperties.unmatchedSellers.slice(indexOfFirstItem, indexOfLastItem);
+  const currentBuyers = unmatchedProperties.unmatchedBuyers.slice(indexOfFirstItem, indexOfLastItem);
 
-  const totalPages = Math.ceil(matches.length / itemsPerPage);
+  const totalPages = Math.ceil(
+    (unmatchedProperties.unmatchedSellers.length + unmatchedProperties.unmatchedBuyers.length) / itemsPerPage
+  );
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  const openModal = (match: Match) => {
-    setSelectedMatch(match);
+  const openSellerModal = (seller: Seller) => {
+    setSelectedSeller(seller);
+    setShowModal(true);
+  };
+
+  const openBuyerModal = (buyer: Buyer) => {
+    setSelectedBuyer(buyer);
     setShowModal(true);
   };
 
   const closeModal = () => {
-    setSelectedMatch(null);
+    setSelectedSeller(null);
+    setSelectedBuyer(null);
     setShowModal(false);
   };
 
@@ -324,72 +362,90 @@ const MatchTable: React.FC = () => {
       </>
     );
   };
+
   const TenantCell = styled(TableCell)`
-  background-color: #F4EDE9; // Light yellow color
-`;
+    background-color: #f4ede9; // Light yellow color
+  `;
 
-const LandlordCell = styled(TableCell)`
-  background-color: #F6F2EF; // Light brown color
-`;
-const TenantModalSection = styled(ModalSection)`
-  background-color: #F4EDE9; // Light yellow color
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-`;
+  const LandlordCell = styled(TableCell)`
+    background-color: #f6f2ef; // Light brown color
+  `;
 
-const LandlordModalSection = styled(ModalSection)`
-  background-color: #F6F2EF; // Light brown color
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-`;
+  const TenantModalSection = styled(ModalSection)`
+    background-color: #f4ede9; // Light yellow color
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+  `;
+
+  const LandlordModalSection = styled(ModalSection)`
+    background-color: #f6f2ef; // Light brown color
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+  `;
 
   return (
     <Container>
-      <Header className="text-2xl font-bold text-black">Match Listings</Header>
-      {matches.length === 0 ? (
-        <p>No matches found.</p>
+      <Header className="text-2xl font-bold text-black">Unmatched Properties</Header>
+      {unmatchedProperties.unmatchedSellers.length === 0 && unmatchedProperties.unmatchedBuyers.length === 0 ? (
+        <p>No unmatched properties found.</p>
       ) : (
-        
         <>
         <TableContainer>
           <Table>
             <TableHeader>
-            <TableRow>
-                <TableHeaderCell>Tenant Name</TableHeaderCell>
-                <TableHeaderCell>Tenant Email</TableHeaderCell>
-                <TableHeaderCell>Tenant Phone</TableHeaderCell>
-                <TableHeaderCell>Landlord Name</TableHeaderCell>
-                <TableHeaderCell>Landlord Email</TableHeaderCell>
-                <TableHeaderCell>Landlord Phone</TableHeaderCell>
+              <TableRow>
+                <TableHeaderCell>Type</TableHeaderCell>
+                <TableHeaderCell>Name</TableHeaderCell>
+                <TableHeaderCell>Email</TableHeaderCell>
+                <TableHeaderCell>Phone</TableHeaderCell>
+                <TableHeaderCell>Property Category</TableHeaderCell>
+                <TableHeaderCell>Area</TableHeaderCell>
+                <TableHeaderCell>Property Type</TableHeaderCell>
                 <TableHeaderCell>Actions</TableHeaderCell>
               </TableRow>
             </TableHeader>
             <tbody>
-              {currentMatches.map((match, index) => (
+              {currentSellers.map((seller, index) => (
                 <TableRow key={index}>
-                <TenantCell>{match.seller.landlordName}</TenantCell>
-                <TenantCell>
-                 {match.seller.landlordEmailAddress} 
-                </TenantCell>
-                <TenantCell>{match.seller.landlordPhoneNumber}</TenantCell>
-                <LandlordCell>{match.buyer.name}</LandlordCell>
-                <LandlordCell>
-                  {match.buyer.emailAddress}
-                </LandlordCell>
-                <LandlordCell>{match.buyer.phoneNumber}</LandlordCell>
-                <TableCell>
-                  <DetailButton className='bg-[#b4a483]' onClick={() => openModal(match)}>
-                    View Details
-                  </DetailButton>
-                </TableCell>
-              </TableRow>
+                  <TenantCell>Tenant</TenantCell>
+                  <TenantCell>{seller.landlordName}</TenantCell>
+                  <TenantCell>
+                    {seller.landlordEmailAddress}
+                  </TenantCell>
+                  <TenantCell>{seller.landlordPhoneNumber}</TenantCell>
+                  <TenantCell>{seller.propertyCategory}</TenantCell>
+                  <TenantCell>{seller.landlordPropertyAddress}</TenantCell>
+                  <TenantCell>{seller.landlordPropertyType}</TenantCell>
+                  <TableCell>
+                    <DetailButton className='bg-[#b4a483]' onClick={() => openSellerModal(seller)}>
+                      View Details
+                    </DetailButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+              {currentBuyers.map((buyer, index) => (
+                <TableRow key={index}>
+                  <LandlordCell>Landlord</LandlordCell>
+                  <LandlordCell>{buyer.name}</LandlordCell>
+                  <LandlordCell>
+                   {buyer.emailAddress} 
+                  </LandlordCell>
+                  <LandlordCell>{buyer.phoneNumber}</LandlordCell>
+                  <LandlordCell>{buyer.propertyCategory}</LandlordCell>
+                  <LandlordCell>{buyer.areaRequired}</LandlordCell>
+                  <LandlordCell>{buyer.propertyTypeSelect}</LandlordCell>
+                  <TableCell>
+                    <DetailButton className='bg-[#b4a483]' onClick={() => openBuyerModal(buyer)}>
+                      View Details
+                    </DetailButton>
+                  </TableCell>
+                </TableRow>
               ))}
             </tbody>
           </Table>
           </TableContainer>
-
           {/* Pagination Controls */}
           <PaginationContainer>
             <PaginationButton
@@ -412,7 +468,7 @@ const LandlordModalSection = styled(ModalSection)`
       )}
 
       {/* Modal Popup */}
-      {showModal && selectedMatch && (
+      {showModal && (selectedSeller || selectedBuyer) && (
         <ModalOverlay
           onClick={closeModal}
           variants={modalVariants}
@@ -420,37 +476,39 @@ const LandlordModalSection = styled(ModalSection)`
           animate="visible"
         >
           <ModalContent onClick={(e) => e.stopPropagation()} variants={modalVariants}>
-  <div style={{ position: 'relative', textAlign: 'center', padding: '0 20px' }}>
-    <h2 style={{ margin: 0 }} className="text-black font-bold">
-      Match Details
-    </h2>
-    <ModalCloseButton
-      onClick={closeModal}
-      style={{
-        position: 'absolute',
-        right: 0,
-        top: '50%',
-        transform: 'translateY(-50%)',
-      }}
-    >
-      ×
-    </ModalCloseButton>
-  </div>
+            <div style={{ position: 'relative', textAlign: 'center', padding: '0 20px' }}>
+              <h2 style={{ margin: 0 }} className="text-black font-bold">
+                {selectedSeller ? 'Seller Details' : 'Buyer Details'}
+              </h2>
+              <ModalCloseButton
+                onClick={closeModal}
+                style={{
+                  position: 'absolute',
+                  right: 0,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                }}
+              >
+                ×
+              </ModalCloseButton>
+            </div>
 
-  <TenantModalSection>
-    <h3 className="text-black font-bold">Tenant Details</h3>
-    {renderDetails(selectedMatch.seller, sellerMapping)}
-  </TenantModalSection>
-  <div className="border-b border-gray-400 mt-10"></div>
-  <LandlordModalSection>
-    <h3 className="text-black font-bold mt-3">Landlord Details</h3>
-    {renderDetails(selectedMatch.buyer, buyerMapping)}
-  </LandlordModalSection>
-</ModalContent>
+            {selectedSeller && (
+              <TenantModalSection>
+                {renderDetails(selectedSeller, sellerMapping)}
+              </TenantModalSection>
+            )}
+
+            {selectedBuyer && (
+              <LandlordModalSection>
+                {renderDetails(selectedBuyer, buyerMapping)}
+              </LandlordModalSection>
+            )}
+          </ModalContent>
         </ModalOverlay>
       )}
     </Container>
   );
 };
 
-export default MatchTable;
+export default UnmatchedProperties;

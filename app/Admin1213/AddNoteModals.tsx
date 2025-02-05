@@ -1,50 +1,77 @@
-import { useState } from "react";
+import { useState, useEffect } from 'react';
 
-interface AddNoteModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    sellerId: string;
-    currentNote: string;
-    onSave: (sellerId: string, note: string) => void;
-  }
-  
-  const AddNoteModals = ({ isOpen, onClose, sellerId, currentNote, onSave }: AddNoteModalProps) => {
-    const [note, setNote] = useState(currentNote);
-  
-    const handleSave = () => {
-      onSave(sellerId, note);
+interface AddNoteModalsProps {
+  isOpen: boolean;
+  onClose: () => void;
+  sellerId: string;
+  currentNote: string;
+  onSave: (note: string, adminName: string) => void;
+  adminName: string;
+}
+
+const AddNoteModals = ({
+  isOpen,
+  onClose,
+  sellerId,
+  currentNote,
+  onSave,
+  adminName
+}: AddNoteModalsProps) => {
+  const [newNote, setNewNote] = useState('');
+
+  useEffect(() => {
+    if (isOpen) {
+      setNewNote(currentNote);
+    }
+  }, [isOpen, currentNote]);
+
+  const handleSave = () => {
+    if (newNote.trim()) {
+      onSave(newNote, adminName);
+      setNewNote('');
       onClose();
-    };
-  
-    if (!isOpen) return null;
-  
-    return (
-      <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50">
-        <div className="bg-white p-6 rounded">
-          <h2 className="text-xl font-bold mb-4">Add/Edit Note</h2>
-          <textarea
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            className="w-full p-2 border rounded"
-            rows={5}
-          />
-          <div className="mt-4 flex justify-between">
-            <button
-              className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-              onClick={onClose}
-            >
-              Cancel
-            </button>
-            <button
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-              onClick={handleSave}
-            >
-              Save
-            </button>
-          </div>
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-semibold">Add Admin Note</h3>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 text-2xl"
+          >
+            &times;
+          </button>
+        </div>
+
+        <textarea
+          value={newNote}
+          onChange={(e) => setNewNote(e.target.value)}
+          className="w-full h-32 p-3 border rounded-lg mb-4"
+          placeholder="Enter your note here..."
+        />
+
+        <div className="flex justify-end space-x-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 border rounded-lg hover:bg-gray-100"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          >
+            Save Note
+          </button>
         </div>
       </div>
-    );
-  };
-  
-  export default AddNoteModals;
+    </div>
+  );
+};
+
+export default AddNoteModals;
