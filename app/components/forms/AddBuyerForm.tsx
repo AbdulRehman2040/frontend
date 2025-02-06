@@ -172,6 +172,7 @@ const BuyerForm = () => {
             type="text"
             name="phoneNumber"
             id="phoneNumber"
+            placeholder="+44XXXXXXXXX"
             value={formData.phoneNumber}
             onChange={handleChange}
             required

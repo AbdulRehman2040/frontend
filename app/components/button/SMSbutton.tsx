@@ -1,4 +1,5 @@
 import { useState } from "react";
+import MatchButtonSMS from "./timerSMS";
 
 const SendSMSButton = () => {
   const [loading, setLoading] = useState(false);
@@ -25,13 +26,17 @@ const SendSMSButton = () => {
   };
 
   return (
+    <div className="mt-20">
+      <h1 className="font-bold text-center -mt-3">Send Instant SMS</h1>
     <button
       onClick={sendSMS}
       disabled={loading}
-      className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+      className="bg-blue-600 text-white px-6 py-3 rounded shadow hover:bg-blue-700"
     >
-      {loading ? "Sending..." : "Send SMS"}
+      {loading ? "Sending..." : "Send Match SMS"}
     </button>
+    <MatchButtonSMS/>
+    </div>
   );
 };
 

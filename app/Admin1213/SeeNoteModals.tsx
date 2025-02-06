@@ -29,7 +29,7 @@ const SeeNoteModals = ({ isOpen, onClose, note }: SeeNoteModalsProps) => {
   return (
     <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg max-w-4xl w-full max-h-[80vh] overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4">Admin Notes History</h2>
+        <h2 className="text-xl font-bold mb-4">Notes </h2>
         
         <table className="w-full border-collapse">
           <thead>

@@ -212,7 +212,7 @@ const BuyerList = () => {
         toast.error('Failed to save note.');
       }
     };
-    const handleAddNoteClick = (buyerId: string, currentNote: string) => {
+    const handleAddNoteClick = (buyerId: string, ) => {
       setSelectedNoteBuyerId(buyerId);
       setCurrentNote(currentNote);
       setShowAddNoteModal(true);
@@ -574,7 +574,7 @@ const BuyerList = () => {
     className="px-2 py-1 border rounded"
     onChange={(e) => {
       if (e.target.value === 'add') {
-        handleAddNoteClick(buyer._id, buyer.adminNotes);
+        handleAddNoteClick(buyer._id);
       } else if (e.target.value === 'see') {
         handleSeeNoteClick(buyer.adminNotes);
       }
@@ -582,7 +582,7 @@ const BuyerList = () => {
   >
     <option value="">Select</option>
     <option value="add">Add Note</option>
-    <option value="see">See Notes</option>
+    <option value="see">Veiw Notes</option>
   </select>
 </td>
                 <td className="border px-2 py-1">
@@ -644,7 +644,7 @@ const BuyerList = () => {
   isOpen={showAddNoteModal}
   onClose={() => setShowAddNoteModal(false)}
   buyerId={selectedNoteBuyerId || ''}
-  currentNote={currentNote}
+ 
   onSave={handleSaveNote}
   adminName={adminName} // Pass the logged-in admin's username
 />

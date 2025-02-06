@@ -155,7 +155,7 @@ const MatchButtonTime: React.FC<MatchButtonTimeProps> = ({ handleSendEmails }) =
   <div className="space-y-4">
     <button
       onClick={startTimer}
-      className="w-full bg-green-600 text-white px-6 py-3 rounded shadow hover:bg-green-700"
+      className="w-full bg-[#c77536] text-white px-6 py-3 rounded shadow hover:bg-[#d3bba8]"
       disabled={isRunning}
     >
       Start Timer
@@ -163,7 +163,7 @@ const MatchButtonTime: React.FC<MatchButtonTimeProps> = ({ handleSendEmails }) =
 
     <button
       onClick={handleMatchClick}
-      className="w-full bg-blue-600 text-white px-6 py-3 rounded shadow hover:bg-blue-700 disabled:bg-gray-400"
+      className="w-full bg-blue-600 text-white px-6 py-3 rounded shadow hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
       disabled={timeLeft > 0}
     >
       {timeLeft === 0 ? "Send Emails" : `Time Left: ${formatTime(timeLeft)}`}
@@ -171,13 +171,14 @@ const MatchButtonTime: React.FC<MatchButtonTimeProps> = ({ handleSendEmails }) =
 
     <button
       onClick={stopTimer}
-      className="w-full bg-red-600 text-white px-6 py-3 rounded shadow hover:bg-red-700"
+      className="w-full hover:bg-[#b4a483] text-white px-6 py-3 rounded shadow bg-[#9e7930]"
     >
       Stop Timer
     </button>
   </div>
 
   <ToastContainer />
+  <div className="border-b border-gray-400 mt-10"></div>
 </div>
 
   );

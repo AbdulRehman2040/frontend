@@ -554,11 +554,11 @@ useEffect(() => {
     }
   }}
   className="px-2 py-1 border rounded"
-  style={{ color: seller.adminNotes ? 'red' : 'inherit' }}
+  // style={{ color: seller.adminNotes ? 'red' : 'inherit' }}
 >
   <option value="">Select</option>
   <option value="add">Add Note</option>
-  <option value="see">See Note</option>
+  <option value="see">Veiw Note</option>
 </select>
                 </td>
                

@@ -4,13 +4,13 @@ interface AddNoteModalProps {
   isOpen: boolean;
   onClose: () => void;
   buyerId: string;
-  currentNote: string;
+ 
   onSave: (buyerId: string, note: string, adminName: string) => void;
   adminName: string;
 }
 
-const AddNoteModal = ({ isOpen, onClose, buyerId, currentNote, onSave, adminName }:AddNoteModalProps) => {
-  const [note, setNote] = useState(currentNote);
+const AddNoteModal = ({ isOpen, onClose, buyerId, onSave, adminName }:AddNoteModalProps) => {
+  const [note, setNote] = useState('');
 
   const handleSave = () => {
     onSave(buyerId, note, adminName);

@@ -3,6 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import ReCAPTCHA from "react-google-recaptcha";
 
+
 export default function SellerForm() {
   const [formData, setFormData] = useState({
     landlordName: "",
@@ -157,6 +158,7 @@ export default function SellerForm() {
           <input
             type="text"
             name="landlordPhoneNumber"
+            placeholder="+44XXXXXXXXX"
             id="landlordPhoneNumber"
             value={formData.landlordPhoneNumber}
             onChange={handleChange}
