@@ -142,46 +142,40 @@ useEffect(() => {
   const cancelDelete = () => {
     setShowModal(false);
   };
-  const handleSaveNote = async (sellerId: string, note: string, noteAddedBy: string) => {
+  const handleSaveNote = async (sellerId: string, note: string) => {
     try {
       const noteCreatedDate = new Date().toISOString();
-      const newNoteEntry = `---\n${note}\n- Added by ${noteAddedBy} on ${new Date(noteCreatedDate).toLocaleDateString()}`;
-  
-      // Preserve existing notes
+      const newNoteEntry = `---\n${note}\n- Added by ${adminName} on ${new Date(noteCreatedDate).toLocaleDateString()}`;
+      
       const seller = sellers.find(s => s._id === sellerId);
       const updatedNotes = seller?.adminNotes 
         ? `${seller.adminNotes}${newNoteEntry}`
         : newNoteEntry;
-  
+
       await axios.put(`https://requsest-response.vercel.app/api/sellers/${sellerId}`, {
         adminNotes: updatedNotes,
         noteCreatedDate,
-        noteAddedBy
+        noteAddedBy: adminName
       });
-  
-      setSellers(prevSellers =>
-        prevSellers.map(seller =>
-          seller._id === sellerId ? { 
-            ...seller, 
-            adminNotes: updatedNotes,
-            noteCreatedDate,
-            noteAddedBy
-          } : seller
-        )
-      );
-  
+
+      setSellers(prev => prev.map(seller =>
+        seller._id === sellerId ? { 
+          ...seller, 
+          adminNotes: updatedNotes,
+          noteCreatedDate,
+          noteAddedBy: adminName
+        } : seller
+      ));
       toast.success('Note saved successfully!');
     } catch (error) {
-      console.error('Error saving note:', error);
       toast.error('Failed to save note.');
     }
   };
-  const handleAddNoteClick = (sellerId: string, currentNote: string) => {
+  const handleAddNoteClick = (sellerId: string) => {  // Remove currentNote parameter
     setSelectedNoteSellerId(sellerId);
-    setCurrentNote(currentNote);
+    setCurrentNote('');  // Reset to empty string
     setShowAddNoteModal(true);
   };
-
   const handleSeeNoteClick = (sellerId: string) => {
     const seller = sellers.find((seller) => seller._id === sellerId);
     if (seller) {
@@ -554,9 +548,9 @@ useEffect(() => {
                 <select
   onChange={(e) => {
     if (e.target.value === 'add') {
-      handleAddNoteClick(seller._id, seller.adminNotes);
+      handleAddNoteClick(seller._id);  // Remove passing current note
     } else if (e.target.value === 'see') {
-      handleSeeNoteClick(seller._id); // Pass the seller ID
+      handleSeeNoteClick(seller._id);
     }
   }}
   className="px-2 py-1 border rounded"

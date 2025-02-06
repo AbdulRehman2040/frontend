@@ -8,7 +8,7 @@ interface SeeNoteModalsProps {
 
 const SeeNoteModals = ({ isOpen, onClose, note }: SeeNoteModalsProps) => {
   // Parse notes with admin name and date
-  const notes = note.split('--------')
+  const notes = note.split('---')
     .filter(n => n.trim() !== '')
     .map(noteText => {
       const lines = noteText.split('\n').filter(l => l.trim() !== '');
