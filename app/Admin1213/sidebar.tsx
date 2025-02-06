@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, JSX } from "react";
 import { FaBars, FaChevronDown, FaChevronRight, FaSignOutAlt, FaUser } from "react-icons/fa";
-import { MdClose, MdPeople, MdDashboard, MdRadioButtonChecked, MdTableChart, MdTsunami } from "react-icons/md";
+import { MdClose, MdPeople, MdDashboard, MdRadioButtonChecked, MdTableChart, MdTsunami, MdOutlinePresentToAll, MdRealEstateAgent } from "react-icons/md";
 import { RiAdminFill, RiLockPasswordLine, RiUserSettingsLine } from "react-icons/ri";
 import { TbCancel } from "react-icons/tb";
 interface SidebarProps {
@@ -71,38 +71,38 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveTab, activeTab }) => {
         />
 
         <SidebarItem
-          icon={<MdPeople />}
+          icon={<RiUserSettingsLine />}
           label="Manage Tenants"
           onClick={() => handleTabClick("sellers")}
           isOpen={isOpen}
         />
         <SidebarItem
-          icon={<MdPeople />}
+          icon={<RiUserSettingsLine />}
           label="In-Active Tenants"
           onClick={() => handleTabClick("propertyStatusSeller")}
           isOpen={isOpen}
         />
 
         <SidebarItem
-          icon={<RiUserSettingsLine />}
+          icon={<MdPeople />}
           label="Manage Landlords"
           onClick={() => handleTabClick("buyers")}
           isOpen={isOpen}
         />
         <SidebarItem
-          icon={<RiUserSettingsLine />}
+          icon={<MdPeople />}
           label="In-Active Landlords"
           onClick={() => handleTabClick("propertyStatusBuyer")}
           isOpen={isOpen}
         />
         <SidebarItem
-          icon={<MdRadioButtonChecked />}
+          icon={<MdOutlinePresentToAll />}
           label="Set Timer"
           onClick={() => handleTabClick("matchbutton")}
           isOpen={isOpen}
         />
         <SidebarItem
-          icon={<MdTableChart/>}
+          icon={<MdRealEstateAgent />}
           label="Match Property"
           onClick={() => handleTabClick("match")}
           isOpen={isOpen}

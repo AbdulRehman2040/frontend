@@ -23,12 +23,10 @@ const AdminPanel = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-     // After successful login
 
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem("token", data.token);
-        
         setIsAuthenticated(true);
         setError("");
       } else {

@@ -6,7 +6,7 @@ const SendSMSButton = () => {
   const sendSMS = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/match/send-sms", {
+      const response = await fetch("https://requsest-response.vercel.app/api/match/send-sms", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

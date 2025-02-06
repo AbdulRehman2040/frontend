@@ -627,7 +627,7 @@ useEffect(() => {
         onClose={() => setShowAddNoteModal(false)}
         sellerId={selectedNoteSellerId || ''}
         currentNote={currentNote}
-        onSave={(note) => handleSaveNote(selectedNoteSellerId || '', note, adminName)} // Pass the admin's name or ID
+        onSave={handleSaveNote} // Pass the admin's name or ID
         adminName={adminName}/>
 
       {/* See Note Modal */}
