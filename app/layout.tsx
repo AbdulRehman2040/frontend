@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Responsivenav from "./components/navbar/responsivenav";
 import Footer from "./components/footer/footer";
+import Scrolltotop from "./components/helper/helper";
 
 
 
@@ -25,6 +26,7 @@ export default function RootLayout({
       <div className="">
            
         {children}
+        <Scrolltotop/>
       </div>
       
        

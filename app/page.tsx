@@ -23,6 +23,7 @@ import BuyerStatus from './Admin1213/buyerstatus';
 import LogoSection from './components/logo/logo';
 import Responsivenav from './components/navbar/responsivenav';
 import Footer from './components/footer/footer';
+import CookieDropdown from './components/helper/cookie';
 
 
 
@@ -47,6 +48,7 @@ interface Buyer {
 export default function Home() {
   return(
      <div className="overflow-hidden relative bg-gradient-to-b from-gray-900 to-gray-800 ">
+      
      <Responsivenav/>
      <Hero/> 
     

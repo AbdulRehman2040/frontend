@@ -18,8 +18,10 @@ export default function SellerForm() {
   });
   // const [Captcha, setCaptcha] = useState<string | null>();
   const [loading, setLoading] = useState(false);
+  const [landlordPhoneError, setLandlordPhoneError] = useState('');
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [landlordEmailError, setLandlordEmailError] = useState('');
  const budget = [
   "£0-£1000",
   "£1001-£2000",
@@ -152,36 +154,82 @@ export default function SellerForm() {
 
         {/* Landlord Phone Number */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700" htmlFor="landlordPhoneNumber">
-            Phone Number*
-          </label>
-          <input
-            type="text"
-            name="landlordPhoneNumber"
-            placeholder="+44XXXXXXXXX"
-            id="landlordPhoneNumber"
-            value={formData.landlordPhoneNumber}
-            onChange={handleChange}
-            required
-            className="mt-1 p-2 border rounded-md w-full"
-          />
-        </div>
+  <label className="block text-sm font-medium text-gray-700" htmlFor="landlordPhoneNumber">
+    Phone Number*
+  </label>
+  <div className="mt-1 flex rounded-md shadow-sm">
+    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
+      +44
+    </span>
+    <input
+      type="tel"
+      name="landlordPhoneNumber"
+      id="landlordPhoneNumber"
+      placeholder="XXXXXXXXXX"
+      value={formData.landlordPhoneNumber.replace(/^\+44/, '')}
+      onChange={(e) => {
+        const inputValue = e.target.value.replace(/^\+44/, '');
+        const cleanedValue = inputValue.replace(/\D/g, '').slice(0, 10);
+        const isValid = cleanedValue.length === 10;
+        
+        setFormData({ 
+          ...formData, 
+          landlordPhoneNumber: `+44${cleanedValue}` 
+        });
+        
+        setLandlordPhoneError(isValid ? '' : 'Phone number must be 10 digits');
+      }}
+      onBlur={() => {
+        if (formData.landlordPhoneNumber.replace(/^\+44/, '').length !== 10) {
+          setLandlordPhoneError('Phone number must be 10 digits');
+        }
+      }}
+      required
+      className={`flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border ${
+        landlordPhoneError ? 'border-red-500' : ''
+      }`}
+    />
+  </div>
+  {landlordPhoneError && (
+    <p className="mt-2 text-sm text-red-600">{landlordPhoneError}</p>
+  )}
+</div>
 
         {/* Landlord Email Address */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700" htmlFor="landlordEmailAddress">
-            Email Address*
-          </label>
-          <input
-            type="email"
-            name="landlordEmailAddress"
-            id="landlordEmailAddress"
-            value={formData.landlordEmailAddress}
-            onChange={handleChange}
-            required
-            className="mt-1 p-2 border rounded-md w-full"
-          />
-        </div>
+  <label className="block text-sm font-medium text-gray-700" htmlFor="landlordEmailAddress">
+    Email Address*
+  </label>
+  <input
+    type="email"
+    name="landlordEmailAddress"
+    id="landlordEmailAddress"
+    value={formData.landlordEmailAddress}
+    onChange={(e) => {
+      const email = e.target.value;
+      const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      
+      setFormData({ 
+        ...formData, 
+        landlordEmailAddress: email 
+      });
+      
+      setLandlordEmailError(isValid ? '' : 'Please enter a valid email address');
+    }}
+    onBlur={() => {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.landlordEmailAddress)) {
+        setLandlordEmailError('Please enter a valid email address');
+      }
+    }}
+    required
+    className={`mt-1 p-2 border rounded-md w-full ${
+      landlordEmailError ? 'border-red-500' : ''
+    }`}
+  />
+  {landlordEmailError && (
+    <p className="mt-2 text-sm text-red-600">{landlordEmailError}</p>
+  )}
+</div>
 
        
            

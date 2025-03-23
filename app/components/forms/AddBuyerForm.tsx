@@ -37,7 +37,7 @@ const BuyerForm = () => {
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
+  const [phoneError, setPhoneError] = useState('');
 
 
   const propertyTypes = ["Cafe", "Car Wash", "Factory","Healthcare","Hotel","Medical Center","Nursing Homes","Office","Pub","Restaurant","Retail","Shops","Shopping Center","Sports Facilities",'Unit',"Warehouse","Other"]; // Property types based on schema
@@ -165,20 +165,47 @@ const BuyerForm = () => {
 
         {/* Phone Number */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700" htmlFor="phoneNumber">
-            Phone Number*
-          </label>
-          <input
-            type="text"
-            name="phoneNumber"
-            id="phoneNumber"
-            placeholder="+44XXXXXXXXX"
-            value={formData.phoneNumber}
-            onChange={handleChange}
-            required
-            className="mt-1 p-2 border rounded-md w-full"
-          />
-        </div>
+  <label className="block text-sm font-medium text-gray-700" htmlFor="phoneNumber">
+    Phone Number*
+  </label>
+  <div className="mt-1 flex rounded-md shadow-sm">
+    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
+      +44
+    </span>
+    <input
+      type="tel"
+      name="phoneNumber"
+      id="phoneNumber"
+      placeholder="XXXXXXXXXX"
+      value={formData.phoneNumber.replace(/^\+44/, '')}
+      onChange={(e) => {
+        const inputValue = e.target.value.replace(/^\+44/, ''); // Remove any +44 if pasted
+        const cleanedValue = inputValue.replace(/\D/g, '').slice(0, 10); // Limit to 10 digits
+        const isValid = cleanedValue.length === 10;
+        
+        setFormData({ 
+          ...formData, 
+          phoneNumber: `+44${cleanedValue}` 
+        });
+        
+        // Set validation error
+        setPhoneError(isValid ? '' : 'Phone number must be 10 digits');
+      }}
+      onBlur={() => {
+        if (formData.phoneNumber.replace(/^\+44/, '').length !== 10) {
+          setPhoneError('Phone number must be 10 digits');
+        }
+      }}
+      required
+      className={`flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border ${
+        phoneError ? 'border-red-500' : ''
+      }`}
+    />
+  </div>
+  {phoneError && (
+    <p className="mt-2 text-sm text-red-600">{phoneError}</p>
+  )}
+</div>
 
         {/* Email Address */}
         <div className="mb-4">
