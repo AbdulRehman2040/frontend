@@ -12,6 +12,31 @@ const ContactForm = () => {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({
+    phone: '',
+  });
+  const validatePhone = () => {
+    const phoneRegex = /^(\+44\s?7\d{3}|\(?07\d{3}\)?)\s?\d{3}\s?\d{3}$/;
+    // This regex matches:
+    // +447123456789
+    // 07123456789
+    // 07123 456789
+    // 07123-456-789
+    // (07123) 456789
+    
+    if (!formData.phone) {
+      setErrors({...errors, phone: 'Phone number is required'});
+      return false;
+    }
+    
+    if (!phoneRegex.test(formData.phone)) {
+      setErrors({...errors, phone: 'Please enter a valid UK phone number'});
+      return false;
+    }
+    
+    setErrors({...errors, phone: ''});
+    return true;
+  };
 
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -108,23 +133,27 @@ const ContactForm = () => {
 
         {/* Phone Field */}
         <div className="mb-4">
-          <label htmlFor="phone" className="block text-gray-700 font-medium mb-2">
-            Phone
-          </label>
-          <div className="flex items-center border rounded-lg px-3 py-2">
-            <AiOutlinePhone className="text-gray-500 mr-2" />
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-              placeholder="Enter your phone number"
-              className="w-full border-none outline-none focus:ring-0"
-            />
-          </div>
-        </div>
+  <label htmlFor="phone" className="block text-gray-700 font-medium mb-2">
+    Phone
+  </label>
+  <div className={`flex items-center border rounded-lg px-3 py-2 ${errors.phone ? 'border-red-500' : 'border-gray-300'}`}>
+    <AiOutlinePhone className="text-gray-500 mr-2" />
+    <input
+      type="tel"
+      id="phone"
+      name="phone"
+      value={formData.phone}
+      onChange={handleChange}
+      onBlur={validatePhone} // Add blur validation
+      required
+      placeholder="Enter UK phone number (e.g., 07123456789 or +447123456789)"
+      className="w-full border-none outline-none focus:ring-0"
+    />
+  </div>
+  {errors.phone && (
+    <p className="mt-1 text-sm text-red-500">{errors.phone}</p>
+  )}
+</div>
 
         {/* Message Field */}
         <div className="mb-4">
