@@ -9,6 +9,9 @@ const ContactForm = () => {
     message: "",
   });
 
+  
+
+
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,6 +47,24 @@ const ContactForm = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+  const allowNumbersAndPlus = (e: { keyCode: number; key: string; ctrlKey: any; preventDefault: () => void; }) => {
+    // Allow: backspace, delete, tab, escape, enter, arrows, + (keyCode 187)
+    if (
+      [8, 9, 13, 27, 37, 38, 39, 40].includes(e.keyCode) ||
+      e.key === '+' ||  // Allow + key
+      (e.ctrlKey && [65, 67, 86, 88].includes(e.keyCode))  // Allow Ctrl+A/C/V/X
+    ) {
+      return;
+    }
+  
+    // Allow numbers (0-9) on both main keyboard & numpad
+    if (
+      (e.keyCode < 48 || e.keyCode > 57) &&  // Main keyboard numbers
+      (e.keyCode < 96 || e.keyCode > 105)    // Numpad numbers
+    ) {
+      e.preventDefault();
+    }
   };
 
   // Handle form submission
@@ -145,9 +166,13 @@ const ContactForm = () => {
       value={formData.phone}
       onChange={handleChange}
       onBlur={validatePhone} // Add blur validation
+      onKeyDown={allowNumbersAndPlus}  // 🔹 Blocks non-numeric keystrokes
+      maxLength={13}
       required
-      placeholder="Enter UK phone number (e.g., 07123456789 or +447123456789)"
+      placeholder="Enter  phone number"
       className="w-full border-none outline-none focus:ring-0"
+      pattern="[0-9+]*"
+      inputMode="numeric"
     />
   </div>
   {errors.phone && (
